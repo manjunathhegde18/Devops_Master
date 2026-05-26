@@ -1,0 +1,361 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" lang="" xml:lang="">
+<head>
+  <meta charset="utf-8" />
+  <meta name="generator" content="pandoc" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes" />
+  <title>DevOps Mastery: interview-questions</title>
+  <style>
+    code{white-space: pre-wrap;}
+    span.smallcaps{font-variant: small-caps;}
+    div.columns{display: flex; gap: min(4vw, 1.5em);}
+    div.column{flex: auto; overflow-x: auto;}
+    div.hanging-indent{margin-left: 1.5em; text-indent: -1.5em;}
+    /* The extra [class] is a hack that increases specificity enough to
+       override a similar rule in reveal.js */
+    ul.task-list[class]{list-style: none;}
+    ul.task-list li input[type="checkbox"] {
+      font-size: inherit;
+      width: 0.8em;
+      margin: 0 0.8em 0.2em -1.6em;
+      vertical-align: middle;
+    }
+    .display.math{display: block; text-align: center; margin: 0.5rem auto;}
+    /* CSS for syntax highlighting */
+    pre > code.sourceCode { white-space: pre; position: relative; }
+    pre > code.sourceCode > span { line-height: 1.25; }
+    pre > code.sourceCode > span:empty { height: 1.2em; }
+    .sourceCode { overflow: visible; }
+    code.sourceCode > span { color: inherit; text-decoration: inherit; }
+    div.sourceCode { margin: 1em 0; }
+    pre.sourceCode { margin: 0; }
+    @media screen {
+    div.sourceCode { overflow: auto; }
+    }
+    @media print {
+    pre > code.sourceCode { white-space: pre-wrap; }
+    pre > code.sourceCode > span { text-indent: -5em; padding-left: 5em; }
+    }
+    pre.numberSource code
+      { counter-reset: source-line 0; }
+    pre.numberSource code > span
+      { position: relative; left: -4em; counter-increment: source-line; }
+    pre.numberSource code > span > a:first-child::before
+      { content: counter(source-line);
+        position: relative; left: -1em; text-align: right; vertical-align: baseline;
+        border: none; display: inline-block;
+        -webkit-touch-callout: none; -webkit-user-select: none;
+        -khtml-user-select: none; -moz-user-select: none;
+        -ms-user-select: none; user-select: none;
+        padding: 0 4px; width: 4em;
+        color: #aaaaaa;
+      }
+    pre.numberSource { margin-left: 3em; border-left: 1px solid #aaaaaa;  padding-left: 4px; }
+    div.sourceCode
+      {  background-color: #f8f8f8; }
+    @media screen {
+    pre > code.sourceCode > span > a:first-child::before { text-decoration: underline; }
+    }
+    code span.al { color: #ef2929; } /* Alert */
+    code span.an { color: #8f5902; font-weight: bold; font-style: italic; } /* Annotation */
+    code span.at { color: #204a87; } /* Attribute */
+    code span.bn { color: #0000cf; } /* BaseN */
+    code span.cf { color: #204a87; font-weight: bold; } /* ControlFlow */
+    code span.ch { color: #4e9a06; } /* Char */
+    code span.cn { color: #8f5902; } /* Constant */
+    code span.co { color: #8f5902; font-style: italic; } /* Comment */
+    code span.cv { color: #8f5902; font-weight: bold; font-style: italic; } /* CommentVar */
+    code span.do { color: #8f5902; font-weight: bold; font-style: italic; } /* Documentation */
+    code span.dt { color: #204a87; } /* DataType */
+    code span.dv { color: #0000cf; } /* DecVal */
+    code span.er { color: #a40000; font-weight: bold; } /* Error */
+    code span.ex { } /* Extension */
+    code span.fl { color: #0000cf; } /* Float */
+    code span.fu { color: #204a87; font-weight: bold; } /* Function */
+    code span.im { } /* Import */
+    code span.in { color: #8f5902; font-weight: bold; font-style: italic; } /* Information */
+    code span.kw { color: #204a87; font-weight: bold; } /* Keyword */
+    code span.op { color: #ce5c00; font-weight: bold; } /* Operator */
+    code span.ot { color: #8f5902; } /* Other */
+    code span.pp { color: #8f5902; font-style: italic; } /* Preprocessor */
+    code span.sc { color: #ce5c00; font-weight: bold; } /* SpecialChar */
+    code span.ss { color: #4e9a06; } /* SpecialString */
+    code span.st { color: #4e9a06; } /* String */
+    code span.va { color: #000000; } /* Variable */
+    code span.vs { color: #4e9a06; } /* VerbatimString */
+    code span.wa { color: #8f5902; font-weight: bold; font-style: italic; } /* Warning */
+  </style>
+  <link rel="stylesheet" href="/tmp/devops-style.css" />
+</head>
+<body>
+<header id="title-block-header">
+<h1 class="title">DevOps Mastery: interview-questions</h1>
+</header>
+<nav id="TOC" role="doc-toc">
+<ul>
+<li><a href="#linux-interview-questions-answers"
+id="toc-linux-interview-questions-answers">Linux — Interview Questions
+&amp; Answers</a>
+<ul>
+<li><a href="#basic-mid-level" id="toc-basic-mid-level">Basic /
+Mid-Level</a></li>
+<li><a href="#advanced-senior-level"
+id="toc-advanced-senior-level">Advanced / Senior Level</a></li>
+<li><a href="#scripting-automation-questions"
+id="toc-scripting-automation-questions">Scripting / Automation
+Questions</a></li>
+</ul></li>
+</ul>
+</nav>
+<h1 id="linux-interview-questions-answers">Linux — Interview Questions
+&amp; Answers</h1>
+<h2 id="basic-mid-level">Basic / Mid-Level</h2>
+<p><strong>Q1: What is the difference between a hard link and a soft
+link?</strong> &gt; <strong>Hard link:</strong> Another directory entry
+pointing to the same inode. Cannot span filesystems. Deleting original
+doesn’t remove data until all hard links deleted. &gt; <strong>Soft link
+(symlink):</strong> Points to a path/name. Can span filesystems. Breaks
+if target is deleted. &gt; <code>ln file hardlink</code> vs
+<code>ln -s file softlink</code></p>
+<p><strong>Q2: Explain the Linux boot process.</strong> &gt; 1.
+BIOS/UEFI POST → finds bootable device &gt; 2. MBR/GPT → loads
+bootloader (GRUB2) &gt; 3. GRUB2 → loads kernel image + initramfs into
+memory &gt; 4. Kernel initializes hardware, mounts initramfs (temporary
+root FS) &gt; 5. Kernel mounts real root FS, starts
+<code>/sbin/init</code> (systemd on modern distros) &gt; 6. Systemd
+reads <code>/etc/systemd/system/</code>, starts default target
+(multi-user.target or graphical.target) &gt; 7. Login prompt</p>
+<p><strong>Q3: What is the difference between <code>ps aux</code> and
+<code>ps -ef</code>?</strong> &gt; Both show all processes.
+<code>aux</code> is BSD style (shows %CPU, %MEM, VSZ, RSS).
+<code>-ef</code> is POSIX style. <code>ps aux</code> additionally shows
+non-tty processes.</p>
+<p><strong>Q4: How do you find which process is listening on port
+8080?</strong></p>
+<div class="sourceCode" id="cb1"><pre
+class="sourceCode bash"><code class="sourceCode bash"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a><span class="ex">ss</span> <span class="at">-tlnp</span> <span class="kw">|</span> <span class="fu">grep</span> :8080</span>
+<span id="cb1-2"><a href="#cb1-2" aria-hidden="true" tabindex="-1"></a><span class="ex">lsof</span> <span class="at">-i</span> :8080</span>
+<span id="cb1-3"><a href="#cb1-3" aria-hidden="true" tabindex="-1"></a><span class="fu">fuser</span> 8080/tcp</span></code></pre></div>
+<p><strong>Q5: What is a zombie process? How do you remove it?</strong>
+&gt; A process that has finished execution but its parent hasn’t called
+<code>wait()</code> to collect its exit status. It holds a PID and entry
+in the process table. Kill the <strong>parent</strong> process to clean
+up zombies (they’ll be re-parented to init which will reap them).</p>
+<p><strong>Q6: What is <code>nice</code> and
+<code>renice</code>?</strong> &gt; <code>nice</code> sets the priority
+when starting a process (-20 = highest, 19 = lowest, default 0). &gt;
+<code>renice</code> changes the nice value of a running process.</p>
+<div class="sourceCode" id="cb2"><pre
+class="sourceCode bash"><code class="sourceCode bash"><span id="cb2-1"><a href="#cb2-1" aria-hidden="true" tabindex="-1"></a><span class="fu">nice</span> <span class="at">-n</span> 10 make <span class="at">-j4</span></span>
+<span id="cb2-2"><a href="#cb2-2" aria-hidden="true" tabindex="-1"></a><span class="ex">renice</span> <span class="at">-n</span> <span class="at">-5</span> <span class="at">-p</span> 1234    <span class="co"># requires root for negative values</span></span></code></pre></div>
+<p><strong>Q7: Explain <code>cron</code> syntax.</strong></p>
+<pre><code>*  *  *  *  *  command
+│  │  │  │  └─ Day of week (0-7, Sun=0)
+│  │  │  └──── Month (1-12)
+│  │  └─────── Day of month (1-31)
+│  └────────── Hour (0-23)
+└───────────── Minute (0-59)
+
+0 2 * * 0 /scripts/backup.sh    # Every Sunday at 2am
+*/15 * * * * /scripts/health.sh # Every 15 minutes
+@reboot /scripts/startup.sh     # At boot</code></pre>
+<p><strong>Q8: What is the difference between <code>&gt;</code> and
+<code>&gt;&gt;</code>?</strong> &gt; <code>&gt;</code> overwrites the
+file. <code>&gt;&gt;</code> appends to the file. &gt; <code>2&gt;</code>
+redirects stderr. <code>2&gt;&amp;1</code> redirects stderr to stdout.
+<code>&amp;&gt;</code> redirects both.</p>
+<p><strong>Q9: How do you check disk usage?</strong></p>
+<div class="sourceCode" id="cb4"><pre
+class="sourceCode bash"><code class="sourceCode bash"><span id="cb4-1"><a href="#cb4-1" aria-hidden="true" tabindex="-1"></a><span class="fu">df</span> <span class="at">-h</span>           <span class="co"># filesystem usage</span></span>
+<span id="cb4-2"><a href="#cb4-2" aria-hidden="true" tabindex="-1"></a><span class="fu">du</span> <span class="at">-sh</span> /var/log <span class="co"># directory size</span></span>
+<span id="cb4-3"><a href="#cb4-3" aria-hidden="true" tabindex="-1"></a><span class="fu">du</span> <span class="at">-h</span> <span class="at">--max-depth</span><span class="op">=</span>1 /var  <span class="co"># one level deep</span></span>
+<span id="cb4-4"><a href="#cb4-4" aria-hidden="true" tabindex="-1"></a><span class="ex">ncdu</span> /var       <span class="co"># interactive (if installed)</span></span></code></pre></div>
+<p><strong>Q10: What are environment variables and how are they
+set?</strong></p>
+<div class="sourceCode" id="cb5"><pre
+class="sourceCode bash"><code class="sourceCode bash"><span id="cb5-1"><a href="#cb5-1" aria-hidden="true" tabindex="-1"></a><span class="bu">export</span> <span class="va">VAR</span><span class="op">=</span>value          <span class="co"># current shell + children</span></span>
+<span id="cb5-2"><a href="#cb5-2" aria-hidden="true" tabindex="-1"></a><span class="bu">echo</span> <span class="va">$VAR</span></span>
+<span id="cb5-3"><a href="#cb5-3" aria-hidden="true" tabindex="-1"></a><span class="fu">env</span>                       <span class="co"># view all</span></span>
+<span id="cb5-4"><a href="#cb5-4" aria-hidden="true" tabindex="-1"></a><span class="bu">unset</span> <span class="va">VAR</span>                 <span class="co"># remove</span></span>
+<span id="cb5-5"><a href="#cb5-5" aria-hidden="true" tabindex="-1"></a><span class="fu">printenv</span> HOME</span>
+<span id="cb5-6"><a href="#cb5-6" aria-hidden="true" tabindex="-1"></a><span class="co"># Persistent: add export to ~/.bashrc, ~/.bash_profile, /etc/environment</span></span></code></pre></div>
+<hr />
+<h2 id="advanced-senior-level">Advanced / Senior Level</h2>
+<p><strong>Q11: Explain Linux namespaces and how Docker uses
+them.</strong> &gt; Linux namespaces provide process isolation by
+limiting what a process can see. Docker uses: &gt; - <strong>PID
+namespace:</strong> Container processes see only their own PID space
+(PID 1 in container ≠ PID 1 on host) &gt; - <strong>NET
+namespace:</strong> Container gets its own network stack (eth0, lo,
+routing table) &gt; - <strong>MNT namespace:</strong> Container sees
+only its own mount tree &gt; - <strong>UTS namespace:</strong> Container
+can have its own hostname &gt; - <strong>IPC namespace:</strong>
+Isolated IPC resources &gt; - <strong>USER namespace:</strong>
+(optional) Map container root to non-root host user</p>
+<p><strong>Q12: What are cgroups and how do they relate to
+containers?</strong> &gt; Control groups limit and account for resource
+usage of process groups. Docker uses cgroups to: &gt; - Limit CPU
+(<code>--cpus=2</code>), memory (<code>--memory=512m</code>) &gt; -
+Limit disk I/O bandwidth &gt; - Track resource consumption per container
+&gt; <code>docker run --cpus=1.5 --memory=1g nginx</code></p>
+<p><strong>Q13: How does <code>iptables</code> work? How does Docker
+manage iptables?</strong> &gt; iptables works with kernel netfilter
+hooks. Packets go through chains (INPUT, OUTPUT, FORWARD, PREROUTING,
+POSTROUTING). Docker: &gt; - Creates <code>DOCKER</code> chain in
+FORWARD and nat tables &gt; - Adds DNAT rules in PREROUTING for port
+mappings &gt; - Sets FORWARD default to DROP but allows docker network
+traffic &gt; - Sets masquerade (SNAT) in POSTROUTING for outbound
+container traffic</p>
+<p><strong>Q14: What is the difference between soft and hard limits
+(<code>ulimit</code>)?</strong> &gt; <strong>Soft limit:</strong>
+Current effective limit; can be raised up to hard limit by the user.
+&gt; <strong>Hard limit:</strong> Maximum that unprivileged users can
+set; only root can raise it.</p>
+<div class="sourceCode" id="cb6"><pre
+class="sourceCode bash"><code class="sourceCode bash"><span id="cb6-1"><a href="#cb6-1" aria-hidden="true" tabindex="-1"></a><span class="bu">ulimit</span> <span class="at">-a</span>              <span class="co"># show all limits</span></span>
+<span id="cb6-2"><a href="#cb6-2" aria-hidden="true" tabindex="-1"></a><span class="bu">ulimit</span> <span class="at">-n</span> 65535        <span class="co"># set open files (soft)</span></span>
+<span id="cb6-3"><a href="#cb6-3" aria-hidden="true" tabindex="-1"></a><span class="bu">ulimit</span> <span class="at">-Hn</span> 65535       <span class="co"># set open files (hard, root only)</span></span>
+<span id="cb6-4"><a href="#cb6-4" aria-hidden="true" tabindex="-1"></a><span class="co"># Persistent: /etc/security/limits.conf</span></span>
+<span id="cb6-5"><a href="#cb6-5" aria-hidden="true" tabindex="-1"></a><span class="ex">*</span> soft nofile 65535</span>
+<span id="cb6-6"><a href="#cb6-6" aria-hidden="true" tabindex="-1"></a><span class="ex">*</span> hard nofile 65535</span></code></pre></div>
+<p><strong>Q15: Explain <code>strace</code>. When do you use
+it?</strong> &gt; <code>strace</code> traces system calls made by a
+process. Used for debugging crashes, permission issues, file not found
+errors.</p>
+<div class="sourceCode" id="cb7"><pre
+class="sourceCode bash"><code class="sourceCode bash"><span id="cb7-1"><a href="#cb7-1" aria-hidden="true" tabindex="-1"></a><span class="ex">strace</span> <span class="at">-p</span> PID                    <span class="co"># attach to running process</span></span>
+<span id="cb7-2"><a href="#cb7-2" aria-hidden="true" tabindex="-1"></a><span class="ex">strace</span> <span class="at">-e</span> trace=open,read ls     <span class="co"># filter specific syscalls</span></span>
+<span id="cb7-3"><a href="#cb7-3" aria-hidden="true" tabindex="-1"></a><span class="ex">strace</span> <span class="at">-o</span> /tmp/trace.log <span class="at">-f</span> cmd  <span class="co"># follow forks, log to file</span></span>
+<span id="cb7-4"><a href="#cb7-4" aria-hidden="true" tabindex="-1"></a><span class="ex">strace</span> <span class="at">-c</span> program                <span class="co"># summary of syscalls + timing</span></span></code></pre></div>
+<p><strong>Q16: A server is running out of memory but
+<code>free -h</code> shows available memory. What could be
+wrong?</strong> &gt; - <strong>Swap exhaustion:</strong> Check
+<code>swapon -s</code> or <code>vmstat</code> &gt; - <strong>OOM killer
+invoked:</strong> Check <code>dmesg | grep -i oom</code> &gt; -
+<strong>Memory leaks in application:</strong> Check
+<code>pmap -x PID | tail -1</code> &gt; - <strong>File descriptor
+exhaustion:</strong> Check <code>ulimit -n</code> and
+<code>/proc/PID/fd</code> &gt; - <strong>Kernel memory (slab):</strong>
+Check <code>slabtop</code> or <code>/proc/slabinfo</code> &gt; -
+<strong>Dirty page writeback:</strong>
+<code>cat /proc/meminfo | grep Dirty</code></p>
+<p><strong>Q17: How do you debug a “Too many open files”
+error?</strong></p>
+<div class="sourceCode" id="cb8"><pre
+class="sourceCode bash"><code class="sourceCode bash"><span id="cb8-1"><a href="#cb8-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Check limits</span></span>
+<span id="cb8-2"><a href="#cb8-2" aria-hidden="true" tabindex="-1"></a><span class="bu">ulimit</span> <span class="at">-n</span></span>
+<span id="cb8-3"><a href="#cb8-3" aria-hidden="true" tabindex="-1"></a><span class="fu">cat</span> /proc/sys/fs/file-max    <span class="co"># system-wide max</span></span>
+<span id="cb8-4"><a href="#cb8-4" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb8-5"><a href="#cb8-5" aria-hidden="true" tabindex="-1"></a><span class="co"># Check current usage</span></span>
+<span id="cb8-6"><a href="#cb8-6" aria-hidden="true" tabindex="-1"></a><span class="ex">lsof</span> <span class="kw">|</span> <span class="fu">wc</span> <span class="at">-l</span>                 <span class="co"># total open files</span></span>
+<span id="cb8-7"><a href="#cb8-7" aria-hidden="true" tabindex="-1"></a><span class="ex">lsof</span> <span class="at">-p</span> PID <span class="kw">|</span> <span class="fu">wc</span> <span class="at">-l</span>          <span class="co"># per process</span></span>
+<span id="cb8-8"><a href="#cb8-8" aria-hidden="true" tabindex="-1"></a><span class="fu">ls</span> /proc/PID/fd <span class="kw">|</span> <span class="fu">wc</span> <span class="at">-l</span>      <span class="co"># directly</span></span>
+<span id="cb8-9"><a href="#cb8-9" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb8-10"><a href="#cb8-10" aria-hidden="true" tabindex="-1"></a><span class="co"># Check system-wide</span></span>
+<span id="cb8-11"><a href="#cb8-11" aria-hidden="true" tabindex="-1"></a><span class="fu">cat</span> /proc/sys/fs/file-nr     <span class="co"># used / free / max</span></span>
+<span id="cb8-12"><a href="#cb8-12" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb8-13"><a href="#cb8-13" aria-hidden="true" tabindex="-1"></a><span class="co"># Fix</span></span>
+<span id="cb8-14"><a href="#cb8-14" aria-hidden="true" tabindex="-1"></a><span class="bu">ulimit</span> <span class="at">-n</span> 65535              <span class="co"># temporarily</span></span>
+<span id="cb8-15"><a href="#cb8-15" aria-hidden="true" tabindex="-1"></a><span class="bu">echo</span> <span class="st">&quot;* soft nofile 65535&quot;</span> <span class="op">&gt;&gt;</span> /etc/security/limits.conf</span>
+<span id="cb8-16"><a href="#cb8-16" aria-hidden="true" tabindex="-1"></a><span class="bu">echo</span> <span class="st">&quot;* hard nofile 65535&quot;</span> <span class="op">&gt;&gt;</span> /etc/security/limits.conf</span></code></pre></div>
+<p><strong>Q18: Explain the difference between <code>/proc</code> and
+<code>/sys</code>.</strong> &gt; <strong>/proc:</strong> Process
+information + kernel interfaces. Contains a directory per PID. Also has
+system info: <code>/proc/cpuinfo</code>, <code>/proc/meminfo</code>,
+<code>/proc/net/</code>. &gt; <strong>/sys (sysfs):</strong> Structured
+view of kernel devices and drivers. Used to modify kernel parameters at
+runtime. More organized than <code>/proc</code>.</p>
+<p><strong>Q19: What is a segmentation fault? How do you debug
+it?</strong> &gt; SIGSEGV — process tried to access memory it doesn’t
+have permission to (null pointer, stack overflow, buffer overflow).</p>
+<div class="sourceCode" id="cb9"><pre
+class="sourceCode bash"><code class="sourceCode bash"><span id="cb9-1"><a href="#cb9-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Enable core dumps</span></span>
+<span id="cb9-2"><a href="#cb9-2" aria-hidden="true" tabindex="-1"></a><span class="bu">ulimit</span> <span class="at">-c</span> unlimited</span>
+<span id="cb9-3"><a href="#cb9-3" aria-hidden="true" tabindex="-1"></a><span class="bu">echo</span> <span class="st">&quot;/tmp/core.%e.%p&quot;</span> <span class="op">&gt;</span> /proc/sys/kernel/core_pattern</span>
+<span id="cb9-4"><a href="#cb9-4" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb9-5"><a href="#cb9-5" aria-hidden="true" tabindex="-1"></a><span class="co"># After crash</span></span>
+<span id="cb9-6"><a href="#cb9-6" aria-hidden="true" tabindex="-1"></a><span class="fu">gdb</span> /usr/bin/myapp /tmp/core.myapp.1234</span>
+<span id="cb9-7"><a href="#cb9-7" aria-hidden="true" tabindex="-1"></a><span class="kw">(</span><span class="fu">gdb</span><span class="kw">)</span> <span class="ex">bt</span>       <span class="co"># backtrace</span></span>
+<span id="cb9-8"><a href="#cb9-8" aria-hidden="true" tabindex="-1"></a><span class="kw">(</span><span class="fu">gdb</span><span class="kw">)</span> <span class="ex">info</span> registers</span>
+<span id="cb9-9"><a href="#cb9-9" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb9-10"><a href="#cb9-10" aria-hidden="true" tabindex="-1"></a><span class="co"># Other tools</span></span>
+<span id="cb9-11"><a href="#cb9-11" aria-hidden="true" tabindex="-1"></a><span class="fu">valgrind</span> <span class="at">--leak-check</span><span class="op">=</span>full ./myapp   <span class="co"># memory error detector</span></span>
+<span id="cb9-12"><a href="#cb9-12" aria-hidden="true" tabindex="-1"></a><span class="ex">AddressSanitizer</span> <span class="er">(</span><span class="ex">compile</span> with <span class="at">-fsanitize</span><span class="op">=</span>address<span class="kw">)</span></span></code></pre></div>
+<p><strong>Q20: How do you optimize Linux for running
+Kubernetes?</strong></p>
+<div class="sourceCode" id="cb10"><pre
+class="sourceCode bash"><code class="sourceCode bash"><span id="cb10-1"><a href="#cb10-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Disable swap</span></span>
+<span id="cb10-2"><a href="#cb10-2" aria-hidden="true" tabindex="-1"></a><span class="ex">swapoff</span> <span class="at">-a</span></span>
+<span id="cb10-3"><a href="#cb10-3" aria-hidden="true" tabindex="-1"></a><span class="co"># Remove swap from /etc/fstab</span></span>
+<span id="cb10-4"><a href="#cb10-4" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb10-5"><a href="#cb10-5" aria-hidden="true" tabindex="-1"></a><span class="co"># Load required modules</span></span>
+<span id="cb10-6"><a href="#cb10-6" aria-hidden="true" tabindex="-1"></a><span class="ex">modprobe</span> br_netfilter overlay</span>
+<span id="cb10-7"><a href="#cb10-7" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb10-8"><a href="#cb10-8" aria-hidden="true" tabindex="-1"></a><span class="co"># Kernel params</span></span>
+<span id="cb10-9"><a href="#cb10-9" aria-hidden="true" tabindex="-1"></a><span class="fu">cat</span> <span class="op">&gt;</span> /etc/sysctl.d/k8s.conf <span class="op">&lt;&lt; EOF</span></span>
+<span id="cb10-10"><a href="#cb10-10" aria-hidden="true" tabindex="-1"></a><span class="st">net.bridge.bridge-nf-call-ip6tables = 1</span></span>
+<span id="cb10-11"><a href="#cb10-11" aria-hidden="true" tabindex="-1"></a><span class="st">net.bridge.bridge-nf-call-iptables  = 1</span></span>
+<span id="cb10-12"><a href="#cb10-12" aria-hidden="true" tabindex="-1"></a><span class="st">net.ipv4.ip_forward                 = 1</span></span>
+<span id="cb10-13"><a href="#cb10-13" aria-hidden="true" tabindex="-1"></a><span class="st">vm.overcommit_memory                = 1</span></span>
+<span id="cb10-14"><a href="#cb10-14" aria-hidden="true" tabindex="-1"></a><span class="st">vm.panic_on_oom                     = 0</span></span>
+<span id="cb10-15"><a href="#cb10-15" aria-hidden="true" tabindex="-1"></a><span class="st">kernel.panic                        = 10</span></span>
+<span id="cb10-16"><a href="#cb10-16" aria-hidden="true" tabindex="-1"></a><span class="st">kernel.panic_on_oops                = 1</span></span>
+<span id="cb10-17"><a href="#cb10-17" aria-hidden="true" tabindex="-1"></a><span class="st">fs.inotify.max_user_watches         = 524288</span></span>
+<span id="cb10-18"><a href="#cb10-18" aria-hidden="true" tabindex="-1"></a><span class="st">fs.inotify.max_user_instances       = 512</span></span>
+<span id="cb10-19"><a href="#cb10-19" aria-hidden="true" tabindex="-1"></a><span class="op">EOF</span></span>
+<span id="cb10-20"><a href="#cb10-20" aria-hidden="true" tabindex="-1"></a><span class="ex">sysctl</span> <span class="at">--system</span></span></code></pre></div>
+<hr />
+<h2 id="scripting-automation-questions">Scripting / Automation
+Questions</h2>
+<p><strong>Q21: Write a script to find and archive log files older than
+30 days.</strong></p>
+<div class="sourceCode" id="cb11"><pre
+class="sourceCode bash"><code class="sourceCode bash"><span id="cb11-1"><a href="#cb11-1" aria-hidden="true" tabindex="-1"></a><span class="co">#!/usr/bin/env bash</span></span>
+<span id="cb11-2"><a href="#cb11-2" aria-hidden="true" tabindex="-1"></a><span class="bu">set</span> <span class="at">-euo</span> pipefail</span>
+<span id="cb11-3"><a href="#cb11-3" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb11-4"><a href="#cb11-4" aria-hidden="true" tabindex="-1"></a><span class="va">LOG_DIR</span><span class="op">=</span><span class="st">&quot;/var/log/app&quot;</span></span>
+<span id="cb11-5"><a href="#cb11-5" aria-hidden="true" tabindex="-1"></a><span class="va">ARCHIVE_DIR</span><span class="op">=</span><span class="st">&quot;/backup/logs&quot;</span></span>
+<span id="cb11-6"><a href="#cb11-6" aria-hidden="true" tabindex="-1"></a><span class="va">RETENTION_DAYS</span><span class="op">=</span>30</span>
+<span id="cb11-7"><a href="#cb11-7" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb11-8"><a href="#cb11-8" aria-hidden="true" tabindex="-1"></a><span class="fu">find</span> <span class="st">&quot;</span><span class="va">$LOG_DIR</span><span class="st">&quot;</span> <span class="at">-name</span> <span class="st">&quot;*.log&quot;</span> <span class="at">-mtime</span> +<span class="st">&quot;</span><span class="va">$RETENTION_DAYS</span><span class="st">&quot;</span> <span class="at">-print0</span> <span class="kw">|</span> <span class="dt">\</span></span>
+<span id="cb11-9"><a href="#cb11-9" aria-hidden="true" tabindex="-1"></a>  <span class="fu">tar</span> <span class="at">-czvf</span> <span class="st">&quot;</span><span class="va">$ARCHIVE_DIR</span><span class="st">/archive-</span><span class="va">$(</span><span class="fu">date</span> +%Y%m%d<span class="va">)</span><span class="st">.tar.gz&quot;</span> <span class="at">--null</span> <span class="at">-T</span> <span class="at">-</span> <span class="kw">&amp;&amp;</span> <span class="dt">\</span></span>
+<span id="cb11-10"><a href="#cb11-10" aria-hidden="true" tabindex="-1"></a>  <span class="fu">find</span> <span class="st">&quot;</span><span class="va">$LOG_DIR</span><span class="st">&quot;</span> <span class="at">-name</span> <span class="st">&quot;*.log&quot;</span> <span class="at">-mtime</span> +<span class="st">&quot;</span><span class="va">$RETENTION_DAYS</span><span class="st">&quot;</span> <span class="at">-delete</span></span>
+<span id="cb11-11"><a href="#cb11-11" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb11-12"><a href="#cb11-12" aria-hidden="true" tabindex="-1"></a><span class="bu">echo</span> <span class="st">&quot;Archived logs older than </span><span class="va">$RETENTION_DAYS</span><span class="st"> days&quot;</span></span></code></pre></div>
+<p><strong>Q22: How would you monitor a process and restart it if it
+crashes?</strong></p>
+<div class="sourceCode" id="cb12"><pre
+class="sourceCode bash"><code class="sourceCode bash"><span id="cb12-1"><a href="#cb12-1" aria-hidden="true" tabindex="-1"></a><span class="co">#!/usr/bin/env bash</span></span>
+<span id="cb12-2"><a href="#cb12-2" aria-hidden="true" tabindex="-1"></a><span class="va">PROCESS</span><span class="op">=</span><span class="st">&quot;myapp&quot;</span></span>
+<span id="cb12-3"><a href="#cb12-3" aria-hidden="true" tabindex="-1"></a><span class="cf">while</span> <span class="fu">true</span><span class="kw">;</span> <span class="cf">do</span></span>
+<span id="cb12-4"><a href="#cb12-4" aria-hidden="true" tabindex="-1"></a>    <span class="cf">if</span> <span class="ot">! </span><span class="ex">pgrep</span> <span class="at">-x</span> <span class="st">&quot;</span><span class="va">$PROCESS</span><span class="st">&quot;</span> <span class="op">&gt;</span> /dev/null<span class="kw">;</span> <span class="cf">then</span></span>
+<span id="cb12-5"><a href="#cb12-5" aria-hidden="true" tabindex="-1"></a>        <span class="bu">echo</span> <span class="st">&quot;</span><span class="va">$(</span><span class="fu">date</span><span class="va">)</span><span class="st">: </span><span class="va">$PROCESS</span><span class="st"> not running, restarting...&quot;</span> <span class="kw">|</span> <span class="dt">\</span></span>
+<span id="cb12-6"><a href="#cb12-6" aria-hidden="true" tabindex="-1"></a>          <span class="fu">tee</span> <span class="at">-a</span> /var/log/watchdog.log</span>
+<span id="cb12-7"><a href="#cb12-7" aria-hidden="true" tabindex="-1"></a>        <span class="ex">/usr/local/bin/</span><span class="va">$PROCESS</span> <span class="kw">&amp;</span></span>
+<span id="cb12-8"><a href="#cb12-8" aria-hidden="true" tabindex="-1"></a>    <span class="cf">fi</span></span>
+<span id="cb12-9"><a href="#cb12-9" aria-hidden="true" tabindex="-1"></a>    <span class="fu">sleep</span> 30</span>
+<span id="cb12-10"><a href="#cb12-10" aria-hidden="true" tabindex="-1"></a><span class="cf">done</span></span>
+<span id="cb12-11"><a href="#cb12-11" aria-hidden="true" tabindex="-1"></a><span class="co"># Better: Use systemd with Restart=always or supervisord</span></span></code></pre></div>
+<p><strong>Q23: Write a script to check if all required ports are open
+before starting a service.</strong></p>
+<div class="sourceCode" id="cb13"><pre
+class="sourceCode bash"><code class="sourceCode bash"><span id="cb13-1"><a href="#cb13-1" aria-hidden="true" tabindex="-1"></a><span class="co">#!/usr/bin/env bash</span></span>
+<span id="cb13-2"><a href="#cb13-2" aria-hidden="true" tabindex="-1"></a><span class="fu">check_port()</span> <span class="kw">{</span></span>
+<span id="cb13-3"><a href="#cb13-3" aria-hidden="true" tabindex="-1"></a>    <span class="bu">local</span> <span class="va">host</span><span class="op">=</span><span class="st">&quot;</span><span class="va">$1</span><span class="st">&quot;</span> <span class="va">port</span><span class="op">=</span><span class="st">&quot;</span><span class="va">$2</span><span class="st">&quot;</span></span>
+<span id="cb13-4"><a href="#cb13-4" aria-hidden="true" tabindex="-1"></a>    <span class="fu">timeout</span> 2 bash <span class="at">-c</span> <span class="st">&quot;echo &gt;/dev/tcp/</span><span class="va">$host</span><span class="st">/</span><span class="va">$port</span><span class="st">&quot;</span> <span class="dv">2</span><span class="op">&gt;</span>/dev/null</span>
+<span id="cb13-5"><a href="#cb13-5" aria-hidden="true" tabindex="-1"></a><span class="kw">}</span></span>
+<span id="cb13-6"><a href="#cb13-6" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb13-7"><a href="#cb13-7" aria-hidden="true" tabindex="-1"></a><span class="va">DEPS</span><span class="op">=</span><span class="va">(</span><span class="st">&quot;db:5432&quot;</span> <span class="st">&quot;redis:6379&quot;</span> <span class="st">&quot;kafka:9092&quot;</span><span class="va">)</span></span>
+<span id="cb13-8"><a href="#cb13-8" aria-hidden="true" tabindex="-1"></a><span class="cf">for</span> dep <span class="kw">in</span> <span class="st">&quot;</span><span class="va">${DEPS</span><span class="op">[@]</span><span class="va">}</span><span class="st">&quot;</span><span class="kw">;</span> <span class="cf">do</span></span>
+<span id="cb13-9"><a href="#cb13-9" aria-hidden="true" tabindex="-1"></a>    <span class="va">host</span><span class="op">=</span><span class="st">&quot;</span><span class="va">${dep</span><span class="op">%</span>:<span class="pp">*</span><span class="va">}</span><span class="st">&quot;</span></span>
+<span id="cb13-10"><a href="#cb13-10" aria-hidden="true" tabindex="-1"></a>    <span class="va">port</span><span class="op">=</span><span class="st">&quot;</span><span class="va">${dep</span><span class="op">##</span><span class="pp">*</span>:<span class="va">}</span><span class="st">&quot;</span></span>
+<span id="cb13-11"><a href="#cb13-11" aria-hidden="true" tabindex="-1"></a>    <span class="cf">if</span> <span class="ex">check_port</span> <span class="st">&quot;</span><span class="va">$host</span><span class="st">&quot;</span> <span class="st">&quot;</span><span class="va">$port</span><span class="st">&quot;</span><span class="kw">;</span> <span class="cf">then</span></span>
+<span id="cb13-12"><a href="#cb13-12" aria-hidden="true" tabindex="-1"></a>        <span class="bu">echo</span> <span class="st">&quot;✓ </span><span class="va">$host</span><span class="st">:</span><span class="va">$port</span><span class="st"> reachable&quot;</span></span>
+<span id="cb13-13"><a href="#cb13-13" aria-hidden="true" tabindex="-1"></a>    <span class="cf">else</span></span>
+<span id="cb13-14"><a href="#cb13-14" aria-hidden="true" tabindex="-1"></a>        <span class="bu">echo</span> <span class="st">&quot;✗ </span><span class="va">$host</span><span class="st">:</span><span class="va">$port</span><span class="st"> UNREACHABLE — aborting&quot;</span></span>
+<span id="cb13-15"><a href="#cb13-15" aria-hidden="true" tabindex="-1"></a>        <span class="bu">exit</span> 1</span>
+<span id="cb13-16"><a href="#cb13-16" aria-hidden="true" tabindex="-1"></a>    <span class="cf">fi</span></span>
+<span id="cb13-17"><a href="#cb13-17" aria-hidden="true" tabindex="-1"></a><span class="cf">done</span></span>
+<span id="cb13-18"><a href="#cb13-18" aria-hidden="true" tabindex="-1"></a><span class="bu">echo</span> <span class="st">&quot;All dependencies ready. Starting service.&quot;</span></span></code></pre></div>
+</body>
+</html>

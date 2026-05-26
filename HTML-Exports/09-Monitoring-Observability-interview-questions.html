@@ -1,0 +1,191 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" lang="" xml:lang="">
+<head>
+  <meta charset="utf-8" />
+  <meta name="generator" content="pandoc" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes" />
+  <title>DevOps Mastery: interview-questions</title>
+  <style>
+    code{white-space: pre-wrap;}
+    span.smallcaps{font-variant: small-caps;}
+    div.columns{display: flex; gap: min(4vw, 1.5em);}
+    div.column{flex: auto; overflow-x: auto;}
+    div.hanging-indent{margin-left: 1.5em; text-indent: -1.5em;}
+    /* The extra [class] is a hack that increases specificity enough to
+       override a similar rule in reveal.js */
+    ul.task-list[class]{list-style: none;}
+    ul.task-list li input[type="checkbox"] {
+      font-size: inherit;
+      width: 0.8em;
+      margin: 0 0.8em 0.2em -1.6em;
+      vertical-align: middle;
+    }
+    .display.math{display: block; text-align: center; margin: 0.5rem auto;}
+  </style>
+  <link rel="stylesheet" href="/tmp/devops-style.css" />
+</head>
+<body>
+<header id="title-block-header">
+<h1 class="title">DevOps Mastery: interview-questions</h1>
+</header>
+<nav id="TOC" role="doc-toc">
+<ul>
+<li><a href="#monitoring-observability-interview-questions-answers"
+id="toc-monitoring-observability-interview-questions-answers">Monitoring
+&amp; Observability — Interview Questions &amp; Answers</a></li>
+</ul>
+</nav>
+<h1 id="monitoring-observability-interview-questions-answers">Monitoring
+&amp; Observability — Interview Questions &amp; Answers</h1>
+<p><strong>Q1: What is the difference between monitoring and
+observability?</strong> &gt; <strong>Monitoring</strong>: Watching
+predefined metrics and alerting when thresholds are breached. You know
+what to look for in advance. “Is the system up? Is latency above 200ms?”
+&gt; <strong>Observability</strong>: The ability to understand internal
+system state from external outputs (metrics, logs, traces). You can
+explore unknown unknowns. A system is observable when you can ask
+arbitrary questions without deploying new code. &gt; In practice:
+monitoring tells you <em>something is wrong</em>; observability tells
+you <em>why</em>.</p>
+<hr />
+<p><strong>Q2: Explain the difference between a Prometheus Counter,
+Gauge, and Histogram. When do you use each?</strong> &gt;
+<strong>Counter</strong>: Monotonically increasing integer. Reset to 0
+on restart. Always use <code>rate()</code> or <code>increase()</code> in
+queries — never query raw value. &gt; Use for: requests_total,
+errors_total, bytes_sent_total &gt; &gt; <strong>Gauge</strong>: Can
+increase or decrease. Represents a snapshot. &gt; Use for: memory_bytes,
+active_connections, queue_depth, temperature &gt; &gt;
+<strong>Histogram</strong>: Pre-defined buckets. Enables server-side
+percentile calculation across instances.
+<code>histogram_quantile(0.99, ...)</code> is accurate when aggregating
+across replicas. &gt; Use for: request latency, response size — anything
+you need percentiles for &gt; &gt; Key distinction: use Histogram over
+Summary when you need to aggregate across multiple instances.</p>
+<hr />
+<p><strong>Q3: What is an error budget and how does it influence
+engineering decisions?</strong> &gt; Error budget = 1 - SLO. If SLO is
+99.9%, the error budget is 0.1% — about 43.8 minutes/month. &gt; &gt;
+How it drives behavior: &gt; - <strong>Budget remaining</strong> →
+deploy freely, run experiments, take on tech debt &gt; - <strong>Budget
+50% consumed</strong> → be cautious, review risky deployments &gt; -
+<strong>Budget exhausted</strong> → freeze all non-critical deployments
+until next period &gt; &gt; It creates a shared language between product
+(wants features fast) and engineering (wants reliability). Both sides
+agree on the acceptable risk level upfront.</p>
+<hr />
+<p><strong>Q4: Explain burn rate alerting. Why is it better than
+threshold-based alerting?</strong> &gt; Burn rate = how fast you’re
+consuming error budget relative to the allowed rate. &gt; A 14.4x burn
+rate means you’ll exhaust the entire monthly budget in 2 hours. &gt;
+&gt; <strong>Why better than thresholds:</strong> &gt; - Threshold
+alerts: “error rate &gt; 1%” — doesn’t tell you the business impact &gt;
+- Burn rate: “at this rate, you’ll miss your SLO in 1 hour” — directly
+tied to user experience &gt; - Reduces noise: short error spikes don’t
+alert unless sustained &gt; - Multi-window: fast burn (1h window) for
+critical pages + slow burn (6h window) for warning tickets</p>
+<hr />
+<p><strong>Q5: A key service is having intermittent latency spikes. How
+do you investigate?</strong> &gt; 1. <strong>Metrics first</strong>:
+Check p99 latency graph over time. Is it all endpoints or specific ones?
+&gt; 2. <strong>Correlate with traffic</strong>: Does spike correspond
+to traffic increase? (saturation) &gt; 3. <strong>Check
+dependencies</strong>: Database query time, cache hit rate, external API
+latency &gt; 4. <strong>Traces</strong>: Find slow traces during the
+spike window — identify which span is slow &gt; 5.
+<strong>Logs</strong>: Filter logs for high <code>duration_ms</code>
+during spike — look for patterns &gt; 6.
+<strong>Infrastructure</strong>: CPU throttling? GC pauses? Network
+retransmissions? &gt; 7. <strong>Deployments</strong>: Any deploys
+correlate with the spike start? (check annotations on dashboard) &gt; 8.
+<strong>Node-level</strong>: <code>kubectl top nodes</code>, check for
+noisy neighbor</p>
+<hr />
+<p><strong>Q6: What is the difference between push and pull metrics
+collection?</strong> &gt; <strong>Pull (Prometheus model)</strong>:
+Scraper polls targets on a schedule. Centralized config. Easy to see
+which targets are down (scrape fails). Works well in dynamic
+environments with service discovery. &gt; &gt; <strong>Push (StatsD,
+Datadog Agent, CloudWatch)</strong>: Applications push metrics to a
+collector. Works well for short-lived jobs (Lambda, batch), firewalled
+environments, or when you can’t open inbound ports. &gt; &gt;
+<strong>Pushgateway</strong> bridges the gap: batch jobs push to
+Pushgateway, Prometheus pulls from it.</p>
+<hr />
+<p><strong>Q7: How do you reduce alert fatigue?</strong> &gt; 1.
+<strong>Alert on symptoms not causes</strong> — alert when user
+experience degrades, not every CPU spike &gt; 2. <strong>Burn rate
+instead of threshold</strong> — sustained problems, not brief spikes
+&gt; 3. <strong>Add <code>for</code> duration</strong> — require problem
+sustained for 2-5 min before alerting &gt; 4. <strong>Inhibition
+rules</strong> — suppress warning when critical is already firing &gt;
+5. <strong>Proper grouping/routing</strong> — database alerts go to DB
+team, not everyone &gt; 6. <strong>Review stale alerts</strong> — delete
+or fix any alert that’s been ignored 3+ times &gt; 7. <strong>Separate
+page vs ticket</strong> — critical pages on-call, warnings create Jira
+tickets</p>
+<hr />
+<p><strong>Q8: Explain distributed tracing. What problem does it
+solve?</strong> &gt; In a microservices architecture, a single user
+request touches 10+ services. When a request is slow or fails,
+traditional logs only show what happened inside each service — you can’t
+see the full journey. &gt; &gt; Distributed tracing gives each request a
+unique <code>trace_id</code>. Every service adds a <code>span</code>
+with timing and metadata. You can visualize the full call graph and
+immediately see: &gt; - Which service is slow (bottleneck) &gt; - Which
+dependency call failed &gt; - How much of the total latency is in each
+service &gt; - How spans are nested (parallel vs sequential calls)</p>
+<hr />
+<p><strong>Q9: How does OpenTelemetry differ from Prometheus or
+Jaeger?</strong> &gt; OpenTelemetry is a <strong>vendor-neutral
+instrumentation framework</strong> — it defines APIs and SDKs for
+generating metrics, logs, and traces. It doesn’t store or visualize
+data. &gt; &gt; Prometheus and Jaeger are <strong>backends</strong> —
+they store and query data. &gt; &gt; Workflow: Instrument app with OTel
+SDK → OTel Collector receives data → forwards to Prometheus (metrics) +
+Jaeger/Tempo (traces) + Loki (logs). &gt; &gt; Benefit: Change backends
+without changing application code. Auto-instrumentation for HTTP, gRPC,
+databases, message queues.</p>
+<hr />
+<p><strong>Q10: Production scenario — Grafana shows error rate spiking
+to 30% but PagerDuty didn’t alert. Why?</strong> &gt; Possible reasons:
+&gt; 1. Alert <code>for</code> duration too long (e.g.,
+<code>for: 15m</code>) — spike resolved before threshold met &gt; 2.
+Alert expression uses wrong labels — not matching this service’s metric
+labels &gt; 3. Prometheus scrape failing — metrics stale, alert never
+evaluates to true &gt; 4. Alertmanager route misconfigured — alert
+routes to wrong receiver or suppressed &gt; 5. Silence active in
+Alertmanager &gt; 6. PagerDuty integration broken or routing key expired
+&gt; &gt; Debug steps: Check Prometheus <code>Alerts</code> tab, check
+Alertmanager <code>Status</code> page, verify
+<code>amtool alert query</code>, test fire alert manually.</p>
+<hr />
+<p><strong>Q11: What is the cardinality problem in Prometheus?</strong>
+&gt; Cardinality = number of unique time series = unique combinations of
+label values. &gt; High cardinality kills Prometheus performance because
+each series needs memory + storage. &gt; &gt; <strong>Bad
+labels</strong> (never do this): &gt; - User IDs:
+<code>{user_id="u_12345"}</code> — millions of series &gt; - Request
+IDs, URLs with query params &gt; - Timestamps in labels &gt; &gt;
+<strong>Good labels</strong>: service, method, status_code, region,
+environment &gt; &gt; Rule: if a label has &gt; 100 unique values, think
+carefully. If &gt; 1000, almost always wrong. &gt; High-cardinality data
+belongs in logs or traces, not metrics.</p>
+<hr />
+<p><strong>Q12: What logging strategy do you use for a Kubernetes
+cluster with 50+ services?</strong> &gt; Architecture: &gt; -
+<strong>Fluent Bit</strong> as DaemonSet on every node — lightweight,
+low CPU/memory, reads container logs from
+<code>/var/log/containers/</code> &gt; - Enriches with K8s metadata
+(pod, namespace, deployment, labels) &gt; - Forwards to
+<strong>Loki</strong> (cost-efficient) or <strong>OpenSearch</strong>
+(rich full-text search) &gt; - <strong>Grafana</strong> for log
+exploration + correlation with metrics &gt; &gt; Standards enforced:
+&gt; - All services output structured JSON logs &gt; - Mandatory fields:
+<code>timestamp</code>, <code>level</code>, <code>service</code>,
+<code>trace_id</code>, <code>span_id</code> &gt; - Log correlation:
+inject <code>trace_id</code> in all logs — click trace in Grafana → jump
+to Jaeger &gt; - Log retention policy: 30 days hot, archive to S3
+Glacier</p>
+</body>
+</html>

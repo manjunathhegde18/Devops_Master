@@ -1,0 +1,608 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" lang="" xml:lang="">
+<head>
+  <meta charset="utf-8" />
+  <meta name="generator" content="pandoc" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes" />
+  <title>DevOps Mastery: notes</title>
+  <style>
+    code{white-space: pre-wrap;}
+    span.smallcaps{font-variant: small-caps;}
+    div.columns{display: flex; gap: min(4vw, 1.5em);}
+    div.column{flex: auto; overflow-x: auto;}
+    div.hanging-indent{margin-left: 1.5em; text-indent: -1.5em;}
+    /* The extra [class] is a hack that increases specificity enough to
+       override a similar rule in reveal.js */
+    ul.task-list[class]{list-style: none;}
+    ul.task-list li input[type="checkbox"] {
+      font-size: inherit;
+      width: 0.8em;
+      margin: 0 0.8em 0.2em -1.6em;
+      vertical-align: middle;
+    }
+    .display.math{display: block; text-align: center; margin: 0.5rem auto;}
+    /* CSS for syntax highlighting */
+    pre > code.sourceCode { white-space: pre; position: relative; }
+    pre > code.sourceCode > span { line-height: 1.25; }
+    pre > code.sourceCode > span:empty { height: 1.2em; }
+    .sourceCode { overflow: visible; }
+    code.sourceCode > span { color: inherit; text-decoration: inherit; }
+    div.sourceCode { margin: 1em 0; }
+    pre.sourceCode { margin: 0; }
+    @media screen {
+    div.sourceCode { overflow: auto; }
+    }
+    @media print {
+    pre > code.sourceCode { white-space: pre-wrap; }
+    pre > code.sourceCode > span { text-indent: -5em; padding-left: 5em; }
+    }
+    pre.numberSource code
+      { counter-reset: source-line 0; }
+    pre.numberSource code > span
+      { position: relative; left: -4em; counter-increment: source-line; }
+    pre.numberSource code > span > a:first-child::before
+      { content: counter(source-line);
+        position: relative; left: -1em; text-align: right; vertical-align: baseline;
+        border: none; display: inline-block;
+        -webkit-touch-callout: none; -webkit-user-select: none;
+        -khtml-user-select: none; -moz-user-select: none;
+        -ms-user-select: none; user-select: none;
+        padding: 0 4px; width: 4em;
+        color: #aaaaaa;
+      }
+    pre.numberSource { margin-left: 3em; border-left: 1px solid #aaaaaa;  padding-left: 4px; }
+    div.sourceCode
+      {  background-color: #f8f8f8; }
+    @media screen {
+    pre > code.sourceCode > span > a:first-child::before { text-decoration: underline; }
+    }
+    code span.al { color: #ef2929; } /* Alert */
+    code span.an { color: #8f5902; font-weight: bold; font-style: italic; } /* Annotation */
+    code span.at { color: #204a87; } /* Attribute */
+    code span.bn { color: #0000cf; } /* BaseN */
+    code span.cf { color: #204a87; font-weight: bold; } /* ControlFlow */
+    code span.ch { color: #4e9a06; } /* Char */
+    code span.cn { color: #8f5902; } /* Constant */
+    code span.co { color: #8f5902; font-style: italic; } /* Comment */
+    code span.cv { color: #8f5902; font-weight: bold; font-style: italic; } /* CommentVar */
+    code span.do { color: #8f5902; font-weight: bold; font-style: italic; } /* Documentation */
+    code span.dt { color: #204a87; } /* DataType */
+    code span.dv { color: #0000cf; } /* DecVal */
+    code span.er { color: #a40000; font-weight: bold; } /* Error */
+    code span.ex { } /* Extension */
+    code span.fl { color: #0000cf; } /* Float */
+    code span.fu { color: #204a87; font-weight: bold; } /* Function */
+    code span.im { } /* Import */
+    code span.in { color: #8f5902; font-weight: bold; font-style: italic; } /* Information */
+    code span.kw { color: #204a87; font-weight: bold; } /* Keyword */
+    code span.op { color: #ce5c00; font-weight: bold; } /* Operator */
+    code span.ot { color: #8f5902; } /* Other */
+    code span.pp { color: #8f5902; font-style: italic; } /* Preprocessor */
+    code span.sc { color: #ce5c00; font-weight: bold; } /* SpecialChar */
+    code span.ss { color: #4e9a06; } /* SpecialString */
+    code span.st { color: #4e9a06; } /* String */
+    code span.va { color: #000000; } /* Variable */
+    code span.vs { color: #4e9a06; } /* VerbatimString */
+    code span.wa { color: #8f5902; font-weight: bold; font-style: italic; } /* Warning */
+  </style>
+  <link rel="stylesheet" href="/tmp/devops-style.css" />
+</head>
+<body>
+<header id="title-block-header">
+<h1 class="title">DevOps Mastery: notes</h1>
+</header>
+<nav id="TOC" role="doc-toc">
+<ul>
+<li><a href="#cicd-deep-dive-notes" id="toc-cicd-deep-dive-notes">CI/CD
+— Deep Dive Notes</a>
+<ul>
+<li><a href="#cicd-concepts" id="toc-cicd-concepts">1. CI/CD
+Concepts</a>
+<ul>
+<li><a href="#continuous-integration-ci"
+id="toc-continuous-integration-ci">Continuous Integration (CI)</a></li>
+<li><a href="#continuous-delivery-cd"
+id="toc-continuous-delivery-cd">Continuous Delivery (CD)</a></li>
+<li><a href="#continuous-deployment-cd"
+id="toc-continuous-deployment-cd">Continuous Deployment (CD)</a></li>
+</ul></li>
+<li><a href="#pipeline-design-principles"
+id="toc-pipeline-design-principles">2. Pipeline Design Principles</a>
+<ul>
+<li><a href="#shift-left-testing" id="toc-shift-left-testing">Shift-Left
+Testing</a></li>
+<li><a href="#pipeline-stages" id="toc-pipeline-stages">Pipeline
+Stages</a></li>
+<li><a href="#the-four-key-metrics-dora"
+id="toc-the-four-key-metrics-dora">The Four Key Metrics (DORA)</a></li>
+</ul></li>
+<li><a href="#jenkins" id="toc-jenkins">3. Jenkins</a>
+<ul>
+<li><a href="#declarative-pipeline"
+id="toc-declarative-pipeline">Declarative Pipeline</a></li>
+<li><a href="#jenkins-shared-libraries"
+id="toc-jenkins-shared-libraries">Jenkins Shared Libraries</a></li>
+</ul></li>
+<li><a href="#github-actions" id="toc-github-actions">4. GitHub
+Actions</a>
+<ul>
+<li><a href="#reusable-workflow" id="toc-reusable-workflow">Reusable
+Workflow</a></li>
+<li><a href="#matrix-builds-caching"
+id="toc-matrix-builds-caching">Matrix Builds + Caching</a></li>
+</ul></li>
+<li><a href="#gitlab-ci" id="toc-gitlab-ci">5. GitLab CI</a></li>
+<li><a href="#argocd-gitops" id="toc-argocd-gitops">6. ArgoCD —
+GitOps</a>
+<ul>
+<li><a href="#install-setup" id="toc-install-setup">Install &amp;
+Setup</a></li>
+<li><a href="#application-definition"
+id="toc-application-definition">Application Definition</a></li>
+<li><a href="#app-of-apps-pattern" id="toc-app-of-apps-pattern">App of
+Apps Pattern</a></li>
+</ul></li>
+<li><a href="#deployment-strategies" id="toc-deployment-strategies">7.
+Deployment Strategies</a>
+<ul>
+<li><a href="#blue-green" id="toc-blue-green">Blue-Green</a></li>
+<li><a href="#canary" id="toc-canary">Canary</a></li>
+<li><a href="#rolling-update-kubernetes-default"
+id="toc-rolling-update-kubernetes-default">Rolling Update (Kubernetes
+default)</a></li>
+<li><a href="#feature-flags" id="toc-feature-flags">Feature
+Flags</a></li>
+</ul></li>
+<li><a href="#resources" id="toc-resources">📚 Resources</a></li>
+</ul></li>
+</ul>
+</nav>
+<h1 id="cicd-deep-dive-notes">CI/CD — Deep Dive Notes</h1>
+<h2 id="cicd-concepts">1. CI/CD Concepts</h2>
+<h3 id="continuous-integration-ci">Continuous Integration (CI)</h3>
+<ul>
+<li>Every commit triggers automated build + test</li>
+<li>Fast feedback loop (&lt; 10 min target)</li>
+<li>Keeps main branch always buildable</li>
+<li>Catches integration bugs early</li>
+</ul>
+<h3 id="continuous-delivery-cd">Continuous Delivery (CD)</h3>
+<ul>
+<li>Automated release to production-like environment</li>
+<li>Human approval gate before production deploy</li>
+<li>Every commit is potentially releasable</li>
+</ul>
+<h3 id="continuous-deployment-cd">Continuous Deployment (CD)</h3>
+<ul>
+<li>Every passing build auto-deploys to production</li>
+<li>No human gate</li>
+<li>Requires high test coverage + observability + rollback
+capability</li>
+</ul>
+<hr />
+<h2 id="pipeline-design-principles">2. Pipeline Design Principles</h2>
+<h3 id="shift-left-testing">Shift-Left Testing</h3>
+<pre><code>Unit Tests → Integration Tests → E2E Tests → Performance → Security → Deploy
+  (fast)        (medium)          (slow)     (scheduled)   (gate)</code></pre>
+<h3 id="pipeline-stages">Pipeline Stages</h3>
+<pre><code>1. Source       → checkout, validate
+2. Build        → compile, lint, SAST scan
+3. Unit Test    → fast isolated tests
+4. Docker Build → multi-stage, cache layers
+5. Integration  → spin up dependencies, test
+6. Security     → container scan, DAST, secrets scan
+7. Staging      → deploy to staging, smoke test
+8. E2E          → full flow tests
+9. Production   → deploy with approval gate
+10. Post-deploy → health check, notify</code></pre>
+<h3 id="the-four-key-metrics-dora">The Four Key Metrics (DORA)</h3>
+<table>
+<colgroup>
+<col style="width: 23%" />
+<col style="width: 20%" />
+<col style="width: 17%" />
+<col style="width: 23%" />
+<col style="width: 14%" />
+</colgroup>
+<thead>
+<tr class="header">
+<th>Metric</th>
+<th>Elite</th>
+<th>High</th>
+<th>Medium</th>
+<th>Low</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td>Deployment Frequency</td>
+<td>On demand (multiple/day)</td>
+<td>Weekly</td>
+<td>Monthly</td>
+<td>&lt;6 months</td>
+</tr>
+<tr class="even">
+<td>Lead Time for Changes</td>
+<td>&lt;1 hour</td>
+<td>1day-1week</td>
+<td>1week-1month</td>
+<td>&gt;6 months</td>
+</tr>
+<tr class="odd">
+<td>Change Failure Rate</td>
+<td>0-15%</td>
+<td>16-30%</td>
+<td>16-30%</td>
+<td>46-60%</td>
+</tr>
+<tr class="even">
+<td>MTTR</td>
+<td>&lt;1 hour</td>
+<td>&lt;1 day</td>
+<td>&lt;1 week</td>
+<td>&gt;6 months</td>
+</tr>
+</tbody>
+</table>
+<hr />
+<h2 id="jenkins">3. Jenkins</h2>
+<h3 id="declarative-pipeline">Declarative Pipeline</h3>
+<div class="sourceCode" id="cb3"><pre
+class="sourceCode groovy"><code class="sourceCode groovy"><span id="cb3-1"><a href="#cb3-1" aria-hidden="true" tabindex="-1"></a>pipeline <span class="op">{</span></span>
+<span id="cb3-2"><a href="#cb3-2" aria-hidden="true" tabindex="-1"></a>    agent <span class="op">{</span></span>
+<span id="cb3-3"><a href="#cb3-3" aria-hidden="true" tabindex="-1"></a>        kubernetes <span class="op">{</span></span>
+<span id="cb3-4"><a href="#cb3-4" aria-hidden="true" tabindex="-1"></a>            yaml <span class="st">&#39;&#39;&#39;</span></span>
+<span id="cb3-5"><a href="#cb3-5" aria-hidden="true" tabindex="-1"></a><span class="st">                apiVersion: v1</span></span>
+<span id="cb3-6"><a href="#cb3-6" aria-hidden="true" tabindex="-1"></a><span class="st">                kind: Pod</span></span>
+<span id="cb3-7"><a href="#cb3-7" aria-hidden="true" tabindex="-1"></a><span class="st">                spec:</span></span>
+<span id="cb3-8"><a href="#cb3-8" aria-hidden="true" tabindex="-1"></a><span class="st">                  containers:</span></span>
+<span id="cb3-9"><a href="#cb3-9" aria-hidden="true" tabindex="-1"></a><span class="st">                  - name: maven</span></span>
+<span id="cb3-10"><a href="#cb3-10" aria-hidden="true" tabindex="-1"></a><span class="st">                    image: maven:3.9-eclipse-temurin-17</span></span>
+<span id="cb3-11"><a href="#cb3-11" aria-hidden="true" tabindex="-1"></a><span class="st">                    command: [cat]</span></span>
+<span id="cb3-12"><a href="#cb3-12" aria-hidden="true" tabindex="-1"></a><span class="st">                    tty: true</span></span>
+<span id="cb3-13"><a href="#cb3-13" aria-hidden="true" tabindex="-1"></a><span class="st">                  - name: docker</span></span>
+<span id="cb3-14"><a href="#cb3-14" aria-hidden="true" tabindex="-1"></a><span class="st">                    image: docker:24-dind</span></span>
+<span id="cb3-15"><a href="#cb3-15" aria-hidden="true" tabindex="-1"></a><span class="st">                    securityContext:</span></span>
+<span id="cb3-16"><a href="#cb3-16" aria-hidden="true" tabindex="-1"></a><span class="st">                      privileged: true</span></span>
+<span id="cb3-17"><a href="#cb3-17" aria-hidden="true" tabindex="-1"></a><span class="st">            &#39;&#39;&#39;</span></span>
+<span id="cb3-18"><a href="#cb3-18" aria-hidden="true" tabindex="-1"></a>        <span class="op">}</span></span>
+<span id="cb3-19"><a href="#cb3-19" aria-hidden="true" tabindex="-1"></a>    <span class="op">}</span></span>
+<span id="cb3-20"><a href="#cb3-20" aria-hidden="true" tabindex="-1"></a>    </span>
+<span id="cb3-21"><a href="#cb3-21" aria-hidden="true" tabindex="-1"></a>    options <span class="op">{</span></span>
+<span id="cb3-22"><a href="#cb3-22" aria-hidden="true" tabindex="-1"></a>        <span class="fu">timeout</span><span class="op">(</span>time<span class="op">:</span> <span class="dv">30</span><span class="op">,</span> unit<span class="op">:</span> <span class="st">&#39;MINUTES&#39;</span><span class="op">)</span></span>
+<span id="cb3-23"><a href="#cb3-23" aria-hidden="true" tabindex="-1"></a>        <span class="fu">buildDiscarder</span><span class="op">(</span><span class="fu">logRotator</span><span class="op">(</span>numToKeepStr<span class="op">:</span> <span class="st">&#39;10&#39;</span><span class="op">))</span></span>
+<span id="cb3-24"><a href="#cb3-24" aria-hidden="true" tabindex="-1"></a>        <span class="fu">disableConcurrentBuilds</span><span class="op">()</span></span>
+<span id="cb3-25"><a href="#cb3-25" aria-hidden="true" tabindex="-1"></a>    <span class="op">}</span></span>
+<span id="cb3-26"><a href="#cb3-26" aria-hidden="true" tabindex="-1"></a>    </span>
+<span id="cb3-27"><a href="#cb3-27" aria-hidden="true" tabindex="-1"></a>    environment <span class="op">{</span></span>
+<span id="cb3-28"><a href="#cb3-28" aria-hidden="true" tabindex="-1"></a>        REGISTRY <span class="op">=</span> <span class="st">&#39;registry.company.com&#39;</span></span>
+<span id="cb3-29"><a href="#cb3-29" aria-hidden="true" tabindex="-1"></a>        IMAGE <span class="op">=</span> <span class="st">&quot;</span><span class="ss">${</span>REGISTRY<span class="ss">}</span><span class="st">/myapp:</span><span class="ss">${</span>GIT_COMMIT<span class="op">.</span><span class="fu">take</span><span class="op">(</span><span class="dv">8</span><span class="op">)</span><span class="ss">}</span><span class="st">&quot;</span></span>
+<span id="cb3-30"><a href="#cb3-30" aria-hidden="true" tabindex="-1"></a>        SONAR_TOKEN <span class="op">=</span> <span class="fu">credentials</span><span class="op">(</span><span class="st">&#39;sonar-token&#39;</span><span class="op">)</span></span>
+<span id="cb3-31"><a href="#cb3-31" aria-hidden="true" tabindex="-1"></a>    <span class="op">}</span></span>
+<span id="cb3-32"><a href="#cb3-32" aria-hidden="true" tabindex="-1"></a>    </span>
+<span id="cb3-33"><a href="#cb3-33" aria-hidden="true" tabindex="-1"></a>    stages <span class="op">{</span></span>
+<span id="cb3-34"><a href="#cb3-34" aria-hidden="true" tabindex="-1"></a>        <span class="fu">stage</span><span class="op">(</span><span class="st">&#39;Build &amp; Test&#39;</span><span class="op">)</span> <span class="op">{</span></span>
+<span id="cb3-35"><a href="#cb3-35" aria-hidden="true" tabindex="-1"></a>            steps <span class="op">{</span></span>
+<span id="cb3-36"><a href="#cb3-36" aria-hidden="true" tabindex="-1"></a>                <span class="fu">container</span><span class="op">(</span><span class="st">&#39;maven&#39;</span><span class="op">)</span> <span class="op">{</span></span>
+<span id="cb3-37"><a href="#cb3-37" aria-hidden="true" tabindex="-1"></a>                    sh <span class="st">&#39;mvn clean verify -T 4 --no-transfer-progress&#39;</span></span>
+<span id="cb3-38"><a href="#cb3-38" aria-hidden="true" tabindex="-1"></a>                    junit <span class="st">&#39;target/surefire-reports/**/*.xml&#39;</span></span>
+<span id="cb3-39"><a href="#cb3-39" aria-hidden="true" tabindex="-1"></a>                    <span class="fu">publishHTML</span><span class="op">([</span></span>
+<span id="cb3-40"><a href="#cb3-40" aria-hidden="true" tabindex="-1"></a>                        allowMissing<span class="op">:</span> <span class="kw">false</span><span class="op">,</span></span>
+<span id="cb3-41"><a href="#cb3-41" aria-hidden="true" tabindex="-1"></a>                        reportDir<span class="op">:</span> <span class="st">&#39;target/site/jacoco&#39;</span><span class="op">,</span></span>
+<span id="cb3-42"><a href="#cb3-42" aria-hidden="true" tabindex="-1"></a>                        reportFiles<span class="op">:</span> <span class="st">&#39;index.html&#39;</span><span class="op">,</span></span>
+<span id="cb3-43"><a href="#cb3-43" aria-hidden="true" tabindex="-1"></a>                        reportName<span class="op">:</span> <span class="st">&#39;Coverage Report&#39;</span></span>
+<span id="cb3-44"><a href="#cb3-44" aria-hidden="true" tabindex="-1"></a>                    <span class="op">])</span></span>
+<span id="cb3-45"><a href="#cb3-45" aria-hidden="true" tabindex="-1"></a>                <span class="op">}</span></span>
+<span id="cb3-46"><a href="#cb3-46" aria-hidden="true" tabindex="-1"></a>            <span class="op">}</span></span>
+<span id="cb3-47"><a href="#cb3-47" aria-hidden="true" tabindex="-1"></a>        <span class="op">}</span></span>
+<span id="cb3-48"><a href="#cb3-48" aria-hidden="true" tabindex="-1"></a>        </span>
+<span id="cb3-49"><a href="#cb3-49" aria-hidden="true" tabindex="-1"></a>        <span class="fu">stage</span><span class="op">(</span><span class="st">&#39;SonarQube&#39;</span><span class="op">)</span> <span class="op">{</span></span>
+<span id="cb3-50"><a href="#cb3-50" aria-hidden="true" tabindex="-1"></a>            steps <span class="op">{</span></span>
+<span id="cb3-51"><a href="#cb3-51" aria-hidden="true" tabindex="-1"></a>                <span class="fu">container</span><span class="op">(</span><span class="st">&#39;maven&#39;</span><span class="op">)</span> <span class="op">{</span></span>
+<span id="cb3-52"><a href="#cb3-52" aria-hidden="true" tabindex="-1"></a>                    <span class="fu">withSonarQubeEnv</span><span class="op">(</span><span class="st">&#39;sonarqube&#39;</span><span class="op">)</span> <span class="op">{</span></span>
+<span id="cb3-53"><a href="#cb3-53" aria-hidden="true" tabindex="-1"></a>                        sh <span class="st">&#39;mvn sonar:sonar&#39;</span></span>
+<span id="cb3-54"><a href="#cb3-54" aria-hidden="true" tabindex="-1"></a>                    <span class="op">}</span></span>
+<span id="cb3-55"><a href="#cb3-55" aria-hidden="true" tabindex="-1"></a>                    <span class="fu">timeout</span><span class="op">(</span>time<span class="op">:</span> <span class="dv">5</span><span class="op">,</span> unit<span class="op">:</span> <span class="st">&#39;MINUTES&#39;</span><span class="op">)</span> <span class="op">{</span></span>
+<span id="cb3-56"><a href="#cb3-56" aria-hidden="true" tabindex="-1"></a>                        waitForQualityGate abortPipeline<span class="op">:</span> <span class="kw">true</span></span>
+<span id="cb3-57"><a href="#cb3-57" aria-hidden="true" tabindex="-1"></a>                    <span class="op">}</span></span>
+<span id="cb3-58"><a href="#cb3-58" aria-hidden="true" tabindex="-1"></a>                <span class="op">}</span></span>
+<span id="cb3-59"><a href="#cb3-59" aria-hidden="true" tabindex="-1"></a>            <span class="op">}</span></span>
+<span id="cb3-60"><a href="#cb3-60" aria-hidden="true" tabindex="-1"></a>        <span class="op">}</span></span>
+<span id="cb3-61"><a href="#cb3-61" aria-hidden="true" tabindex="-1"></a>        </span>
+<span id="cb3-62"><a href="#cb3-62" aria-hidden="true" tabindex="-1"></a>        <span class="fu">stage</span><span class="op">(</span><span class="st">&#39;Docker Build &amp; Push&#39;</span><span class="op">)</span> <span class="op">{</span></span>
+<span id="cb3-63"><a href="#cb3-63" aria-hidden="true" tabindex="-1"></a>            steps <span class="op">{</span></span>
+<span id="cb3-64"><a href="#cb3-64" aria-hidden="true" tabindex="-1"></a>                <span class="fu">container</span><span class="op">(</span><span class="st">&#39;docker&#39;</span><span class="op">)</span> <span class="op">{</span></span>
+<span id="cb3-65"><a href="#cb3-65" aria-hidden="true" tabindex="-1"></a>                    sh <span class="st">&#39;&#39;&#39;</span></span>
+<span id="cb3-66"><a href="#cb3-66" aria-hidden="true" tabindex="-1"></a><span class="st">                        docker build --build-arg VERSION=${GIT_COMMIT} </span><span class="er">\</span></span>
+<span id="cb3-67"><a href="#cb3-67" aria-hidden="true" tabindex="-1"></a><span class="st">                          --cache-from ${IMAGE}:latest </span><span class="er">\</span></span>
+<span id="cb3-68"><a href="#cb3-68" aria-hidden="true" tabindex="-1"></a><span class="st">                          -t ${IMAGE} -t ${REGISTRY}/myapp:latest .</span></span>
+<span id="cb3-69"><a href="#cb3-69" aria-hidden="true" tabindex="-1"></a><span class="st">                        docker push ${IMAGE}</span></span>
+<span id="cb3-70"><a href="#cb3-70" aria-hidden="true" tabindex="-1"></a><span class="st">                        docker push ${REGISTRY}/myapp:latest</span></span>
+<span id="cb3-71"><a href="#cb3-71" aria-hidden="true" tabindex="-1"></a><span class="st">                    &#39;&#39;&#39;</span></span>
+<span id="cb3-72"><a href="#cb3-72" aria-hidden="true" tabindex="-1"></a>                <span class="op">}</span></span>
+<span id="cb3-73"><a href="#cb3-73" aria-hidden="true" tabindex="-1"></a>            <span class="op">}</span></span>
+<span id="cb3-74"><a href="#cb3-74" aria-hidden="true" tabindex="-1"></a>        <span class="op">}</span></span>
+<span id="cb3-75"><a href="#cb3-75" aria-hidden="true" tabindex="-1"></a>        </span>
+<span id="cb3-76"><a href="#cb3-76" aria-hidden="true" tabindex="-1"></a>        <span class="fu">stage</span><span class="op">(</span><span class="st">&#39;Deploy Staging&#39;</span><span class="op">)</span> <span class="op">{</span></span>
+<span id="cb3-77"><a href="#cb3-77" aria-hidden="true" tabindex="-1"></a>            when <span class="op">{</span> branch <span class="st">&#39;main&#39;</span> <span class="op">}</span></span>
+<span id="cb3-78"><a href="#cb3-78" aria-hidden="true" tabindex="-1"></a>            steps <span class="op">{</span></span>
+<span id="cb3-79"><a href="#cb3-79" aria-hidden="true" tabindex="-1"></a>                sh <span class="st">&quot;helm upgrade --install myapp ./helm --set image.tag=</span><span class="ss">${</span>GIT_COMMIT<span class="op">.</span><span class="fu">take</span><span class="op">(</span><span class="dv">8</span><span class="op">)</span><span class="ss">}</span><span class="st"> -n staging&quot;</span></span>
+<span id="cb3-80"><a href="#cb3-80" aria-hidden="true" tabindex="-1"></a>                sh <span class="st">&#39;./scripts/smoke-test.sh staging&#39;</span></span>
+<span id="cb3-81"><a href="#cb3-81" aria-hidden="true" tabindex="-1"></a>            <span class="op">}</span></span>
+<span id="cb3-82"><a href="#cb3-82" aria-hidden="true" tabindex="-1"></a>        <span class="op">}</span></span>
+<span id="cb3-83"><a href="#cb3-83" aria-hidden="true" tabindex="-1"></a>        </span>
+<span id="cb3-84"><a href="#cb3-84" aria-hidden="true" tabindex="-1"></a>        <span class="fu">stage</span><span class="op">(</span><span class="st">&#39;Deploy Production&#39;</span><span class="op">)</span> <span class="op">{</span></span>
+<span id="cb3-85"><a href="#cb3-85" aria-hidden="true" tabindex="-1"></a>            when <span class="op">{</span> branch <span class="st">&#39;main&#39;</span> <span class="op">}</span></span>
+<span id="cb3-86"><a href="#cb3-86" aria-hidden="true" tabindex="-1"></a>            input <span class="op">{</span></span>
+<span id="cb3-87"><a href="#cb3-87" aria-hidden="true" tabindex="-1"></a>                message <span class="st">&quot;Deploy to production?&quot;</span></span>
+<span id="cb3-88"><a href="#cb3-88" aria-hidden="true" tabindex="-1"></a>                ok <span class="st">&quot;Deploy&quot;</span></span>
+<span id="cb3-89"><a href="#cb3-89" aria-hidden="true" tabindex="-1"></a>                submitter <span class="st">&quot;tech-leads&quot;</span></span>
+<span id="cb3-90"><a href="#cb3-90" aria-hidden="true" tabindex="-1"></a>            <span class="op">}</span></span>
+<span id="cb3-91"><a href="#cb3-91" aria-hidden="true" tabindex="-1"></a>            steps <span class="op">{</span></span>
+<span id="cb3-92"><a href="#cb3-92" aria-hidden="true" tabindex="-1"></a>                sh <span class="st">&quot;helm upgrade --install myapp ./helm --set image.tag=</span><span class="ss">${</span>GIT_COMMIT<span class="op">.</span><span class="fu">take</span><span class="op">(</span><span class="dv">8</span><span class="op">)</span><span class="ss">}</span><span class="st"> -n production&quot;</span></span>
+<span id="cb3-93"><a href="#cb3-93" aria-hidden="true" tabindex="-1"></a>                sh <span class="st">&#39;./scripts/smoke-test.sh production&#39;</span></span>
+<span id="cb3-94"><a href="#cb3-94" aria-hidden="true" tabindex="-1"></a>            <span class="op">}</span></span>
+<span id="cb3-95"><a href="#cb3-95" aria-hidden="true" tabindex="-1"></a>        <span class="op">}</span></span>
+<span id="cb3-96"><a href="#cb3-96" aria-hidden="true" tabindex="-1"></a>    <span class="op">}</span></span>
+<span id="cb3-97"><a href="#cb3-97" aria-hidden="true" tabindex="-1"></a>    </span>
+<span id="cb3-98"><a href="#cb3-98" aria-hidden="true" tabindex="-1"></a>    post <span class="op">{</span></span>
+<span id="cb3-99"><a href="#cb3-99" aria-hidden="true" tabindex="-1"></a>        always <span class="op">{</span></span>
+<span id="cb3-100"><a href="#cb3-100" aria-hidden="true" tabindex="-1"></a>            <span class="fu">cleanWs</span><span class="op">()</span></span>
+<span id="cb3-101"><a href="#cb3-101" aria-hidden="true" tabindex="-1"></a>        <span class="op">}</span></span>
+<span id="cb3-102"><a href="#cb3-102" aria-hidden="true" tabindex="-1"></a>        failure <span class="op">{</span></span>
+<span id="cb3-103"><a href="#cb3-103" aria-hidden="true" tabindex="-1"></a>            slackSend channel<span class="op">:</span> <span class="st">&#39;#alerts&#39;</span><span class="op">,</span> color<span class="op">:</span> <span class="st">&#39;danger&#39;</span><span class="op">,</span></span>
+<span id="cb3-104"><a href="#cb3-104" aria-hidden="true" tabindex="-1"></a>              message<span class="op">:</span> <span class="st">&quot;FAILED: </span><span class="ss">${</span>env<span class="op">.</span>JOB_NAME<span class="ss">}</span><span class="st"> #</span><span class="ss">${</span>env<span class="op">.</span>BUILD_NUMBER<span class="ss">}</span><span class="st"> - </span><span class="ss">${</span>env<span class="op">.</span>BUILD_URL<span class="ss">}</span><span class="st">&quot;</span></span>
+<span id="cb3-105"><a href="#cb3-105" aria-hidden="true" tabindex="-1"></a>        <span class="op">}</span></span>
+<span id="cb3-106"><a href="#cb3-106" aria-hidden="true" tabindex="-1"></a>        success <span class="op">{</span></span>
+<span id="cb3-107"><a href="#cb3-107" aria-hidden="true" tabindex="-1"></a>            slackSend channel<span class="op">:</span> <span class="st">&#39;#deployments&#39;</span><span class="op">,</span> color<span class="op">:</span> <span class="st">&#39;good&#39;</span><span class="op">,</span></span>
+<span id="cb3-108"><a href="#cb3-108" aria-hidden="true" tabindex="-1"></a>              message<span class="op">:</span> <span class="st">&quot;DEPLOYED: </span><span class="ss">${</span>env<span class="op">.</span>JOB_NAME<span class="ss">}</span><span class="st"> #</span><span class="ss">${</span>env<span class="op">.</span>BUILD_NUMBER<span class="ss">}</span><span class="st">&quot;</span></span>
+<span id="cb3-109"><a href="#cb3-109" aria-hidden="true" tabindex="-1"></a>        <span class="op">}</span></span>
+<span id="cb3-110"><a href="#cb3-110" aria-hidden="true" tabindex="-1"></a>    <span class="op">}</span></span>
+<span id="cb3-111"><a href="#cb3-111" aria-hidden="true" tabindex="-1"></a><span class="op">}</span></span></code></pre></div>
+<h3 id="jenkins-shared-libraries">Jenkins Shared Libraries</h3>
+<div class="sourceCode" id="cb4"><pre
+class="sourceCode groovy"><code class="sourceCode groovy"><span id="cb4-1"><a href="#cb4-1" aria-hidden="true" tabindex="-1"></a><span class="co">// vars/dockerBuild.groovy</span></span>
+<span id="cb4-2"><a href="#cb4-2" aria-hidden="true" tabindex="-1"></a><span class="dt">def</span> <span class="fu">call</span><span class="op">(</span><span class="bu">Map</span> config<span class="op">)</span> <span class="op">{</span></span>
+<span id="cb4-3"><a href="#cb4-3" aria-hidden="true" tabindex="-1"></a>    <span class="dt">def</span> image <span class="op">=</span> <span class="st">&quot;</span><span class="ss">${</span>config<span class="op">.</span>registry<span class="ss">}</span><span class="st">/</span><span class="ss">${</span>config<span class="op">.</span>name<span class="ss">}</span><span class="st">:</span><span class="ss">${</span>env<span class="op">.</span>GIT_COMMIT<span class="op">.</span><span class="fu">take</span><span class="op">(</span><span class="dv">8</span><span class="op">)</span><span class="ss">}</span><span class="st">&quot;</span></span>
+<span id="cb4-4"><a href="#cb4-4" aria-hidden="true" tabindex="-1"></a>    docker<span class="op">.</span><span class="fu">build</span><span class="op">(</span>image<span class="op">,</span> <span class="st">&quot;--build-arg VERSION=</span><span class="ss">${</span>env<span class="op">.</span>GIT_COMMIT<span class="ss">}</span><span class="st"> .&quot;</span><span class="op">)</span></span>
+<span id="cb4-5"><a href="#cb4-5" aria-hidden="true" tabindex="-1"></a>    docker<span class="op">.</span><span class="fu">withRegistry</span><span class="op">(</span><span class="st">&quot;https://</span><span class="ss">${</span>config<span class="op">.</span>registry<span class="ss">}</span><span class="st">&quot;</span><span class="op">,</span> config<span class="op">.</span>credentials<span class="op">)</span> <span class="op">{</span></span>
+<span id="cb4-6"><a href="#cb4-6" aria-hidden="true" tabindex="-1"></a>        docker<span class="op">.</span><span class="fu">image</span><span class="op">(</span>image<span class="op">).</span><span class="fu">push</span><span class="op">()</span></span>
+<span id="cb4-7"><a href="#cb4-7" aria-hidden="true" tabindex="-1"></a>    <span class="op">}</span></span>
+<span id="cb4-8"><a href="#cb4-8" aria-hidden="true" tabindex="-1"></a>    <span class="cf">return</span> image</span>
+<span id="cb4-9"><a href="#cb4-9" aria-hidden="true" tabindex="-1"></a><span class="op">}</span></span>
+<span id="cb4-10"><a href="#cb4-10" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb4-11"><a href="#cb4-11" aria-hidden="true" tabindex="-1"></a><span class="co">// Jenkinsfile usage:</span></span>
+<span id="cb4-12"><a href="#cb4-12" aria-hidden="true" tabindex="-1"></a>@<span class="fu">Library</span><span class="op">(</span><span class="st">&#39;company-shared-lib&#39;</span><span class="op">)</span> _</span>
+<span id="cb4-13"><a href="#cb4-13" aria-hidden="true" tabindex="-1"></a><span class="dt">def</span> img <span class="op">=</span> <span class="fu">dockerBuild</span><span class="op">(</span>registry<span class="op">:</span> <span class="st">&#39;registry.company.com&#39;</span><span class="op">,</span> name<span class="op">:</span> <span class="st">&#39;myapp&#39;</span><span class="op">,</span> credentials<span class="op">:</span> <span class="st">&#39;registry-creds&#39;</span><span class="op">)</span></span></code></pre></div>
+<hr />
+<h2 id="github-actions">4. GitHub Actions</h2>
+<h3 id="reusable-workflow">Reusable Workflow</h3>
+<div class="sourceCode" id="cb5"><pre
+class="sourceCode yaml"><code class="sourceCode yaml"><span id="cb5-1"><a href="#cb5-1" aria-hidden="true" tabindex="-1"></a><span class="co"># .github/workflows/reusable-docker.yml</span></span>
+<span id="cb5-2"><a href="#cb5-2" aria-hidden="true" tabindex="-1"></a><span class="fu">on</span><span class="kw">:</span></span>
+<span id="cb5-3"><a href="#cb5-3" aria-hidden="true" tabindex="-1"></a><span class="at">  </span><span class="fu">workflow_call</span><span class="kw">:</span></span>
+<span id="cb5-4"><a href="#cb5-4" aria-hidden="true" tabindex="-1"></a><span class="at">    </span><span class="fu">inputs</span><span class="kw">:</span></span>
+<span id="cb5-5"><a href="#cb5-5" aria-hidden="true" tabindex="-1"></a><span class="at">      </span><span class="fu">image-name</span><span class="kw">:</span></span>
+<span id="cb5-6"><a href="#cb5-6" aria-hidden="true" tabindex="-1"></a><span class="at">        </span><span class="fu">required</span><span class="kw">:</span><span class="at"> </span><span class="ch">true</span></span>
+<span id="cb5-7"><a href="#cb5-7" aria-hidden="true" tabindex="-1"></a><span class="at">        </span><span class="fu">type</span><span class="kw">:</span><span class="at"> string</span></span>
+<span id="cb5-8"><a href="#cb5-8" aria-hidden="true" tabindex="-1"></a><span class="at">    </span><span class="fu">outputs</span><span class="kw">:</span></span>
+<span id="cb5-9"><a href="#cb5-9" aria-hidden="true" tabindex="-1"></a><span class="at">      </span><span class="fu">image-tag</span><span class="kw">:</span></span>
+<span id="cb5-10"><a href="#cb5-10" aria-hidden="true" tabindex="-1"></a><span class="at">        </span><span class="fu">value</span><span class="kw">:</span><span class="at"> ${{ jobs.build.outputs.tag }}</span></span>
+<span id="cb5-11"><a href="#cb5-11" aria-hidden="true" tabindex="-1"></a><span class="at">    </span><span class="fu">secrets</span><span class="kw">:</span></span>
+<span id="cb5-12"><a href="#cb5-12" aria-hidden="true" tabindex="-1"></a><span class="at">      </span><span class="fu">registry-password</span><span class="kw">:</span></span>
+<span id="cb5-13"><a href="#cb5-13" aria-hidden="true" tabindex="-1"></a><span class="at">        </span><span class="fu">required</span><span class="kw">:</span><span class="at"> </span><span class="ch">true</span></span>
+<span id="cb5-14"><a href="#cb5-14" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb5-15"><a href="#cb5-15" aria-hidden="true" tabindex="-1"></a><span class="fu">jobs</span><span class="kw">:</span></span>
+<span id="cb5-16"><a href="#cb5-16" aria-hidden="true" tabindex="-1"></a><span class="at">  </span><span class="fu">build</span><span class="kw">:</span></span>
+<span id="cb5-17"><a href="#cb5-17" aria-hidden="true" tabindex="-1"></a><span class="at">    </span><span class="fu">runs-on</span><span class="kw">:</span><span class="at"> ubuntu-latest</span></span>
+<span id="cb5-18"><a href="#cb5-18" aria-hidden="true" tabindex="-1"></a><span class="at">    </span><span class="fu">outputs</span><span class="kw">:</span></span>
+<span id="cb5-19"><a href="#cb5-19" aria-hidden="true" tabindex="-1"></a><span class="at">      </span><span class="fu">tag</span><span class="kw">:</span><span class="at"> ${{ steps.meta.outputs.version }}</span></span>
+<span id="cb5-20"><a href="#cb5-20" aria-hidden="true" tabindex="-1"></a><span class="at">    </span><span class="fu">steps</span><span class="kw">:</span></span>
+<span id="cb5-21"><a href="#cb5-21" aria-hidden="true" tabindex="-1"></a><span class="at">      </span><span class="kw">-</span><span class="at"> </span><span class="fu">uses</span><span class="kw">:</span><span class="at"> actions/checkout@v4</span></span>
+<span id="cb5-22"><a href="#cb5-22" aria-hidden="true" tabindex="-1"></a><span class="at">      </span><span class="kw">-</span><span class="at"> </span><span class="fu">uses</span><span class="kw">:</span><span class="at"> docker/metadata-action@v5</span></span>
+<span id="cb5-23"><a href="#cb5-23" aria-hidden="true" tabindex="-1"></a><span class="at">        </span><span class="fu">id</span><span class="kw">:</span><span class="at"> meta</span></span>
+<span id="cb5-24"><a href="#cb5-24" aria-hidden="true" tabindex="-1"></a><span class="at">        </span><span class="fu">with</span><span class="kw">:</span></span>
+<span id="cb5-25"><a href="#cb5-25" aria-hidden="true" tabindex="-1"></a><span class="at">          </span><span class="fu">images</span><span class="kw">:</span><span class="at"> ${{ inputs.image-name }}</span></span>
+<span id="cb5-26"><a href="#cb5-26" aria-hidden="true" tabindex="-1"></a><span class="fu">          tags</span><span class="kw">: </span><span class="ch">|</span></span>
+<span id="cb5-27"><a href="#cb5-27" aria-hidden="true" tabindex="-1"></a>            type=sha</span>
+<span id="cb5-28"><a href="#cb5-28" aria-hidden="true" tabindex="-1"></a>            type=semver,pattern={{version}}</span>
+<span id="cb5-29"><a href="#cb5-29" aria-hidden="true" tabindex="-1"></a>            type=edge,branch=main</span>
+<span id="cb5-30"><a href="#cb5-30" aria-hidden="true" tabindex="-1"></a><span class="at">      </span><span class="kw">-</span><span class="at"> </span><span class="fu">uses</span><span class="kw">:</span><span class="at"> docker/build-push-action@v5</span></span>
+<span id="cb5-31"><a href="#cb5-31" aria-hidden="true" tabindex="-1"></a><span class="at">        </span><span class="fu">with</span><span class="kw">:</span></span>
+<span id="cb5-32"><a href="#cb5-32" aria-hidden="true" tabindex="-1"></a><span class="at">          </span><span class="fu">push</span><span class="kw">:</span><span class="at"> </span><span class="ch">true</span></span>
+<span id="cb5-33"><a href="#cb5-33" aria-hidden="true" tabindex="-1"></a><span class="at">          </span><span class="fu">tags</span><span class="kw">:</span><span class="at"> ${{ steps.meta.outputs.tags }}</span></span>
+<span id="cb5-34"><a href="#cb5-34" aria-hidden="true" tabindex="-1"></a><span class="at">          </span><span class="fu">cache-from</span><span class="kw">:</span><span class="at"> type=gha</span></span>
+<span id="cb5-35"><a href="#cb5-35" aria-hidden="true" tabindex="-1"></a><span class="at">          </span><span class="fu">cache-to</span><span class="kw">:</span><span class="at"> type=gha,mode=max</span></span>
+<span id="cb5-36"><a href="#cb5-36" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb5-37"><a href="#cb5-37" aria-hidden="true" tabindex="-1"></a><span class="co"># Calling workflow:</span></span>
+<span id="cb5-38"><a href="#cb5-38" aria-hidden="true" tabindex="-1"></a><span class="fu">jobs</span><span class="kw">:</span></span>
+<span id="cb5-39"><a href="#cb5-39" aria-hidden="true" tabindex="-1"></a><span class="at">  </span><span class="fu">build</span><span class="kw">:</span></span>
+<span id="cb5-40"><a href="#cb5-40" aria-hidden="true" tabindex="-1"></a><span class="at">    </span><span class="fu">uses</span><span class="kw">:</span><span class="at"> ./.github/workflows/reusable-docker.yml</span></span>
+<span id="cb5-41"><a href="#cb5-41" aria-hidden="true" tabindex="-1"></a><span class="at">    </span><span class="fu">with</span><span class="kw">:</span></span>
+<span id="cb5-42"><a href="#cb5-42" aria-hidden="true" tabindex="-1"></a><span class="at">      </span><span class="fu">image-name</span><span class="kw">:</span><span class="at"> ghcr.io/myorg/myapp</span></span>
+<span id="cb5-43"><a href="#cb5-43" aria-hidden="true" tabindex="-1"></a><span class="at">    </span><span class="fu">secrets</span><span class="kw">:</span></span>
+<span id="cb5-44"><a href="#cb5-44" aria-hidden="true" tabindex="-1"></a><span class="at">      </span><span class="fu">registry-password</span><span class="kw">:</span><span class="at"> ${{ secrets.GHCR_TOKEN }}</span></span></code></pre></div>
+<h3 id="matrix-builds-caching">Matrix Builds + Caching</h3>
+<div class="sourceCode" id="cb6"><pre
+class="sourceCode yaml"><code class="sourceCode yaml"><span id="cb6-1"><a href="#cb6-1" aria-hidden="true" tabindex="-1"></a><span class="fu">jobs</span><span class="kw">:</span></span>
+<span id="cb6-2"><a href="#cb6-2" aria-hidden="true" tabindex="-1"></a><span class="at">  </span><span class="fu">test</span><span class="kw">:</span></span>
+<span id="cb6-3"><a href="#cb6-3" aria-hidden="true" tabindex="-1"></a><span class="at">    </span><span class="fu">runs-on</span><span class="kw">:</span><span class="at"> ubuntu-latest</span></span>
+<span id="cb6-4"><a href="#cb6-4" aria-hidden="true" tabindex="-1"></a><span class="at">    </span><span class="fu">strategy</span><span class="kw">:</span></span>
+<span id="cb6-5"><a href="#cb6-5" aria-hidden="true" tabindex="-1"></a><span class="at">      </span><span class="fu">fail-fast</span><span class="kw">:</span><span class="at"> </span><span class="ch">false</span></span>
+<span id="cb6-6"><a href="#cb6-6" aria-hidden="true" tabindex="-1"></a><span class="at">      </span><span class="fu">matrix</span><span class="kw">:</span></span>
+<span id="cb6-7"><a href="#cb6-7" aria-hidden="true" tabindex="-1"></a><span class="at">        </span><span class="fu">python</span><span class="kw">:</span><span class="at"> </span><span class="kw">[</span><span class="st">&#39;3.10&#39;</span><span class="kw">,</span><span class="at"> </span><span class="st">&#39;3.11&#39;</span><span class="kw">,</span><span class="at"> </span><span class="st">&#39;3.12&#39;</span><span class="kw">]</span></span>
+<span id="cb6-8"><a href="#cb6-8" aria-hidden="true" tabindex="-1"></a><span class="at">        </span><span class="fu">os</span><span class="kw">:</span><span class="at"> </span><span class="kw">[</span><span class="at">ubuntu-latest</span><span class="kw">,</span><span class="at"> windows-latest</span><span class="kw">]</span></span>
+<span id="cb6-9"><a href="#cb6-9" aria-hidden="true" tabindex="-1"></a><span class="at">    </span><span class="fu">steps</span><span class="kw">:</span></span>
+<span id="cb6-10"><a href="#cb6-10" aria-hidden="true" tabindex="-1"></a><span class="at">      </span><span class="kw">-</span><span class="at"> </span><span class="fu">uses</span><span class="kw">:</span><span class="at"> actions/checkout@v4</span></span>
+<span id="cb6-11"><a href="#cb6-11" aria-hidden="true" tabindex="-1"></a><span class="at">      </span><span class="kw">-</span><span class="at"> </span><span class="fu">uses</span><span class="kw">:</span><span class="at"> actions/setup-python@v5</span></span>
+<span id="cb6-12"><a href="#cb6-12" aria-hidden="true" tabindex="-1"></a><span class="at">        </span><span class="fu">with</span><span class="kw">:</span></span>
+<span id="cb6-13"><a href="#cb6-13" aria-hidden="true" tabindex="-1"></a><span class="at">          </span><span class="fu">python-version</span><span class="kw">:</span><span class="at"> ${{ matrix.python }}</span></span>
+<span id="cb6-14"><a href="#cb6-14" aria-hidden="true" tabindex="-1"></a><span class="at">          </span><span class="fu">cache</span><span class="kw">:</span><span class="at"> </span><span class="st">&#39;pip&#39;</span></span>
+<span id="cb6-15"><a href="#cb6-15" aria-hidden="true" tabindex="-1"></a><span class="at">      </span><span class="kw">-</span><span class="at"> </span><span class="fu">uses</span><span class="kw">:</span><span class="at"> actions/cache@v4</span></span>
+<span id="cb6-16"><a href="#cb6-16" aria-hidden="true" tabindex="-1"></a><span class="at">        </span><span class="fu">with</span><span class="kw">:</span></span>
+<span id="cb6-17"><a href="#cb6-17" aria-hidden="true" tabindex="-1"></a><span class="at">          </span><span class="fu">path</span><span class="kw">:</span><span class="at"> ~/.cache/pip</span></span>
+<span id="cb6-18"><a href="#cb6-18" aria-hidden="true" tabindex="-1"></a><span class="at">          </span><span class="fu">key</span><span class="kw">:</span><span class="at"> ${{ runner.os }}-pip-${{ hashFiles(&#39;**/requirements*.txt&#39;) }}</span></span>
+<span id="cb6-19"><a href="#cb6-19" aria-hidden="true" tabindex="-1"></a><span class="fu">          restore-keys</span><span class="kw">: </span><span class="ch">|</span></span>
+<span id="cb6-20"><a href="#cb6-20" aria-hidden="true" tabindex="-1"></a>            ${{ runner.os }}-pip-</span>
+<span id="cb6-21"><a href="#cb6-21" aria-hidden="true" tabindex="-1"></a><span class="at">      </span><span class="kw">-</span><span class="at"> </span><span class="fu">run</span><span class="kw">:</span><span class="at"> pip install -r requirements.txt &amp;&amp; pytest</span></span></code></pre></div>
+<hr />
+<h2 id="gitlab-ci">5. GitLab CI</h2>
+<div class="sourceCode" id="cb7"><pre
+class="sourceCode yaml"><code class="sourceCode yaml"><span id="cb7-1"><a href="#cb7-1" aria-hidden="true" tabindex="-1"></a><span class="co"># .gitlab-ci.yml</span></span>
+<span id="cb7-2"><a href="#cb7-2" aria-hidden="true" tabindex="-1"></a><span class="fu">include</span><span class="kw">:</span></span>
+<span id="cb7-3"><a href="#cb7-3" aria-hidden="true" tabindex="-1"></a><span class="at">  </span><span class="kw">-</span><span class="at"> </span><span class="fu">template</span><span class="kw">:</span><span class="at"> Security/SAST.gitlab-ci.yml</span></span>
+<span id="cb7-4"><a href="#cb7-4" aria-hidden="true" tabindex="-1"></a><span class="at">  </span><span class="kw">-</span><span class="at"> </span><span class="fu">template</span><span class="kw">:</span><span class="at"> Security/Container-Scanning.gitlab-ci.yml</span></span>
+<span id="cb7-5"><a href="#cb7-5" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb7-6"><a href="#cb7-6" aria-hidden="true" tabindex="-1"></a><span class="fu">variables</span><span class="kw">:</span></span>
+<span id="cb7-7"><a href="#cb7-7" aria-hidden="true" tabindex="-1"></a><span class="at">  </span><span class="fu">DOCKER_DRIVER</span><span class="kw">:</span><span class="at"> overlay2</span></span>
+<span id="cb7-8"><a href="#cb7-8" aria-hidden="true" tabindex="-1"></a><span class="at">  </span><span class="fu">DOCKER_TLS_CERTDIR</span><span class="kw">:</span><span class="at"> </span><span class="st">&#39;/certs&#39;</span></span>
+<span id="cb7-9"><a href="#cb7-9" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb7-10"><a href="#cb7-10" aria-hidden="true" tabindex="-1"></a><span class="fu">stages</span><span class="kw">:</span><span class="at"> </span><span class="kw">[</span><span class="at">build</span><span class="kw">,</span><span class="at"> test</span><span class="kw">,</span><span class="at"> scan</span><span class="kw">,</span><span class="at"> deploy-staging</span><span class="kw">,</span><span class="at"> deploy-prod</span><span class="kw">]</span></span>
+<span id="cb7-11"><a href="#cb7-11" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb7-12"><a href="#cb7-12" aria-hidden="true" tabindex="-1"></a><span class="fu">.common</span><span class="kw">:</span><span class="at"> </span><span class="ot">&amp;common</span></span>
+<span id="cb7-13"><a href="#cb7-13" aria-hidden="true" tabindex="-1"></a><span class="at">  </span><span class="fu">image</span><span class="kw">:</span><span class="at"> docker:24</span></span>
+<span id="cb7-14"><a href="#cb7-14" aria-hidden="true" tabindex="-1"></a><span class="at">  </span><span class="fu">services</span><span class="kw">:</span><span class="at"> </span><span class="kw">[</span><span class="at">docker:24-dind</span><span class="kw">]</span></span>
+<span id="cb7-15"><a href="#cb7-15" aria-hidden="true" tabindex="-1"></a><span class="at">  </span><span class="fu">before_script</span><span class="kw">:</span></span>
+<span id="cb7-16"><a href="#cb7-16" aria-hidden="true" tabindex="-1"></a><span class="at">    </span><span class="kw">-</span><span class="at"> docker login -u $CI_REGISTRY_USER -p $CI_REGISTRY_PASSWORD $CI_REGISTRY</span></span>
+<span id="cb7-17"><a href="#cb7-17" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb7-18"><a href="#cb7-18" aria-hidden="true" tabindex="-1"></a><span class="fu">build</span><span class="kw">:</span></span>
+<span id="cb7-19"><a href="#cb7-19" aria-hidden="true" tabindex="-1"></a><span class="at">  </span><span class="fu">&lt;&lt;</span><span class="kw">:</span><span class="at"> </span><span class="ot">*common</span></span>
+<span id="cb7-20"><a href="#cb7-20" aria-hidden="true" tabindex="-1"></a><span class="at">  </span><span class="fu">stage</span><span class="kw">:</span><span class="at"> build</span></span>
+<span id="cb7-21"><a href="#cb7-21" aria-hidden="true" tabindex="-1"></a><span class="at">  </span><span class="fu">script</span><span class="kw">:</span></span>
+<span id="cb7-22"><a href="#cb7-22" aria-hidden="true" tabindex="-1"></a><span class="at">    </span><span class="kw">-</span><span class="at"> docker pull $CI_REGISTRY_IMAGE:latest || true</span></span>
+<span id="cb7-23"><a href="#cb7-23" aria-hidden="true" tabindex="-1"></a><span class="at">    </span><span class="kw">-</span><span class="at"> docker build --cache-from $CI_REGISTRY_IMAGE:latest</span></span>
+<span id="cb7-24"><a href="#cb7-24" aria-hidden="true" tabindex="-1"></a><span class="at">        -t $CI_REGISTRY_IMAGE:$CI_COMMIT_SHA</span></span>
+<span id="cb7-25"><a href="#cb7-25" aria-hidden="true" tabindex="-1"></a><span class="at">        -t $CI_REGISTRY_IMAGE:latest .</span></span>
+<span id="cb7-26"><a href="#cb7-26" aria-hidden="true" tabindex="-1"></a><span class="at">    </span><span class="kw">-</span><span class="at"> docker push $CI_REGISTRY_IMAGE:$CI_COMMIT_SHA</span></span>
+<span id="cb7-27"><a href="#cb7-27" aria-hidden="true" tabindex="-1"></a><span class="at">    </span><span class="kw">-</span><span class="at"> docker push $CI_REGISTRY_IMAGE:latest</span></span>
+<span id="cb7-28"><a href="#cb7-28" aria-hidden="true" tabindex="-1"></a><span class="at">  </span><span class="fu">rules</span><span class="kw">:</span></span>
+<span id="cb7-29"><a href="#cb7-29" aria-hidden="true" tabindex="-1"></a><span class="at">    </span><span class="kw">-</span><span class="at"> </span><span class="fu">if</span><span class="kw">:</span><span class="at"> $CI_PIPELINE_SOURCE == &quot;merge_request_event&quot;</span></span>
+<span id="cb7-30"><a href="#cb7-30" aria-hidden="true" tabindex="-1"></a><span class="at">    </span><span class="kw">-</span><span class="at"> </span><span class="fu">if</span><span class="kw">:</span><span class="at"> $CI_COMMIT_BRANCH == $CI_DEFAULT_BRANCH</span></span>
+<span id="cb7-31"><a href="#cb7-31" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb7-32"><a href="#cb7-32" aria-hidden="true" tabindex="-1"></a><span class="fu">unit-tests</span><span class="kw">:</span></span>
+<span id="cb7-33"><a href="#cb7-33" aria-hidden="true" tabindex="-1"></a><span class="at">  </span><span class="fu">stage</span><span class="kw">:</span><span class="at"> test</span></span>
+<span id="cb7-34"><a href="#cb7-34" aria-hidden="true" tabindex="-1"></a><span class="at">  </span><span class="fu">image</span><span class="kw">:</span><span class="at"> python:3.11</span></span>
+<span id="cb7-35"><a href="#cb7-35" aria-hidden="true" tabindex="-1"></a><span class="at">  </span><span class="fu">script</span><span class="kw">:</span></span>
+<span id="cb7-36"><a href="#cb7-36" aria-hidden="true" tabindex="-1"></a><span class="at">    </span><span class="kw">-</span><span class="at"> pip install -r requirements.txt</span></span>
+<span id="cb7-37"><a href="#cb7-37" aria-hidden="true" tabindex="-1"></a><span class="at">    </span><span class="kw">-</span><span class="at"> pytest --junitxml=report.xml --cov=src --cov-report=xml</span></span>
+<span id="cb7-38"><a href="#cb7-38" aria-hidden="true" tabindex="-1"></a><span class="at">  </span><span class="fu">coverage</span><span class="kw">:</span><span class="at"> </span><span class="st">&#39;/TOTAL.*\s+(\d+%)$/&#39;</span></span>
+<span id="cb7-39"><a href="#cb7-39" aria-hidden="true" tabindex="-1"></a><span class="at">  </span><span class="fu">artifacts</span><span class="kw">:</span></span>
+<span id="cb7-40"><a href="#cb7-40" aria-hidden="true" tabindex="-1"></a><span class="at">    </span><span class="fu">reports</span><span class="kw">:</span></span>
+<span id="cb7-41"><a href="#cb7-41" aria-hidden="true" tabindex="-1"></a><span class="at">      </span><span class="fu">junit</span><span class="kw">:</span><span class="at"> report.xml</span></span>
+<span id="cb7-42"><a href="#cb7-42" aria-hidden="true" tabindex="-1"></a><span class="at">      </span><span class="fu">coverage_report</span><span class="kw">:</span></span>
+<span id="cb7-43"><a href="#cb7-43" aria-hidden="true" tabindex="-1"></a><span class="at">        </span><span class="fu">coverage_format</span><span class="kw">:</span><span class="at"> cobertura</span></span>
+<span id="cb7-44"><a href="#cb7-44" aria-hidden="true" tabindex="-1"></a><span class="at">        </span><span class="fu">path</span><span class="kw">:</span><span class="at"> coverage.xml</span></span>
+<span id="cb7-45"><a href="#cb7-45" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb7-46"><a href="#cb7-46" aria-hidden="true" tabindex="-1"></a><span class="fu">deploy-staging</span><span class="kw">:</span></span>
+<span id="cb7-47"><a href="#cb7-47" aria-hidden="true" tabindex="-1"></a><span class="at">  </span><span class="fu">stage</span><span class="kw">:</span><span class="at"> deploy-staging</span></span>
+<span id="cb7-48"><a href="#cb7-48" aria-hidden="true" tabindex="-1"></a><span class="at">  </span><span class="fu">image</span><span class="kw">:</span><span class="at"> alpine/helm:3</span></span>
+<span id="cb7-49"><a href="#cb7-49" aria-hidden="true" tabindex="-1"></a><span class="at">  </span><span class="fu">environment</span><span class="kw">:</span></span>
+<span id="cb7-50"><a href="#cb7-50" aria-hidden="true" tabindex="-1"></a><span class="at">    </span><span class="fu">name</span><span class="kw">:</span><span class="at"> staging</span></span>
+<span id="cb7-51"><a href="#cb7-51" aria-hidden="true" tabindex="-1"></a><span class="at">    </span><span class="fu">url</span><span class="kw">:</span><span class="at"> https://staging.example.com</span></span>
+<span id="cb7-52"><a href="#cb7-52" aria-hidden="true" tabindex="-1"></a><span class="at">  </span><span class="fu">script</span><span class="kw">:</span></span>
+<span id="cb7-53"><a href="#cb7-53" aria-hidden="true" tabindex="-1"></a><span class="at">    </span><span class="kw">-</span><span class="at"> helm upgrade --install myapp ./helm</span></span>
+<span id="cb7-54"><a href="#cb7-54" aria-hidden="true" tabindex="-1"></a><span class="at">        --set image.tag=$CI_COMMIT_SHA</span></span>
+<span id="cb7-55"><a href="#cb7-55" aria-hidden="true" tabindex="-1"></a><span class="at">        -n staging --wait</span></span>
+<span id="cb7-56"><a href="#cb7-56" aria-hidden="true" tabindex="-1"></a><span class="at">  </span><span class="fu">rules</span><span class="kw">:</span></span>
+<span id="cb7-57"><a href="#cb7-57" aria-hidden="true" tabindex="-1"></a><span class="at">    </span><span class="kw">-</span><span class="at"> </span><span class="fu">if</span><span class="kw">:</span><span class="at"> $CI_COMMIT_BRANCH == $CI_DEFAULT_BRANCH</span></span>
+<span id="cb7-58"><a href="#cb7-58" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb7-59"><a href="#cb7-59" aria-hidden="true" tabindex="-1"></a><span class="fu">deploy-production</span><span class="kw">:</span></span>
+<span id="cb7-60"><a href="#cb7-60" aria-hidden="true" tabindex="-1"></a><span class="at">  </span><span class="fu">stage</span><span class="kw">:</span><span class="at"> deploy-prod</span></span>
+<span id="cb7-61"><a href="#cb7-61" aria-hidden="true" tabindex="-1"></a><span class="at">  </span><span class="fu">image</span><span class="kw">:</span><span class="at"> alpine/helm:3</span></span>
+<span id="cb7-62"><a href="#cb7-62" aria-hidden="true" tabindex="-1"></a><span class="at">  </span><span class="fu">environment</span><span class="kw">:</span></span>
+<span id="cb7-63"><a href="#cb7-63" aria-hidden="true" tabindex="-1"></a><span class="at">    </span><span class="fu">name</span><span class="kw">:</span><span class="at"> production</span></span>
+<span id="cb7-64"><a href="#cb7-64" aria-hidden="true" tabindex="-1"></a><span class="at">    </span><span class="fu">url</span><span class="kw">:</span><span class="at"> https://example.com</span></span>
+<span id="cb7-65"><a href="#cb7-65" aria-hidden="true" tabindex="-1"></a><span class="at">  </span><span class="fu">script</span><span class="kw">:</span></span>
+<span id="cb7-66"><a href="#cb7-66" aria-hidden="true" tabindex="-1"></a><span class="at">    </span><span class="kw">-</span><span class="at"> helm upgrade --install myapp ./helm</span></span>
+<span id="cb7-67"><a href="#cb7-67" aria-hidden="true" tabindex="-1"></a><span class="at">        --set image.tag=$CI_COMMIT_SHA</span></span>
+<span id="cb7-68"><a href="#cb7-68" aria-hidden="true" tabindex="-1"></a><span class="at">        -n production --wait</span></span>
+<span id="cb7-69"><a href="#cb7-69" aria-hidden="true" tabindex="-1"></a><span class="at">  </span><span class="fu">rules</span><span class="kw">:</span></span>
+<span id="cb7-70"><a href="#cb7-70" aria-hidden="true" tabindex="-1"></a><span class="at">    </span><span class="kw">-</span><span class="at"> </span><span class="fu">if</span><span class="kw">:</span><span class="at"> $CI_COMMIT_BRANCH == $CI_DEFAULT_BRANCH</span></span>
+<span id="cb7-71"><a href="#cb7-71" aria-hidden="true" tabindex="-1"></a><span class="at">      </span><span class="fu">when</span><span class="kw">:</span><span class="at"> manual</span></span></code></pre></div>
+<hr />
+<h2 id="argocd-gitops">6. ArgoCD — GitOps</h2>
+<h3 id="install-setup">Install &amp; Setup</h3>
+<div class="sourceCode" id="cb8"><pre
+class="sourceCode bash"><code class="sourceCode bash"><span id="cb8-1"><a href="#cb8-1" aria-hidden="true" tabindex="-1"></a><span class="ex">kubectl</span> create namespace argocd</span>
+<span id="cb8-2"><a href="#cb8-2" aria-hidden="true" tabindex="-1"></a><span class="ex">kubectl</span> apply <span class="at">-n</span> argocd <span class="at">-f</span> https://raw.githubusercontent.com/argoproj/argo-cd/stable/manifests/install.yaml</span>
+<span id="cb8-3"><a href="#cb8-3" aria-hidden="true" tabindex="-1"></a><span class="ex">kubectl</span> port-forward svc/argocd-server <span class="at">-n</span> argocd 8080:443</span>
+<span id="cb8-4"><a href="#cb8-4" aria-hidden="true" tabindex="-1"></a><span class="ex">argocd</span> login localhost:8080</span></code></pre></div>
+<h3 id="application-definition">Application Definition</h3>
+<div class="sourceCode" id="cb9"><pre
+class="sourceCode yaml"><code class="sourceCode yaml"><span id="cb9-1"><a href="#cb9-1" aria-hidden="true" tabindex="-1"></a><span class="fu">apiVersion</span><span class="kw">:</span><span class="at"> argoproj.io/v1alpha1</span></span>
+<span id="cb9-2"><a href="#cb9-2" aria-hidden="true" tabindex="-1"></a><span class="fu">kind</span><span class="kw">:</span><span class="at"> Application</span></span>
+<span id="cb9-3"><a href="#cb9-3" aria-hidden="true" tabindex="-1"></a><span class="fu">metadata</span><span class="kw">:</span></span>
+<span id="cb9-4"><a href="#cb9-4" aria-hidden="true" tabindex="-1"></a><span class="at">  </span><span class="fu">name</span><span class="kw">:</span><span class="at"> myapp</span></span>
+<span id="cb9-5"><a href="#cb9-5" aria-hidden="true" tabindex="-1"></a><span class="at">  </span><span class="fu">namespace</span><span class="kw">:</span><span class="at"> argocd</span></span>
+<span id="cb9-6"><a href="#cb9-6" aria-hidden="true" tabindex="-1"></a><span class="fu">spec</span><span class="kw">:</span></span>
+<span id="cb9-7"><a href="#cb9-7" aria-hidden="true" tabindex="-1"></a><span class="at">  </span><span class="fu">project</span><span class="kw">:</span><span class="at"> default</span></span>
+<span id="cb9-8"><a href="#cb9-8" aria-hidden="true" tabindex="-1"></a><span class="at">  </span><span class="fu">source</span><span class="kw">:</span></span>
+<span id="cb9-9"><a href="#cb9-9" aria-hidden="true" tabindex="-1"></a><span class="at">    </span><span class="fu">repoURL</span><span class="kw">:</span><span class="at"> https://github.com/myorg/gitops-repo</span></span>
+<span id="cb9-10"><a href="#cb9-10" aria-hidden="true" tabindex="-1"></a><span class="at">    </span><span class="fu">targetRevision</span><span class="kw">:</span><span class="at"> main</span></span>
+<span id="cb9-11"><a href="#cb9-11" aria-hidden="true" tabindex="-1"></a><span class="at">    </span><span class="fu">path</span><span class="kw">:</span><span class="at"> apps/myapp/overlays/production</span></span>
+<span id="cb9-12"><a href="#cb9-12" aria-hidden="true" tabindex="-1"></a><span class="at">  </span><span class="fu">destination</span><span class="kw">:</span></span>
+<span id="cb9-13"><a href="#cb9-13" aria-hidden="true" tabindex="-1"></a><span class="at">    </span><span class="fu">server</span><span class="kw">:</span><span class="at"> https://kubernetes.default.svc</span></span>
+<span id="cb9-14"><a href="#cb9-14" aria-hidden="true" tabindex="-1"></a><span class="at">    </span><span class="fu">namespace</span><span class="kw">:</span><span class="at"> production</span></span>
+<span id="cb9-15"><a href="#cb9-15" aria-hidden="true" tabindex="-1"></a><span class="at">  </span><span class="fu">syncPolicy</span><span class="kw">:</span></span>
+<span id="cb9-16"><a href="#cb9-16" aria-hidden="true" tabindex="-1"></a><span class="at">    </span><span class="fu">automated</span><span class="kw">:</span></span>
+<span id="cb9-17"><a href="#cb9-17" aria-hidden="true" tabindex="-1"></a><span class="at">      </span><span class="fu">prune</span><span class="kw">:</span><span class="at"> </span><span class="ch">true</span><span class="co">        # delete resources not in git</span></span>
+<span id="cb9-18"><a href="#cb9-18" aria-hidden="true" tabindex="-1"></a><span class="at">      </span><span class="fu">selfHeal</span><span class="kw">:</span><span class="at"> </span><span class="ch">true</span><span class="co">     # auto-sync on drift</span></span>
+<span id="cb9-19"><a href="#cb9-19" aria-hidden="true" tabindex="-1"></a><span class="at">    </span><span class="fu">syncOptions</span><span class="kw">:</span></span>
+<span id="cb9-20"><a href="#cb9-20" aria-hidden="true" tabindex="-1"></a><span class="at">      </span><span class="kw">-</span><span class="at"> CreateNamespace=true</span></span>
+<span id="cb9-21"><a href="#cb9-21" aria-hidden="true" tabindex="-1"></a><span class="at">      </span><span class="kw">-</span><span class="at"> ApplyOutOfSyncOnly=true</span></span>
+<span id="cb9-22"><a href="#cb9-22" aria-hidden="true" tabindex="-1"></a><span class="at">    </span><span class="fu">retry</span><span class="kw">:</span></span>
+<span id="cb9-23"><a href="#cb9-23" aria-hidden="true" tabindex="-1"></a><span class="at">      </span><span class="fu">limit</span><span class="kw">:</span><span class="at"> </span><span class="dv">3</span></span>
+<span id="cb9-24"><a href="#cb9-24" aria-hidden="true" tabindex="-1"></a><span class="at">      </span><span class="fu">backoff</span><span class="kw">:</span></span>
+<span id="cb9-25"><a href="#cb9-25" aria-hidden="true" tabindex="-1"></a><span class="at">        </span><span class="fu">duration</span><span class="kw">:</span><span class="at"> 5s</span></span>
+<span id="cb9-26"><a href="#cb9-26" aria-hidden="true" tabindex="-1"></a><span class="at">        </span><span class="fu">factor</span><span class="kw">:</span><span class="at"> </span><span class="dv">2</span></span>
+<span id="cb9-27"><a href="#cb9-27" aria-hidden="true" tabindex="-1"></a><span class="at">        </span><span class="fu">maxDuration</span><span class="kw">:</span><span class="at"> 3m</span></span></code></pre></div>
+<h3 id="app-of-apps-pattern">App of Apps Pattern</h3>
+<div class="sourceCode" id="cb10"><pre
+class="sourceCode yaml"><code class="sourceCode yaml"><span id="cb10-1"><a href="#cb10-1" aria-hidden="true" tabindex="-1"></a><span class="co"># apps/root-app.yaml — manages all other apps</span></span>
+<span id="cb10-2"><a href="#cb10-2" aria-hidden="true" tabindex="-1"></a><span class="fu">apiVersion</span><span class="kw">:</span><span class="at"> argoproj.io/v1alpha1</span></span>
+<span id="cb10-3"><a href="#cb10-3" aria-hidden="true" tabindex="-1"></a><span class="fu">kind</span><span class="kw">:</span><span class="at"> Application</span></span>
+<span id="cb10-4"><a href="#cb10-4" aria-hidden="true" tabindex="-1"></a><span class="fu">metadata</span><span class="kw">:</span></span>
+<span id="cb10-5"><a href="#cb10-5" aria-hidden="true" tabindex="-1"></a><span class="at">  </span><span class="fu">name</span><span class="kw">:</span><span class="at"> root-app</span></span>
+<span id="cb10-6"><a href="#cb10-6" aria-hidden="true" tabindex="-1"></a><span class="fu">spec</span><span class="kw">:</span></span>
+<span id="cb10-7"><a href="#cb10-7" aria-hidden="true" tabindex="-1"></a><span class="at">  </span><span class="fu">source</span><span class="kw">:</span></span>
+<span id="cb10-8"><a href="#cb10-8" aria-hidden="true" tabindex="-1"></a><span class="at">    </span><span class="fu">path</span><span class="kw">:</span><span class="at"> apps/</span><span class="co">            # directory of Application manifests</span></span>
+<span id="cb10-9"><a href="#cb10-9" aria-hidden="true" tabindex="-1"></a><span class="at">  </span><span class="fu">syncPolicy</span><span class="kw">:</span></span>
+<span id="cb10-10"><a href="#cb10-10" aria-hidden="true" tabindex="-1"></a><span class="at">    </span><span class="fu">automated</span><span class="kw">:</span></span>
+<span id="cb10-11"><a href="#cb10-11" aria-hidden="true" tabindex="-1"></a><span class="at">      </span><span class="fu">prune</span><span class="kw">:</span><span class="at"> </span><span class="ch">true</span></span>
+<span id="cb10-12"><a href="#cb10-12" aria-hidden="true" tabindex="-1"></a><span class="at">      </span><span class="fu">selfHeal</span><span class="kw">:</span><span class="at"> </span><span class="ch">true</span></span></code></pre></div>
+<hr />
+<h2 id="deployment-strategies">7. Deployment Strategies</h2>
+<h3 id="blue-green">Blue-Green</h3>
+<pre><code>Blue (live) → Green (new version deployed, tested)
+→ Switch LB to Green → Blue becomes standby
+Rollback: switch back to Blue instantly</code></pre>
+<h3 id="canary">Canary</h3>
+<pre><code>90% traffic → v1 (stable)
+10% traffic → v2 (canary)
+Monitor metrics → gradually shift if healthy</code></pre>
+<h3 id="rolling-update-kubernetes-default">Rolling Update (Kubernetes
+default)</h3>
+<div class="sourceCode" id="cb13"><pre
+class="sourceCode yaml"><code class="sourceCode yaml"><span id="cb13-1"><a href="#cb13-1" aria-hidden="true" tabindex="-1"></a><span class="fu">strategy</span><span class="kw">:</span></span>
+<span id="cb13-2"><a href="#cb13-2" aria-hidden="true" tabindex="-1"></a><span class="at">  </span><span class="fu">type</span><span class="kw">:</span><span class="at"> RollingUpdate</span></span>
+<span id="cb13-3"><a href="#cb13-3" aria-hidden="true" tabindex="-1"></a><span class="at">  </span><span class="fu">rollingUpdate</span><span class="kw">:</span></span>
+<span id="cb13-4"><a href="#cb13-4" aria-hidden="true" tabindex="-1"></a><span class="at">    </span><span class="fu">maxUnavailable</span><span class="kw">:</span><span class="at"> </span><span class="dv">0</span><span class="co">        # never reduce capacity</span></span>
+<span id="cb13-5"><a href="#cb13-5" aria-hidden="true" tabindex="-1"></a><span class="at">    </span><span class="fu">maxSurge</span><span class="kw">:</span><span class="at"> </span><span class="dv">1</span><span class="co">              # allow one extra pod during update</span></span></code></pre></div>
+<h3 id="feature-flags">Feature Flags</h3>
+<div class="sourceCode" id="cb14"><pre
+class="sourceCode python"><code class="sourceCode python"><span id="cb14-1"><a href="#cb14-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Using LaunchDarkly / Unleash</span></span>
+<span id="cb14-2"><a href="#cb14-2" aria-hidden="true" tabindex="-1"></a><span class="cf">if</span> feature_flags.is_enabled(<span class="st">&quot;new-checkout-flow&quot;</span>, user):</span>
+<span id="cb14-3"><a href="#cb14-3" aria-hidden="true" tabindex="-1"></a>    <span class="cf">return</span> new_checkout()</span>
+<span id="cb14-4"><a href="#cb14-4" aria-hidden="true" tabindex="-1"></a><span class="cf">else</span>:</span>
+<span id="cb14-5"><a href="#cb14-5" aria-hidden="true" tabindex="-1"></a>    <span class="cf">return</span> old_checkout()</span></code></pre></div>
+<h2 id="resources">📚 Resources</h2>
+<ul>
+<li>https://www.jenkins.io/doc/book/pipeline/ — Jenkins Pipeline
+docs</li>
+<li>https://docs.github.com/en/actions — GitHub Actions docs</li>
+<li>https://argo-cd.readthedocs.io/ — ArgoCD docs</li>
+<li>https://codefresh.io/learn/ci-cd/ — CI/CD concepts</li>
+<li>https://dora.dev/ — DORA metrics research</li>
+</ul>
+</body>
+</html>

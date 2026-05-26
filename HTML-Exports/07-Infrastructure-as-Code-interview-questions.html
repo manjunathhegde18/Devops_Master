@@ -1,0 +1,157 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" lang="" xml:lang="">
+<head>
+  <meta charset="utf-8" />
+  <meta name="generator" content="pandoc" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes" />
+  <title>DevOps Mastery: interview-questions</title>
+  <style>
+    code{white-space: pre-wrap;}
+    span.smallcaps{font-variant: small-caps;}
+    div.columns{display: flex; gap: min(4vw, 1.5em);}
+    div.column{flex: auto; overflow-x: auto;}
+    div.hanging-indent{margin-left: 1.5em; text-indent: -1.5em;}
+    /* The extra [class] is a hack that increases specificity enough to
+       override a similar rule in reveal.js */
+    ul.task-list[class]{list-style: none;}
+    ul.task-list li input[type="checkbox"] {
+      font-size: inherit;
+      width: 0.8em;
+      margin: 0 0.8em 0.2em -1.6em;
+      vertical-align: middle;
+    }
+    .display.math{display: block; text-align: center; margin: 0.5rem auto;}
+  </style>
+  <link rel="stylesheet" href="/tmp/devops-style.css" />
+</head>
+<body>
+<header id="title-block-header">
+<h1 class="title">DevOps Mastery: interview-questions</h1>
+</header>
+<nav id="TOC" role="doc-toc">
+<ul>
+<li><a href="#iac-interview-questions-answers"
+id="toc-iac-interview-questions-answers">IaC — Interview Questions &amp;
+Answers</a></li>
+</ul>
+</nav>
+<h1 id="iac-interview-questions-answers">IaC — Interview Questions &amp;
+Answers</h1>
+<p><strong>Q1: What is Terraform state and why is it important?</strong>
+&gt; State is a JSON file mapping Terraform resources to real-world
+infrastructure. It stores resource IDs, metadata, and dependency order.
+Without state, Terraform can’t know what exists vs what to
+create/update/delete. &gt; Remote state (S3 + DynamoDB locking) is
+mandatory for teams — prevents concurrent applies that corrupt
+state.</p>
+<p><strong>Q2: What happens during <code>terraform plan</code>?</strong>
+&gt; 1. Reads current state file &gt; 2. Calls provider APIs to refresh
+real resource state (unless <code>-refresh=false</code>) &gt; 3.
+Computes diff: desired (config) vs actual (state) &gt; 4. Shows
+create/update/destroy actions &gt; No changes to real infrastructure.
+Save plan with <code>-out=tfplan</code> for deterministic apply.</p>
+<p><strong>Q3: How do you manage secrets in Terraform?</strong> &gt;
+Never store secrets in <code>.tf</code> files or state. &gt; Options:
+&gt; - Mark outputs as <code>sensitive = true</code> (hidden in CLI,
+still in state) &gt; - Use
+<code>aws_secretsmanager_secret_version</code> data source at runtime
+&gt; - Pass via env vars: <code>TF_VAR_db_password=$SECRET</code> &gt; -
+Use Vault provider to read secrets dynamically &gt; - Encrypt state at
+rest (S3 SSE + DynamoDB encryption)</p>
+<p><strong>Q4: Explain <code>terraform import</code> and its
+limitations.</strong> &gt; Brings existing infrastructure under
+Terraform management by writing its state. &gt;
+<code>terraform import aws_instance.web i-1234567890abcdef0</code> &gt;
+Limitations: only imports state, does NOT generate <code>.tf</code>
+config. You must write the config manually to match. Use
+<code>terraform state show</code> after import to see attributes.</p>
+<p><strong>Q5: What is the difference between <code>count</code> and
+<code>for_each</code>?</strong> &gt; <code>count</code>: integer,
+creates indexed list. Removing item in the middle shifts all subsequent
+indexes → causes destroy/recreate. Good for identical resources. &gt;
+<code>for_each</code>: map or set, creates named instances. Removing one
+item only destroys that item. Better for heterogeneous resources with
+unique identifiers.</p>
+<p><strong>Q6: How do you handle Terraform in a CI/CD pipeline?</strong>
+&gt; Pipeline stages: &gt; 1. <code>terraform fmt -check</code> —
+formatting validation &gt; 2. <code>terraform validate</code> — syntax
+check &gt; 3. <code>tflint</code> +
+<code>checkov</code>/<code>tfsec</code> — linting and security scanning
+&gt; 4. <code>terraform plan -out=tfplan</code> — on PR (post plan as PR
+comment via atlantis/terraform-github-actions) &gt; 5.
+<code>terraform apply tfplan</code> — on merge to main, require approval
+&gt; Use Atlantis or Terraform Cloud for plan/apply workflow with PR
+integration.</p>
+<p><strong>Q7: What is the Terraform <code>lifecycle</code> block?
+Explain <code>prevent_destroy</code> and
+<code>ignore_changes</code>.</strong> &gt;
+<code>prevent_destroy: true</code> — block any operation that would
+destroy this resource. Protects databases, certificates. &gt;
+<code>ignore_changes = [field]</code> — don’t track drift on specific
+fields (e.g., <code>ami</code> that gets updated externally,
+<code>password</code> managed by rotation). &gt;
+<code>create_before_destroy = true</code> — create replacement before
+destroying original. Needed for resources that can’t have downtime.</p>
+<p><strong>Q8: Ansible is “agentless” — how does it communicate with
+nodes?</strong> &gt; Uses SSH for Linux (paramiko or native ssh binary).
+Uses WinRM for Windows. No agent installed on managed nodes. &gt; Just
+needs: SSH access, Python (2.7 or 3.x) on target. &gt; Connection
+settings: <code>ansible_connection</code>, <code>ansible_user</code>,
+<code>ansible_ssh_private_key_file</code> &gt; For containers/K8s: uses
+<code>kubectl</code> or <code>docker</code> connection plugin.</p>
+<p><strong>Q9: What is idempotency and how does Ansible achieve
+it?</strong> &gt; Idempotency: running an operation multiple times has
+the same effect as running it once. &gt; Ansible modules check current
+state before acting: &gt; - <code>ansible.builtin.file</code> checks if
+path exists before creating &gt; - <code>ansible.builtin.package</code>
+checks if package installed before installing &gt; -
+<code>ansible.builtin.template</code> computes checksum — only copies if
+content changed &gt; Non-idempotent:
+<code>ansible.builtin.command</code> and
+<code>ansible.builtin.shell</code> — use <code>creates</code> or
+<code>removes</code> args, or check with <code>when</code>.</p>
+<p><strong>Q10: How do you structure Terraform for multiple environments
+(dev/staging/prod)?</strong> &gt; Pattern 1 — Workspaces: simple but all
+envs share same state backend path structure &gt; Pattern 2 — Directory
+per env (recommended for large orgs):</p>
+<pre><code>environments/
+├── dev/
+│   ├── main.tf
+│   └── terraform.tfvars
+├── staging/
+│   ├── main.tf
+│   └── terraform.tfvars
+└── prod/
+    ├── main.tf
+    └── terraform.tfvars
+modules/
+├── vpc/
+├── eks/
+└── rds/</code></pre>
+<blockquote>
+<p>Pattern 3 — Terragrunt with <code>find_in_parent_folders()</code> for
+DRY remote backend config.</p>
+</blockquote>
+<p><strong>Q11: Explain Terraform <code>depends_on</code> — when is it
+necessary?</strong> &gt; Terraform infers dependencies automatically
+from resource references. <code>depends_on</code> is only needed for
+implicit dependencies not captured in config — e.g., an EC2 instance
+depends on an IAM policy being attached (but doesn’t reference it in
+code), or a Helm chart depends on K8s namespace existing via a separate
+resource. &gt; Overuse of <code>depends_on</code> slows parallelism —
+only use when necessary.</p>
+<p><strong>Q12: How do you handle Terraform state corruption or
+drift?</strong> &gt; <strong>Drift detection</strong>:
+<code>terraform plan -refresh-only</code> shows drift without planning
+changes &gt; <strong>State manipulation</strong>: &gt; -
+<code>terraform state list</code> — show all resources &gt; -
+<code>terraform state show &lt;resource&gt;</code> — inspect resource
+&gt; - <code>terraform state mv</code> — rename resource (avoid
+destroy/recreate on refactor) &gt; -
+<code>terraform state rm &lt;resource&gt;</code> — remove from state
+without destroying real resource &gt; -
+<code>terraform force-unlock &lt;lock-id&gt;</code> — release stuck lock
+(use carefully) &gt; <strong>Corruption</strong>: restore from S3
+versioned backup of tfstate file</p>
+</body>
+</html>

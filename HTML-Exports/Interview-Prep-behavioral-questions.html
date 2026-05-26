@@ -1,0 +1,251 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" lang="" xml:lang="">
+<head>
+  <meta charset="utf-8" />
+  <meta name="generator" content="pandoc" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes" />
+  <title>DevOps Mastery: behavioral-questions</title>
+  <style>
+    code{white-space: pre-wrap;}
+    span.smallcaps{font-variant: small-caps;}
+    div.columns{display: flex; gap: min(4vw, 1.5em);}
+    div.column{flex: auto; overflow-x: auto;}
+    div.hanging-indent{margin-left: 1.5em; text-indent: -1.5em;}
+    /* The extra [class] is a hack that increases specificity enough to
+       override a similar rule in reveal.js */
+    ul.task-list[class]{list-style: none;}
+    ul.task-list li input[type="checkbox"] {
+      font-size: inherit;
+      width: 0.8em;
+      margin: 0 0.8em 0.2em -1.6em;
+      vertical-align: middle;
+    }
+    .display.math{display: block; text-align: center; margin: 0.5rem auto;}
+  </style>
+  <link rel="stylesheet" href="/tmp/devops-style.css" />
+</head>
+<body>
+<header id="title-block-header">
+<h1 class="title">DevOps Mastery: behavioral-questions</h1>
+</header>
+<nav id="TOC" role="doc-toc">
+<ul>
+<li><a href="#behavioral-interview-questions-senior-devops-engineer"
+id="toc-behavioral-interview-questions-senior-devops-engineer">Behavioral
+Interview Questions — Senior DevOps Engineer</a>
+<ul>
+<li><a href="#the-star-framework" id="toc-the-star-framework">The STAR
+Framework</a></li>
+<li><a href="#category-1-incident-crisis-management"
+id="toc-category-1-incident-crisis-management">Category 1: Incident
+&amp; Crisis Management</a></li>
+<li><a href="#category-2-technical-leadership-influence"
+id="toc-category-2-technical-leadership-influence">Category 2: Technical
+Leadership &amp; Influence</a></li>
+<li><a href="#category-3-complexity-scale"
+id="toc-category-3-complexity-scale">Category 3: Complexity &amp;
+Scale</a></li>
+<li><a href="#category-4-collaboration-conflict"
+id="toc-category-4-collaboration-conflict">Category 4: Collaboration
+&amp; Conflict</a></li>
+<li><a href="#category-5-strategy-vision"
+id="toc-category-5-strategy-vision">Category 5: Strategy &amp;
+Vision</a></li>
+<li><a href="#questions-to-ask-the-interviewer"
+id="toc-questions-to-ask-the-interviewer">10 Questions to Ask the
+Interviewer</a></li>
+</ul></li>
+</ul>
+</nav>
+<h1
+id="behavioral-interview-questions-senior-devops-engineer">Behavioral
+Interview Questions — Senior DevOps Engineer</h1>
+<h2 id="the-star-framework">The STAR Framework</h2>
+<p>Every behavioral answer should follow: - <strong>S</strong>ituation —
+context and background (1-2 sentences) - <strong>T</strong>ask — your
+specific responsibility (1 sentence) - <strong>A</strong>ction — what
+YOU specifically did, step by step (60% of answer) -
+<strong>R</strong>esult — measurable outcome + what you learned (1-2
+sentences)</p>
+<p>Keep each answer to 2-3 minutes. Practice out loud.</p>
+<hr />
+<h2 id="category-1-incident-crisis-management">Category 1: Incident
+&amp; Crisis Management</h2>
+<p><strong>Q: Tell me about the most critical production incident you’ve
+handled.</strong></p>
+<blockquote>
+<p>Framework: SEV-1 incident → detection → IC role → mitigation → RCA →
+prevention</p>
+<p>Sample story structure: - We had a payment processing outage
+affecting 100% of checkout traffic for 28 minutes - I was the on-call
+SRE and became IC - Opened incident channel, assigned roles, ran through
+diagnostics - Identified DB connection pool exhaustion from a new query
+pattern - Mitigated by rolling back deploy + increasing pool temporarily
+- Post-mortem identified missing index; added query analysis to CI -
+Result: MTTR reduced from 45 min to 18 min average; zero repeat
+incidents</p>
+</blockquote>
+<hr />
+<p><strong>Q: Describe a time you had to make a difficult decision under
+pressure with incomplete information.</strong></p>
+<blockquote>
+<p>Framework: Incident or outage → time pressure → two bad options →
+decision + reasoning → outcome</p>
+<p>Key points to hit: - Acknowledge the incomplete info explicitly -
+Explain your decision framework (reversibility, blast radius, speed) -
+Show you communicated your uncertainty to stakeholders - Demonstrate
+learning regardless of outcome</p>
+</blockquote>
+<hr />
+<p><strong>Q: Tell me about a major outage you caused. What
+happened?</strong></p>
+<blockquote>
+<p>⚠️ Every senior engineer has caused at least one outage. Saying “I
+haven’t” is a red flag.</p>
+<p>Template: - Be direct and own it without excuses - Focus heavily on
+what you learned and what systemic changes you made - Interviewers want
+blameless mentality: “the system allowed this to happen” - Good ending:
+“as a result, I implemented X which prevented Y from ever happening
+again”</p>
+</blockquote>
+<hr />
+<h2 id="category-2-technical-leadership-influence">Category 2: Technical
+Leadership &amp; Influence</h2>
+<p><strong>Q: Tell me about a time you improved a team’s processes
+significantly.</strong></p>
+<blockquote>
+<p>Strong answer elements: - Quantify the before state (manual deploys
+took 2 hours, 3 rollbacks per month) - Describe what you proposed and
+why (data-driven, not opinion) - Address resistance: “the team was
+skeptical because X, I addressed that by Y” - Quantify after state
+(deploys take 8 minutes, zero failed deploys in 6 months)</p>
+</blockquote>
+<hr />
+<p><strong>Q: Describe a situation where you had to push back on a
+deadline or feature request for reliability/security
+reasons.</strong></p>
+<blockquote>
+<p>Template: - Business wanted feature launched immediately - I
+identified risk: “skipping review would expose customer PII” - I
+presented options with tradeoffs, not a flat “no” - Option A: ship now,
+accept risk, timeline for fix - Option B: delay 2 days, ship securely -
+Framed as shared decision, not gatekeeping - They chose B (or chose A
+and I documented the risk formally)</p>
+</blockquote>
+<hr />
+<p><strong>Q: Tell me about a time you mentored someone or helped a team
+member grow.</strong></p>
+<blockquote>
+<p>Framework: junior engineer → specific skill gap → how you coached →
+their improvement</p>
+<p>Good elements: - Pair programming on a specific problem, not just “I
+taught them” - Show you adapted your style to their learning style -
+Demonstrate follow-through: you didn’t just explain once, you followed
+up - Result: they solved the next problem independently</p>
+</blockquote>
+<hr />
+<h2 id="category-3-complexity-scale">Category 3: Complexity &amp;
+Scale</h2>
+<p><strong>Q: Tell me about the most complex infrastructure you’ve
+designed or operated.</strong></p>
+<blockquote>
+<p>Hit these points: - Scale numbers (pods, requests/sec, data volume,
+regions) - Which problems were hardest and why - Key architectural
+decisions and their tradeoffs - What you’d do differently with today’s
+knowledge</p>
+</blockquote>
+<hr />
+<p><strong>Q: Describe a situation where you had to manage multiple
+competing priorities.</strong></p>
+<blockquote>
+<p>Framework: competing urgent requests + finite team capacity</p>
+<p>Key behaviors to show: - Explicit prioritization criteria (business
+impact, SLA breach, customer count) - Proactive communication to all
+stakeholders with expected timelines - Not just firefighting — you
+addressed root causes to reduce future fires - You delegated or
+escalated where appropriate</p>
+</blockquote>
+<hr />
+<p><strong>Q: Tell me about a time you introduced a new technology or
+tool to your organization.</strong></p>
+<blockquote>
+<p>Strong narrative: - Problem the existing tool had (specific pain
+points with data) - How you evaluated alternatives (POC, benchmarks,
+team fit) - How you got buy-in (demo, data, phased rollout) - How you
+trained the team (runbooks, workshops, pair sessions) - What happened
+after rollout (adoption, problems overcome)</p>
+</blockquote>
+<hr />
+<h2 id="category-4-collaboration-conflict">Category 4: Collaboration
+&amp; Conflict</h2>
+<p><strong>Q: Tell me about a conflict with a developer team over
+reliability requirements.</strong></p>
+<blockquote>
+<p>Templates to avoid: “I was right and convinced them”</p>
+<p>Better framing: - Different valid perspectives (dev: ship fast, SRE:
+don’t break prod) - You sought to understand their constraints first -
+Found a compromise: error budget policy, feature flags, canary releases
+- Built shared ownership of reliability metrics</p>
+</blockquote>
+<hr />
+<p><strong>Q: Describe a time you worked with a team in a different
+timezone or geography.</strong></p>
+<blockquote>
+<p>Good elements: - What asynchronous practices you established (written
+over verbal, docs, video updates) - How you handled handoffs for on-call
+or incident response - How you built trust without face-to-face
+interaction</p>
+</blockquote>
+<hr />
+<h2 id="category-5-strategy-vision">Category 5: Strategy &amp;
+Vision</h2>
+<p><strong>Q: Where do you see the biggest DevOps challenges in the next
+3 years?</strong></p>
+<blockquote>
+<p>Strong answer pillars: 1. <strong>Platform Engineering</strong> —
+standardized internal developer platforms replacing bespoke tooling 2.
+<strong>AI in DevOps</strong> — LLM-powered runbook generation, anomaly
+detection, code review 3. <strong>Supply chain security</strong> — SLSA,
+SBOM, code provenance becoming standard requirements 4.
+<strong>FinOps</strong> — cloud cost optimization becoming a first-class
+engineering concern 5. <strong>Developer Experience</strong> — measuring
+and improving DORA metrics systematically</p>
+</blockquote>
+<hr />
+<p><strong>Q: How do you stay current in this fast-moving
+field?</strong></p>
+<blockquote>
+<p>Name specific sources (be honest): - Blogs: Martin Fowler, Netflix
+Tech Blog, Uber Engineering, Cloudflare Blog - Podcasts: The Changelog,
+DevOps Handbook, SRE Weekly - Conferences: KubeCon, re:Invent, FOSDEM -
+Learning: Weekly dedicated time, certifications (CKA, AWS Solutions
+Architect) - Community: Local meetups, CNCF Slack, contributing to
+OSS</p>
+</blockquote>
+<hr />
+<h2 id="questions-to-ask-the-interviewer">10 Questions to Ask the
+Interviewer</h2>
+<ol type="1">
+<li>“How do you measure the health of your DevOps/platform team? What
+metrics matter most?”</li>
+<li>“What does a typical on-call rotation look like? How many pages per
+week does the average engineer receive?”</li>
+<li>“What’s the biggest reliability or operational challenge you’re
+facing right now?”</li>
+<li>“How do developers and platform engineers collaborate on new service
+deployment requirements?”</li>
+<li>“What’s the current deployment frequency, and where do you want it
+to be?”</li>
+<li>“How are post-mortems conducted? Are they blameless in practice, not
+just in policy?”</li>
+<li>“What does the cloud infrastructure look like today, and where are
+you trying to get to?”</li>
+<li>“How much toil reduction opportunity exists in this role — what
+would success look like in year one?”</li>
+<li>“What are the main technology bets the company is making over the
+next 12-18 months?”</li>
+<li>“What’s the biggest thing that would make the person in this role
+unsuccessful?”</li>
+</ol>
+</body>
+</html>

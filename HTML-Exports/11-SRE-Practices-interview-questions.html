@@ -1,0 +1,179 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" lang="" xml:lang="">
+<head>
+  <meta charset="utf-8" />
+  <meta name="generator" content="pandoc" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes" />
+  <title>DevOps Mastery: interview-questions</title>
+  <style>
+    code{white-space: pre-wrap;}
+    span.smallcaps{font-variant: small-caps;}
+    div.columns{display: flex; gap: min(4vw, 1.5em);}
+    div.column{flex: auto; overflow-x: auto;}
+    div.hanging-indent{margin-left: 1.5em; text-indent: -1.5em;}
+    /* The extra [class] is a hack that increases specificity enough to
+       override a similar rule in reveal.js */
+    ul.task-list[class]{list-style: none;}
+    ul.task-list li input[type="checkbox"] {
+      font-size: inherit;
+      width: 0.8em;
+      margin: 0 0.8em 0.2em -1.6em;
+      vertical-align: middle;
+    }
+    .display.math{display: block; text-align: center; margin: 0.5rem auto;}
+  </style>
+  <link rel="stylesheet" href="/tmp/devops-style.css" />
+</head>
+<body>
+<header id="title-block-header">
+<h1 class="title">DevOps Mastery: interview-questions</h1>
+</header>
+<nav id="TOC" role="doc-toc">
+<ul>
+<li><a href="#sre-practices-interview-questions-answers"
+id="toc-sre-practices-interview-questions-answers">SRE Practices —
+Interview Questions &amp; Answers</a></li>
+</ul>
+</nav>
+<h1 id="sre-practices-interview-questions-answers">SRE Practices —
+Interview Questions &amp; Answers</h1>
+<p><strong>Q1: Explain SLI, SLO, and SLA with concrete
+examples.</strong> &gt; <strong>SLI</strong>: The metric you measure.
+“99.2% of checkout API requests completed in &lt; 500ms and returned
+HTTP &lt; 500 over the last 28 days.” &gt; <strong>SLO</strong>: Your
+internal target. “We will maintain 99.5% availability and 99% of
+requests &lt; 500ms.” &gt; <strong>SLA</strong>: Your contractual
+promise to customers. “We guarantee 99% uptime; below this triggers
+service credits.” &gt; &gt; Relationship: SLA ≤ SLO (internal target
+must be harder than customer promise to leave buffer). &gt; Setting
+SLOs: measure user satisfaction, find the threshold below which users
+complain, set SLO just above that.</p>
+<hr />
+<p><strong>Q2: What is an error budget and how does it change team
+behavior?</strong> &gt; Error budget is the maximum allowed
+unreliability: <code>1 - SLO</code>. For a 99.9% SLO = 43.8 min/month of
+allowed downtime. &gt; &gt; Impact on behavior: &gt; -
+<strong>Development teams</strong> want to ship fast; SREs want
+stability. Error budget is the shared arbiter. &gt; - Plenty of budget →
+deploy, experiment, take risks. Budget is the runway. &gt; - Budget
+running low → slow down risky changes, prioritize reliability work. &gt;
+- Budget exhausted → feature freeze until next period; SRE team stops
+new feature support and focuses on reliability. &gt; &gt; It transforms
+the conversation from “ops blocking dev” to “both teams share the same
+budget and make tradeoff decisions together.”</p>
+<hr />
+<p><strong>Q3: How do you define SLOs for a new service?</strong> &gt;
+1. <strong>Instrument first</strong>: Add the four golden signals
+metrics before setting targets &gt; 2. <strong>Measure
+baseline</strong>: What is current actual availability/latency? &gt; 3.
+<strong>Define good</strong>: What does “working correctly for users”
+mean for this service? &gt; 4. <strong>User research</strong>: What
+threshold of degradation causes users to abandon or complain? &gt; 5.
+<strong>Set SLO slightly below baseline</strong>: Don’t target
+perfection — start conservative &gt; 6. <strong>Review
+quarterly</strong>: Tighten as reliability improves; loosen if
+consistently over-achieving &gt; &gt; Common mistake: setting SLOs at
+99.99% without measuring whether that’s achievable or even
+necessary.</p>
+<hr />
+<p><strong>Q4: Walk through how you would run a blameless
+post-mortem.</strong> &gt; 1. <strong>Timeline building (within
+24h)</strong>: Gather all data — logs, metrics, pager alerts, Slack
+threads, actions taken. Create objective timeline without assigning
+fault. &gt; 2. <strong>Meeting (48-72h)</strong>: Invite all involved.
+IC, engineers, on-call. Facilitator is neutral (often senior SRE not
+involved in incident). &gt; 3. <strong>Focus</strong>: What failed? Not
+who failed. “The process allowed X” not “Alice didn’t do X.” &gt; 4.
+<strong>5 Whys</strong>: Drill to systemic root cause. Usually: missing
+automation, missing alert, missing test, missing documentation. &gt; 5.
+<strong>Action items</strong>: Specific, assigned, time-bound. Not vague
+like “improve monitoring.” Instead: “Add alert for DB connection pool
+&gt; 80% — assigned to Bob — due June 1.” &gt; 6.
+<strong>Publish</strong>: Share widely. Learning is only valuable when
+spread.</p>
+<hr />
+<p><strong>Q5: What is toil and how do you measure and reduce
+it?</strong> &gt; Toil is manual, repetitive, automatable operational
+work that scales with service growth and has no lasting value. &gt; &gt;
+<strong>Measuring</strong>: Time tracking per task category over 2-4
+weeks. Ask: how long did each operational task take this week? &gt; &gt;
+<strong>Reducing</strong>: &gt; - Manual DB restarts → health check +
+auto-restart (livenessProbe or systemd Restart=always) &gt; -
+Certificate renewals → cert-manager &gt; - Disk fills → alerting at 80%
++ auto-expansion or cleanup cron &gt; - Manual deploys → CI/CD pipeline
+&gt; &gt; Goal: &lt; 50% of SRE time on toil. If more, the team is an
+ops team in SRE clothing.</p>
+<hr />
+<p><strong>Q6: How do you design a system for 99.99%
+availability?</strong> &gt; First: understand that 99.99% = 52
+minutes/year downtime. This is extremely hard to achieve. &gt; &gt;
+Requirements: &gt; - <strong>Multi-AZ deployment</strong>: No single
+data center failure takes down the service &gt; - <strong>Zero-downtime
+deployments</strong>: Rolling updates with maxUnavailable: 0 &gt; -
+<strong>Fast auto-healing</strong>: HPA + Cluster Autoscaler, liveness
+probes with automatic restart &gt; - <strong>Fast detection</strong>:
+P99 alert fires in &lt; 2 minutes of degradation &gt; - <strong>Fast
+recovery</strong>: MTTR &lt; 10 minutes requires runbooks, automation,
+practiced incidents &gt; - <strong>Database HA</strong>: Aurora (sub-30s
+failover), multi-AZ RDS, read replicas &gt; - <strong>Circuit
+breakers</strong>: Prevent cascade failures from one service taking down
+others &gt; - <strong>Chaos testing</strong>: Regularly inject failures
+to find hidden dependencies &gt; &gt; Reality check: Most services don’t
+need 99.99%. 99.9% (43 min/month) is right for most B2B; 99.5% is fine
+for many internal tools.</p>
+<hr />
+<p><strong>Q7: Explain the difference between MTTR, MTTD, MTTF, and
+MTBF.</strong> &gt; - <strong>MTTD (Mean Time to Detect)</strong>: Avg
+time from failure occurrence to detection. Goal: minimize with better
+alerting. Target: &lt; 2 min. &gt; - <strong>MTTR (Mean Time to
+Recover/Repair)</strong>: Avg time from detection to restoration.
+Reduced by runbooks, automation, practiced response. Target: &lt; 30 min
+for SEV-1. &gt; - <strong>MTTF (Mean Time to Failure)</strong>: Avg time
+a system operates before failing. For hardware/non-repairable items.
+&gt; - <strong>MTBF (Mean Time Between Failures)</strong>: For
+repairable systems. MTTF + MTTR. Higher is better. &gt; &gt;
+<strong>Availability formula</strong>: MTBF / (MTBF + MTTR) × 100%</p>
+<hr />
+<p><strong>Q8: How do you approach on-call rotations and prevent
+burnout?</strong> &gt; Structure: &gt; - Maximum coverage: 1 week
+primary + 1 week secondary per rotation &gt; - No more than 2 on-call
+weeks per quarter per person &gt; - Compensation: On-call differential
+pay, time-off after heavy weeks &gt; &gt; Preventing alert fatigue: &gt;
+- Review all pages weekly: “should this have paged?” &gt; - Delete or
+demote alerts that required no action 3 times in a row &gt; - Mean time
+between pages target: &gt; 2 hours &gt; - Only page when human action is
+immediately required &gt; &gt; If on-call is miserable: fix the product,
+not the rotation. Persistent bad on-call = product has fundamental
+reliability issues.</p>
+<hr />
+<p><strong>Q9: What is chaos engineering and how do you introduce it
+responsibly?</strong> &gt; Chaos engineering deliberately injects
+failures into production (or staging) to discover weaknesses before they
+cause incidents. &gt; &gt; <strong>Responsible introduction</strong>:
+&gt; 1. Start in staging/canary — never directly in production until
+team is comfortable &gt; 2. Define steady state before experimenting
+(dashboards ready, team watching) &gt; 3. Start small: kill 1 pod, not
+the whole deployment &gt; 4. Always have an abort procedure &gt; 5. Run
+during business hours with team present (not at 3am) &gt; 6. GameDay
+events: structured, scheduled, everyone informed &gt; &gt;
+<strong>Graduated rollout</strong>: &gt; - Week 1: Kill a single pod,
+confirm auto-restart &gt; - Week 2: Kill all pods in one AZ, confirm
+multi-AZ failover &gt; - Week 3: Inject 100ms latency to database,
+confirm circuit breaker &gt; - Month 2: Full region failover test</p>
+<hr />
+<p><strong>Q10: Tell me about a major incident you handled.
+(Behavioral)</strong> &gt; Structure your answer using the SRE incident
+framework: &gt; &gt; <strong>S</strong> (Situation): “We had a SEV-1 —
+payment service returning 503 for 35% of requests.” &gt;
+<strong>T</strong> (Task): “I was the IC on call. MTTR target was 30
+minutes, SLO breach threshold was 10 min.” &gt; <strong>A</strong>
+(Action): &gt; 1. Opened incident channel, assigned roles &gt; 2.
+Checked dashboards — DB connection pool at 99% &gt; 3. Identified
+long-running transactions from recent deployment &gt; 4. Rolled back
+deployment via CI/CD in 8 minutes &gt; 5. Confirmed recovery,
+communicated to stakeholders &gt; <strong>R</strong> (Result): “Restored
+service in 22 minutes. Post-mortem identified missing query index. Added
+automated slow-query gate to CI.” &gt; &gt; Always end with: what you
+changed to prevent recurrence.</p>
+</body>
+</html>

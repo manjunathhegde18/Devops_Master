@@ -1,0 +1,428 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" lang="" xml:lang="">
+<head>
+  <meta charset="utf-8" />
+  <meta name="generator" content="pandoc" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes" />
+  <title>DevOps Mastery: notes</title>
+  <style>
+    code{white-space: pre-wrap;}
+    span.smallcaps{font-variant: small-caps;}
+    div.columns{display: flex; gap: min(4vw, 1.5em);}
+    div.column{flex: auto; overflow-x: auto;}
+    div.hanging-indent{margin-left: 1.5em; text-indent: -1.5em;}
+    /* The extra [class] is a hack that increases specificity enough to
+       override a similar rule in reveal.js */
+    ul.task-list[class]{list-style: none;}
+    ul.task-list li input[type="checkbox"] {
+      font-size: inherit;
+      width: 0.8em;
+      margin: 0 0.8em 0.2em -1.6em;
+      vertical-align: middle;
+    }
+    .display.math{display: block; text-align: center; margin: 0.5rem auto;}
+    /* CSS for syntax highlighting */
+    pre > code.sourceCode { white-space: pre; position: relative; }
+    pre > code.sourceCode > span { line-height: 1.25; }
+    pre > code.sourceCode > span:empty { height: 1.2em; }
+    .sourceCode { overflow: visible; }
+    code.sourceCode > span { color: inherit; text-decoration: inherit; }
+    div.sourceCode { margin: 1em 0; }
+    pre.sourceCode { margin: 0; }
+    @media screen {
+    div.sourceCode { overflow: auto; }
+    }
+    @media print {
+    pre > code.sourceCode { white-space: pre-wrap; }
+    pre > code.sourceCode > span { text-indent: -5em; padding-left: 5em; }
+    }
+    pre.numberSource code
+      { counter-reset: source-line 0; }
+    pre.numberSource code > span
+      { position: relative; left: -4em; counter-increment: source-line; }
+    pre.numberSource code > span > a:first-child::before
+      { content: counter(source-line);
+        position: relative; left: -1em; text-align: right; vertical-align: baseline;
+        border: none; display: inline-block;
+        -webkit-touch-callout: none; -webkit-user-select: none;
+        -khtml-user-select: none; -moz-user-select: none;
+        -ms-user-select: none; user-select: none;
+        padding: 0 4px; width: 4em;
+        color: #aaaaaa;
+      }
+    pre.numberSource { margin-left: 3em; border-left: 1px solid #aaaaaa;  padding-left: 4px; }
+    div.sourceCode
+      {  background-color: #f8f8f8; }
+    @media screen {
+    pre > code.sourceCode > span > a:first-child::before { text-decoration: underline; }
+    }
+    code span.al { color: #ef2929; } /* Alert */
+    code span.an { color: #8f5902; font-weight: bold; font-style: italic; } /* Annotation */
+    code span.at { color: #204a87; } /* Attribute */
+    code span.bn { color: #0000cf; } /* BaseN */
+    code span.cf { color: #204a87; font-weight: bold; } /* ControlFlow */
+    code span.ch { color: #4e9a06; } /* Char */
+    code span.cn { color: #8f5902; } /* Constant */
+    code span.co { color: #8f5902; font-style: italic; } /* Comment */
+    code span.cv { color: #8f5902; font-weight: bold; font-style: italic; } /* CommentVar */
+    code span.do { color: #8f5902; font-weight: bold; font-style: italic; } /* Documentation */
+    code span.dt { color: #204a87; } /* DataType */
+    code span.dv { color: #0000cf; } /* DecVal */
+    code span.er { color: #a40000; font-weight: bold; } /* Error */
+    code span.ex { } /* Extension */
+    code span.fl { color: #0000cf; } /* Float */
+    code span.fu { color: #204a87; font-weight: bold; } /* Function */
+    code span.im { } /* Import */
+    code span.in { color: #8f5902; font-weight: bold; font-style: italic; } /* Information */
+    code span.kw { color: #204a87; font-weight: bold; } /* Keyword */
+    code span.op { color: #ce5c00; font-weight: bold; } /* Operator */
+    code span.ot { color: #8f5902; } /* Other */
+    code span.pp { color: #8f5902; font-style: italic; } /* Preprocessor */
+    code span.sc { color: #ce5c00; font-weight: bold; } /* SpecialChar */
+    code span.ss { color: #4e9a06; } /* SpecialString */
+    code span.st { color: #4e9a06; } /* String */
+    code span.va { color: #000000; } /* Variable */
+    code span.vs { color: #4e9a06; } /* VerbatimString */
+    code span.wa { color: #8f5902; font-weight: bold; font-style: italic; } /* Warning */
+  </style>
+  <link rel="stylesheet" href="/tmp/devops-style.css" />
+</head>
+<body>
+<header id="title-block-header">
+<h1 class="title">DevOps Mastery: notes</h1>
+</header>
+<nav id="TOC" role="doc-toc">
+<ul>
+<li><a href="#git-deep-dive-notes" id="toc-git-deep-dive-notes">Git —
+Deep Dive Notes</a>
+<ul>
+<li><a href="#git-internals-object-model"
+id="toc-git-internals-object-model">1. Git Internals (Object Model)</a>
+<ul>
+<li><a href="#object-types" id="toc-object-types">Object Types</a></li>
+<li><a href="#references" id="toc-references">References</a></li>
+</ul></li>
+<li><a href="#the-three-trees" id="toc-the-three-trees">2. The Three
+Trees</a></li>
+<li><a href="#branching-strategies" id="toc-branching-strategies">3.
+Branching Strategies</a>
+<ul>
+<li><a href="#trunk-based-development-tbd-recommended-for-cicd"
+id="toc-trunk-based-development-tbd-recommended-for-cicd">Trunk-Based
+Development (TBD) — Recommended for CI/CD</a></li>
+<li><a href="#git-flow-for-versioned-releases"
+id="toc-git-flow-for-versioned-releases">Git Flow — For Versioned
+Releases</a></li>
+<li><a href="#github-flow-simple-web-apps"
+id="toc-github-flow-simple-web-apps">GitHub Flow — Simple Web
+Apps</a></li>
+</ul></li>
+<li><a href="#essential-commands-advanced"
+id="toc-essential-commands-advanced">4. Essential Commands —
+Advanced</a>
+<ul>
+<li><a href="#rebase" id="toc-rebase">Rebase</a></li>
+<li><a href="#cherry-pick" id="toc-cherry-pick">Cherry-pick</a></li>
+<li><a href="#bisect-find-bug-introduction"
+id="toc-bisect-find-bug-introduction">Bisect — Find Bug
+Introduction</a></li>
+<li><a href="#reflog-recovery-tool" id="toc-reflog-recovery-tool">Reflog
+— Recovery Tool</a></li>
+<li><a href="#stash" id="toc-stash">Stash</a></li>
+</ul></li>
+<li><a href="#merge-strategies" id="toc-merge-strategies">5. Merge
+Strategies</a>
+<ul>
+<li><a href="#conflict-resolution" id="toc-conflict-resolution">Conflict
+Resolution</a></li>
+</ul></li>
+<li><a href="#git-hooks" id="toc-git-hooks">6. Git Hooks</a>
+<ul>
+<li><a href="#husky-setup" id="toc-husky-setup">Husky Setup</a></li>
+</ul></li>
+<li><a href="#signed-commits-gpg" id="toc-signed-commits-gpg">7. Signed
+Commits &amp; GPG</a></li>
+<li><a href="#monorepo-patterns" id="toc-monorepo-patterns">8. Monorepo
+Patterns</a>
+<ul>
+<li><a href="#tools" id="toc-tools">Tools</a></li>
+<li><a href="#git-sparse-checkout" id="toc-git-sparse-checkout">Git
+Sparse Checkout</a></li>
+</ul></li>
+<li><a href="#github-actions-key-concepts"
+id="toc-github-actions-key-concepts">9. GitHub Actions Key
+Concepts</a></li>
+<li><a href="#git-best-practices" id="toc-git-best-practices">10. Git
+Best Practices</a>
+<ul>
+<li><a href="#conventional-commits"
+id="toc-conventional-commits">Conventional Commits</a></li>
+<li><a href="#commit-message-rules" id="toc-commit-message-rules">Commit
+Message Rules</a></li>
+</ul></li>
+<li><a href="#resources" id="toc-resources">📚 Resources</a></li>
+</ul></li>
+</ul>
+</nav>
+<h1 id="git-deep-dive-notes">Git — Deep Dive Notes</h1>
+<h2 id="git-internals-object-model">1. Git Internals (Object Model)</h2>
+<p>Git stores everything as objects in <code>.git/objects/</code>:</p>
+<h3 id="object-types">Object Types</h3>
+<pre><code>blob      → file content (hash of content, not filename)
+tree      → directory listing (maps names to blobs/trees)
+commit    → snapshot pointer + metadata
+tag       → annotated reference</code></pre>
+<div class="sourceCode" id="cb2"><pre
+class="sourceCode bash"><code class="sourceCode bash"><span id="cb2-1"><a href="#cb2-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Inspect objects</span></span>
+<span id="cb2-2"><a href="#cb2-2" aria-hidden="true" tabindex="-1"></a><span class="fu">git</span> cat-file <span class="at">-t</span> HEAD                <span class="co"># type</span></span>
+<span id="cb2-3"><a href="#cb2-3" aria-hidden="true" tabindex="-1"></a><span class="fu">git</span> cat-file <span class="at">-p</span> HEAD                <span class="co"># content</span></span>
+<span id="cb2-4"><a href="#cb2-4" aria-hidden="true" tabindex="-1"></a><span class="fu">git</span> cat-file <span class="at">-p</span> HEAD:src/app.py     <span class="co"># file at commit</span></span>
+<span id="cb2-5"><a href="#cb2-5" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb2-6"><a href="#cb2-6" aria-hidden="true" tabindex="-1"></a><span class="co"># See what a tree looks like</span></span>
+<span id="cb2-7"><a href="#cb2-7" aria-hidden="true" tabindex="-1"></a><span class="fu">git</span> ls-tree HEAD</span>
+<span id="cb2-8"><a href="#cb2-8" aria-hidden="true" tabindex="-1"></a><span class="fu">git</span> ls-tree <span class="at">-r</span> HEAD                 <span class="co"># recursive</span></span>
+<span id="cb2-9"><a href="#cb2-9" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb2-10"><a href="#cb2-10" aria-hidden="true" tabindex="-1"></a><span class="co"># Low-level hashing</span></span>
+<span id="cb2-11"><a href="#cb2-11" aria-hidden="true" tabindex="-1"></a><span class="bu">echo</span> <span class="st">&quot;hello&quot;</span> <span class="kw">|</span> <span class="fu">git</span> hash-object <span class="at">--stdin</span></span></code></pre></div>
+<h3 id="references">References</h3>
+<pre><code>.git/
+├── HEAD            → points to current branch (ref: refs/heads/main)
+├── ORIG_HEAD       → previous HEAD (before merge/rebase)
+├── MERGE_HEAD      → commit being merged
+├── refs/
+│   ├── heads/      → branches
+│   ├── remotes/    → remote-tracking branches
+│   └── tags/       → tags
+└── packed-refs     → packed references for performance</code></pre>
+<h2 id="the-three-trees">2. The Three Trees</h2>
+<pre><code>Working Directory → git add → Staging (Index) → git commit → Repository
+     HEAD~1  ← git reset HEAD~1   ←   Repository</code></pre>
+<ul>
+<li><strong>Working Directory:</strong> Files on disk (unstaged
+changes)</li>
+<li><strong>Index/Staging Area:</strong> Snapshot prepared for next
+commit</li>
+<li><strong>HEAD/Repository:</strong> Last commit snapshot</li>
+</ul>
+<h2 id="branching-strategies">3. Branching Strategies</h2>
+<h3 id="trunk-based-development-tbd-recommended-for-cicd">Trunk-Based
+Development (TBD) — Recommended for CI/CD</h3>
+<pre><code>main (trunk)
+├── Short-lived feature branches (&lt; 2 days)
+├── Merge to main frequently
+├── Feature flags for incomplete features
+└── No long-lived branches</code></pre>
+<p><strong>Pros:</strong> Reduces merge conflicts, enables true CI, fast
+feedback <strong>Used by:</strong> Google, Facebook</p>
+<h3 id="git-flow-for-versioned-releases">Git Flow — For Versioned
+Releases</h3>
+<pre><code>main ─────────────────────────────────
+      ↑release/1.0                    ↑release/2.0
+develop ─────────────────────────────────────
+         ↑feature/a  ↑feature/b  ↑hotfix/x</code></pre>
+<p><strong>Pros:</strong> Clear release process, hotfix path
+<strong>Cons:</strong> Long-lived branches, complex merge history</p>
+<h3 id="github-flow-simple-web-apps">GitHub Flow — Simple Web Apps</h3>
+<pre><code>main ───── (always deployable)
+     ↑feature/description-of-work</code></pre>
+<p>PRs reviewed and merged to main → immediate deploy</p>
+<h2 id="essential-commands-advanced">4. Essential Commands —
+Advanced</h2>
+<h3 id="rebase">Rebase</h3>
+<div class="sourceCode" id="cb8"><pre
+class="sourceCode bash"><code class="sourceCode bash"><span id="cb8-1"><a href="#cb8-1" aria-hidden="true" tabindex="-1"></a><span class="fu">git</span> rebase main                    <span class="co"># replay commits on top of main</span></span>
+<span id="cb8-2"><a href="#cb8-2" aria-hidden="true" tabindex="-1"></a><span class="fu">git</span> rebase <span class="at">-i</span> HEAD~5               <span class="co"># interactive — reorder, squash, edit</span></span>
+<span id="cb8-3"><a href="#cb8-3" aria-hidden="true" tabindex="-1"></a><span class="fu">git</span> rebase <span class="at">--onto</span> main feature~3   <span class="co"># transplant last 3 commits to main</span></span>
+<span id="cb8-4"><a href="#cb8-4" aria-hidden="true" tabindex="-1"></a><span class="fu">git</span> rebase <span class="at">--abort</span>                 <span class="co"># cancel rebase</span></span>
+<span id="cb8-5"><a href="#cb8-5" aria-hidden="true" tabindex="-1"></a><span class="fu">git</span> rebase <span class="at">--continue</span>              <span class="co"># after resolving conflict</span></span></code></pre></div>
+<h3 id="cherry-pick">Cherry-pick</h3>
+<div class="sourceCode" id="cb9"><pre
+class="sourceCode bash"><code class="sourceCode bash"><span id="cb9-1"><a href="#cb9-1" aria-hidden="true" tabindex="-1"></a><span class="fu">git</span> cherry-pick abc1234            <span class="co"># apply single commit</span></span>
+<span id="cb9-2"><a href="#cb9-2" aria-hidden="true" tabindex="-1"></a><span class="fu">git</span> cherry-pick abc1234..def5678   <span class="co"># range (excludes abc1234)</span></span>
+<span id="cb9-3"><a href="#cb9-3" aria-hidden="true" tabindex="-1"></a><span class="fu">git</span> cherry-pick abc1234^..def5678  <span class="co"># inclusive range</span></span>
+<span id="cb9-4"><a href="#cb9-4" aria-hidden="true" tabindex="-1"></a><span class="fu">git</span> cherry-pick <span class="at">-n</span> abc1234         <span class="co"># stage only, don&#39;t commit</span></span></code></pre></div>
+<h3 id="bisect-find-bug-introduction">Bisect — Find Bug
+Introduction</h3>
+<div class="sourceCode" id="cb10"><pre
+class="sourceCode bash"><code class="sourceCode bash"><span id="cb10-1"><a href="#cb10-1" aria-hidden="true" tabindex="-1"></a><span class="fu">git</span> bisect start</span>
+<span id="cb10-2"><a href="#cb10-2" aria-hidden="true" tabindex="-1"></a><span class="fu">git</span> bisect bad                     <span class="co"># current commit is broken</span></span>
+<span id="cb10-3"><a href="#cb10-3" aria-hidden="true" tabindex="-1"></a><span class="fu">git</span> bisect good v1.0               <span class="co"># last known good version</span></span>
+<span id="cb10-4"><a href="#cb10-4" aria-hidden="true" tabindex="-1"></a><span class="co"># Git checks out midpoint — test and mark:</span></span>
+<span id="cb10-5"><a href="#cb10-5" aria-hidden="true" tabindex="-1"></a><span class="fu">git</span> bisect good / git bisect bad</span>
+<span id="cb10-6"><a href="#cb10-6" aria-hidden="true" tabindex="-1"></a><span class="co"># Repeat until first bad commit found</span></span>
+<span id="cb10-7"><a href="#cb10-7" aria-hidden="true" tabindex="-1"></a><span class="fu">git</span> bisect reset                   <span class="co"># return to HEAD</span></span>
+<span id="cb10-8"><a href="#cb10-8" aria-hidden="true" tabindex="-1"></a><span class="co"># Automated bisect:</span></span>
+<span id="cb10-9"><a href="#cb10-9" aria-hidden="true" tabindex="-1"></a><span class="fu">git</span> bisect run ./test_script.sh    <span class="co"># script exits 0=good, non-zero=bad</span></span></code></pre></div>
+<h3 id="reflog-recovery-tool">Reflog — Recovery Tool</h3>
+<div class="sourceCode" id="cb11"><pre
+class="sourceCode bash"><code class="sourceCode bash"><span id="cb11-1"><a href="#cb11-1" aria-hidden="true" tabindex="-1"></a><span class="fu">git</span> reflog                         <span class="co"># all HEAD movements</span></span>
+<span id="cb11-2"><a href="#cb11-2" aria-hidden="true" tabindex="-1"></a><span class="fu">git</span> reflog show feature/foo        <span class="co"># branch-specific</span></span>
+<span id="cb11-3"><a href="#cb11-3" aria-hidden="true" tabindex="-1"></a><span class="fu">git</span> checkout HEAD@{5}              <span class="co"># recover deleted branch</span></span>
+<span id="cb11-4"><a href="#cb11-4" aria-hidden="true" tabindex="-1"></a><span class="fu">git</span> reset <span class="at">--hard</span> HEAD@{3}          <span class="co"># undo accidental reset</span></span></code></pre></div>
+<h3 id="stash">Stash</h3>
+<div class="sourceCode" id="cb12"><pre
+class="sourceCode bash"><code class="sourceCode bash"><span id="cb12-1"><a href="#cb12-1" aria-hidden="true" tabindex="-1"></a><span class="fu">git</span> stash push <span class="at">-m</span> <span class="st">&quot;WIP: feature&quot;</span>   <span class="co"># save with message</span></span>
+<span id="cb12-2"><a href="#cb12-2" aria-hidden="true" tabindex="-1"></a><span class="fu">git</span> stash list</span>
+<span id="cb12-3"><a href="#cb12-3" aria-hidden="true" tabindex="-1"></a><span class="fu">git</span> stash pop                      <span class="co"># apply + drop</span></span>
+<span id="cb12-4"><a href="#cb12-4" aria-hidden="true" tabindex="-1"></a><span class="fu">git</span> stash apply stash@{2}          <span class="co"># apply without dropping</span></span>
+<span id="cb12-5"><a href="#cb12-5" aria-hidden="true" tabindex="-1"></a><span class="fu">git</span> stash branch feature-wip       <span class="co"># create branch from stash</span></span>
+<span id="cb12-6"><a href="#cb12-6" aria-hidden="true" tabindex="-1"></a><span class="fu">git</span> stash push <span class="at">--include-untracked</span> <span class="co"># include new files</span></span></code></pre></div>
+<h2 id="merge-strategies">5. Merge Strategies</h2>
+<div class="sourceCode" id="cb13"><pre
+class="sourceCode bash"><code class="sourceCode bash"><span id="cb13-1"><a href="#cb13-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Merge commit (default) — preserves branch history</span></span>
+<span id="cb13-2"><a href="#cb13-2" aria-hidden="true" tabindex="-1"></a><span class="fu">git</span> merge feature/foo</span>
+<span id="cb13-3"><a href="#cb13-3" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb13-4"><a href="#cb13-4" aria-hidden="true" tabindex="-1"></a><span class="co"># Fast-forward only — keeps linear history</span></span>
+<span id="cb13-5"><a href="#cb13-5" aria-hidden="true" tabindex="-1"></a><span class="fu">git</span> merge <span class="at">--ff-only</span> feature/foo</span>
+<span id="cb13-6"><a href="#cb13-6" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb13-7"><a href="#cb13-7" aria-hidden="true" tabindex="-1"></a><span class="co"># Squash merge — all commits become one</span></span>
+<span id="cb13-8"><a href="#cb13-8" aria-hidden="true" tabindex="-1"></a><span class="fu">git</span> merge <span class="at">--squash</span> feature/foo <span class="kw">&amp;&amp;</span> <span class="fu">git</span> commit</span>
+<span id="cb13-9"><a href="#cb13-9" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb13-10"><a href="#cb13-10" aria-hidden="true" tabindex="-1"></a><span class="co"># Rebase merge — linear history, no merge commit</span></span>
+<span id="cb13-11"><a href="#cb13-11" aria-hidden="true" tabindex="-1"></a><span class="fu">git</span> rebase main feature/foo <span class="kw">&amp;&amp;</span> <span class="fu">git</span> checkout main <span class="kw">&amp;&amp;</span> <span class="fu">git</span> merge feature/foo</span></code></pre></div>
+<h3 id="conflict-resolution">Conflict Resolution</h3>
+<div class="sourceCode" id="cb14"><pre
+class="sourceCode bash"><code class="sourceCode bash"><span id="cb14-1"><a href="#cb14-1" aria-hidden="true" tabindex="-1"></a><span class="fu">git</span> status                         <span class="co"># see conflicted files</span></span>
+<span id="cb14-2"><a href="#cb14-2" aria-hidden="true" tabindex="-1"></a><span class="fu">git</span> diff <span class="at">--diff-filter</span><span class="op">=</span>U           <span class="co"># show conflicted content</span></span>
+<span id="cb14-3"><a href="#cb14-3" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb14-4"><a href="#cb14-4" aria-hidden="true" tabindex="-1"></a><span class="co"># Use a mergetool</span></span>
+<span id="cb14-5"><a href="#cb14-5" aria-hidden="true" tabindex="-1"></a><span class="fu">git</span> mergetool                      <span class="co"># opens vimdiff/meld/etc.</span></span>
+<span id="cb14-6"><a href="#cb14-6" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb14-7"><a href="#cb14-7" aria-hidden="true" tabindex="-1"></a><span class="co"># Accept ours or theirs</span></span>
+<span id="cb14-8"><a href="#cb14-8" aria-hidden="true" tabindex="-1"></a><span class="fu">git</span> checkout <span class="at">--ours</span>  path/file</span>
+<span id="cb14-9"><a href="#cb14-9" aria-hidden="true" tabindex="-1"></a><span class="fu">git</span> checkout <span class="at">--theirs</span> path/file</span>
+<span id="cb14-10"><a href="#cb14-10" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb14-11"><a href="#cb14-11" aria-hidden="true" tabindex="-1"></a><span class="co"># See all conflicts</span></span>
+<span id="cb14-12"><a href="#cb14-12" aria-hidden="true" tabindex="-1"></a><span class="fu">grep</span> <span class="at">-r</span> <span class="st">&quot;&lt;&lt;&lt;&lt;&lt;&lt;&quot;</span> .</span></code></pre></div>
+<h2 id="git-hooks">6. Git Hooks</h2>
+<p>Stored in <code>.git/hooks/</code> (not committed) or use
+<strong>Husky</strong> for shared hooks.</p>
+<div class="sourceCode" id="cb15"><pre
+class="sourceCode bash"><code class="sourceCode bash"><span id="cb15-1"><a href="#cb15-1" aria-hidden="true" tabindex="-1"></a><span class="co"># pre-commit — run linting/tests</span></span>
+<span id="cb15-2"><a href="#cb15-2" aria-hidden="true" tabindex="-1"></a><span class="co">#!/bin/bash</span></span>
+<span id="cb15-3"><a href="#cb15-3" aria-hidden="true" tabindex="-1"></a><span class="ex">npm</span> run lint</span>
+<span id="cb15-4"><a href="#cb15-4" aria-hidden="true" tabindex="-1"></a><span class="bu">exit</span> <span class="va">$?</span></span>
+<span id="cb15-5"><a href="#cb15-5" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb15-6"><a href="#cb15-6" aria-hidden="true" tabindex="-1"></a><span class="co"># commit-msg — enforce commit message format</span></span>
+<span id="cb15-7"><a href="#cb15-7" aria-hidden="true" tabindex="-1"></a><span class="co">#!/bin/bash</span></span>
+<span id="cb15-8"><a href="#cb15-8" aria-hidden="true" tabindex="-1"></a><span class="va">MSG</span><span class="op">=</span><span class="va">$(</span><span class="fu">cat</span> <span class="st">&quot;</span><span class="va">$1</span><span class="st">&quot;</span><span class="va">)</span></span>
+<span id="cb15-9"><a href="#cb15-9" aria-hidden="true" tabindex="-1"></a><span class="cf">if</span> <span class="ot">! </span><span class="bu">echo</span> <span class="st">&quot;</span><span class="va">$MSG</span><span class="st">&quot;</span> <span class="kw">|</span> <span class="fu">grep</span> <span class="at">-qP</span> <span class="st">&quot;^(feat|fix|docs|style|refactor|test|chore)(\(.+\))?: .{1,72}&quot;</span><span class="kw">;</span> <span class="cf">then</span></span>
+<span id="cb15-10"><a href="#cb15-10" aria-hidden="true" tabindex="-1"></a>    <span class="bu">echo</span> <span class="st">&quot;Error: Commit message must follow Conventional Commits format&quot;</span></span>
+<span id="cb15-11"><a href="#cb15-11" aria-hidden="true" tabindex="-1"></a>    <span class="bu">echo</span> <span class="st">&quot;Example: feat(auth): add JWT refresh token support&quot;</span></span>
+<span id="cb15-12"><a href="#cb15-12" aria-hidden="true" tabindex="-1"></a>    <span class="bu">exit</span> 1</span>
+<span id="cb15-13"><a href="#cb15-13" aria-hidden="true" tabindex="-1"></a><span class="cf">fi</span></span>
+<span id="cb15-14"><a href="#cb15-14" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb15-15"><a href="#cb15-15" aria-hidden="true" tabindex="-1"></a><span class="co"># pre-push — run full test suite</span></span>
+<span id="cb15-16"><a href="#cb15-16" aria-hidden="true" tabindex="-1"></a><span class="co">#!/bin/bash</span></span>
+<span id="cb15-17"><a href="#cb15-17" aria-hidden="true" tabindex="-1"></a><span class="ex">npm</span> test</span></code></pre></div>
+<h3 id="husky-setup">Husky Setup</h3>
+<div class="sourceCode" id="cb16"><pre
+class="sourceCode bash"><code class="sourceCode bash"><span id="cb16-1"><a href="#cb16-1" aria-hidden="true" tabindex="-1"></a><span class="ex">npm</span> install <span class="at">--save-dev</span> husky</span>
+<span id="cb16-2"><a href="#cb16-2" aria-hidden="true" tabindex="-1"></a><span class="ex">npx</span> husky init</span>
+<span id="cb16-3"><a href="#cb16-3" aria-hidden="true" tabindex="-1"></a><span class="bu">echo</span> <span class="st">&quot;npm run lint&quot;</span> <span class="op">&gt;</span> .husky/pre-commit</span>
+<span id="cb16-4"><a href="#cb16-4" aria-hidden="true" tabindex="-1"></a><span class="bu">echo</span> <span class="st">&quot;npm test&quot;</span> <span class="op">&gt;</span> .husky/pre-push</span></code></pre></div>
+<h2 id="signed-commits-gpg">7. Signed Commits &amp; GPG</h2>
+<div class="sourceCode" id="cb17"><pre
+class="sourceCode bash"><code class="sourceCode bash"><span id="cb17-1"><a href="#cb17-1" aria-hidden="true" tabindex="-1"></a><span class="ex">gpg</span> <span class="at">--gen-key</span></span>
+<span id="cb17-2"><a href="#cb17-2" aria-hidden="true" tabindex="-1"></a><span class="ex">gpg</span> <span class="at">--list-secret-keys</span> <span class="at">--keyid-format</span><span class="op">=</span>long</span>
+<span id="cb17-3"><a href="#cb17-3" aria-hidden="true" tabindex="-1"></a><span class="fu">git</span> config <span class="at">--global</span> user.signingkey KEY_ID</span>
+<span id="cb17-4"><a href="#cb17-4" aria-hidden="true" tabindex="-1"></a><span class="fu">git</span> config <span class="at">--global</span> commit.gpgsign true</span>
+<span id="cb17-5"><a href="#cb17-5" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb17-6"><a href="#cb17-6" aria-hidden="true" tabindex="-1"></a><span class="fu">git</span> commit <span class="at">-S</span> <span class="at">-m</span> <span class="st">&quot;signed commit&quot;</span></span>
+<span id="cb17-7"><a href="#cb17-7" aria-hidden="true" tabindex="-1"></a><span class="fu">git</span> log <span class="at">--show-signature</span></span>
+<span id="cb17-8"><a href="#cb17-8" aria-hidden="true" tabindex="-1"></a><span class="fu">git</span> verify-commit HEAD</span></code></pre></div>
+<h2 id="monorepo-patterns">8. Monorepo Patterns</h2>
+<h3 id="tools">Tools</h3>
+<ul>
+<li><strong>Nx</strong> (Node/JS monorepos) — affected graph, task
+caching</li>
+<li><strong>Turborepo</strong> (JS) — remote caching, pipeline</li>
+<li><strong>Bazel</strong> (Google, polyglot) — hermetic builds</li>
+<li><strong>Pants</strong> (Python focus)</li>
+</ul>
+<h3 id="git-sparse-checkout">Git Sparse Checkout</h3>
+<div class="sourceCode" id="cb18"><pre
+class="sourceCode bash"><code class="sourceCode bash"><span id="cb18-1"><a href="#cb18-1" aria-hidden="true" tabindex="-1"></a><span class="fu">git</span> clone <span class="at">--filter</span><span class="op">=</span>blob:none <span class="at">--sparse</span> https://repo.git</span>
+<span id="cb18-2"><a href="#cb18-2" aria-hidden="true" tabindex="-1"></a><span class="fu">git</span> sparse-checkout init <span class="at">--cone</span></span>
+<span id="cb18-3"><a href="#cb18-3" aria-hidden="true" tabindex="-1"></a><span class="fu">git</span> sparse-checkout set packages/api packages/shared</span></code></pre></div>
+<h2 id="github-actions-key-concepts">9. GitHub Actions Key Concepts</h2>
+<div class="sourceCode" id="cb19"><pre
+class="sourceCode yaml"><code class="sourceCode yaml"><span id="cb19-1"><a href="#cb19-1" aria-hidden="true" tabindex="-1"></a><span class="fu">name</span><span class="kw">:</span><span class="at"> CI Pipeline</span></span>
+<span id="cb19-2"><a href="#cb19-2" aria-hidden="true" tabindex="-1"></a><span class="fu">on</span><span class="kw">:</span></span>
+<span id="cb19-3"><a href="#cb19-3" aria-hidden="true" tabindex="-1"></a><span class="at">  </span><span class="fu">push</span><span class="kw">:</span></span>
+<span id="cb19-4"><a href="#cb19-4" aria-hidden="true" tabindex="-1"></a><span class="at">    </span><span class="fu">branches</span><span class="kw">:</span><span class="at"> </span><span class="kw">[</span><span class="at">main</span><span class="kw">]</span></span>
+<span id="cb19-5"><a href="#cb19-5" aria-hidden="true" tabindex="-1"></a><span class="at">  </span><span class="fu">pull_request</span><span class="kw">:</span></span>
+<span id="cb19-6"><a href="#cb19-6" aria-hidden="true" tabindex="-1"></a><span class="at">    </span><span class="fu">branches</span><span class="kw">:</span><span class="at"> </span><span class="kw">[</span><span class="at">main</span><span class="kw">]</span></span>
+<span id="cb19-7"><a href="#cb19-7" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb19-8"><a href="#cb19-8" aria-hidden="true" tabindex="-1"></a><span class="fu">env</span><span class="kw">:</span></span>
+<span id="cb19-9"><a href="#cb19-9" aria-hidden="true" tabindex="-1"></a><span class="at">  </span><span class="fu">REGISTRY</span><span class="kw">:</span><span class="at"> ghcr.io</span></span>
+<span id="cb19-10"><a href="#cb19-10" aria-hidden="true" tabindex="-1"></a><span class="at">  </span><span class="fu">IMAGE_NAME</span><span class="kw">:</span><span class="at"> ${{ github.repository }}</span></span>
+<span id="cb19-11"><a href="#cb19-11" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb19-12"><a href="#cb19-12" aria-hidden="true" tabindex="-1"></a><span class="fu">jobs</span><span class="kw">:</span></span>
+<span id="cb19-13"><a href="#cb19-13" aria-hidden="true" tabindex="-1"></a><span class="at">  </span><span class="fu">test</span><span class="kw">:</span></span>
+<span id="cb19-14"><a href="#cb19-14" aria-hidden="true" tabindex="-1"></a><span class="at">    </span><span class="fu">runs-on</span><span class="kw">:</span><span class="at"> ubuntu-latest</span></span>
+<span id="cb19-15"><a href="#cb19-15" aria-hidden="true" tabindex="-1"></a><span class="at">    </span><span class="fu">strategy</span><span class="kw">:</span></span>
+<span id="cb19-16"><a href="#cb19-16" aria-hidden="true" tabindex="-1"></a><span class="at">      </span><span class="fu">matrix</span><span class="kw">:</span></span>
+<span id="cb19-17"><a href="#cb19-17" aria-hidden="true" tabindex="-1"></a><span class="at">        </span><span class="fu">python-version</span><span class="kw">:</span><span class="at"> </span><span class="kw">[</span><span class="st">&#39;3.10&#39;</span><span class="kw">,</span><span class="at"> </span><span class="st">&#39;3.11&#39;</span><span class="kw">,</span><span class="at"> </span><span class="st">&#39;3.12&#39;</span><span class="kw">]</span></span>
+<span id="cb19-18"><a href="#cb19-18" aria-hidden="true" tabindex="-1"></a><span class="at">    </span><span class="fu">steps</span><span class="kw">:</span></span>
+<span id="cb19-19"><a href="#cb19-19" aria-hidden="true" tabindex="-1"></a><span class="at">      </span><span class="kw">-</span><span class="at"> </span><span class="fu">uses</span><span class="kw">:</span><span class="at"> actions/checkout@v4</span></span>
+<span id="cb19-20"><a href="#cb19-20" aria-hidden="true" tabindex="-1"></a><span class="at">      </span><span class="kw">-</span><span class="at"> </span><span class="fu">uses</span><span class="kw">:</span><span class="at"> actions/setup-python@v5</span></span>
+<span id="cb19-21"><a href="#cb19-21" aria-hidden="true" tabindex="-1"></a><span class="at">        </span><span class="fu">with</span><span class="kw">:</span></span>
+<span id="cb19-22"><a href="#cb19-22" aria-hidden="true" tabindex="-1"></a><span class="at">          </span><span class="fu">python-version</span><span class="kw">:</span><span class="at"> ${{ matrix.python-version }}</span></span>
+<span id="cb19-23"><a href="#cb19-23" aria-hidden="true" tabindex="-1"></a><span class="at">          </span><span class="fu">cache</span><span class="kw">:</span><span class="at"> </span><span class="st">&#39;pip&#39;</span></span>
+<span id="cb19-24"><a href="#cb19-24" aria-hidden="true" tabindex="-1"></a><span class="at">      </span><span class="kw">-</span><span class="at"> </span><span class="fu">run</span><span class="kw">:</span><span class="at"> pip install -r requirements.txt</span></span>
+<span id="cb19-25"><a href="#cb19-25" aria-hidden="true" tabindex="-1"></a><span class="at">      </span><span class="kw">-</span><span class="at"> </span><span class="fu">run</span><span class="kw">:</span><span class="at"> pytest --cov=. --cov-report=xml</span></span>
+<span id="cb19-26"><a href="#cb19-26" aria-hidden="true" tabindex="-1"></a><span class="at">      </span><span class="kw">-</span><span class="at"> </span><span class="fu">uses</span><span class="kw">:</span><span class="at"> codecov/codecov-action@v4</span></span>
+<span id="cb19-27"><a href="#cb19-27" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb19-28"><a href="#cb19-28" aria-hidden="true" tabindex="-1"></a><span class="at">  </span><span class="fu">build</span><span class="kw">:</span></span>
+<span id="cb19-29"><a href="#cb19-29" aria-hidden="true" tabindex="-1"></a><span class="at">    </span><span class="fu">needs</span><span class="kw">:</span><span class="at"> test</span></span>
+<span id="cb19-30"><a href="#cb19-30" aria-hidden="true" tabindex="-1"></a><span class="at">    </span><span class="fu">runs-on</span><span class="kw">:</span><span class="at"> ubuntu-latest</span></span>
+<span id="cb19-31"><a href="#cb19-31" aria-hidden="true" tabindex="-1"></a><span class="at">    </span><span class="fu">permissions</span><span class="kw">:</span></span>
+<span id="cb19-32"><a href="#cb19-32" aria-hidden="true" tabindex="-1"></a><span class="at">      </span><span class="fu">contents</span><span class="kw">:</span><span class="at"> read</span></span>
+<span id="cb19-33"><a href="#cb19-33" aria-hidden="true" tabindex="-1"></a><span class="at">      </span><span class="fu">packages</span><span class="kw">:</span><span class="at"> write</span></span>
+<span id="cb19-34"><a href="#cb19-34" aria-hidden="true" tabindex="-1"></a><span class="at">    </span><span class="fu">steps</span><span class="kw">:</span></span>
+<span id="cb19-35"><a href="#cb19-35" aria-hidden="true" tabindex="-1"></a><span class="at">      </span><span class="kw">-</span><span class="at"> </span><span class="fu">uses</span><span class="kw">:</span><span class="at"> actions/checkout@v4</span></span>
+<span id="cb19-36"><a href="#cb19-36" aria-hidden="true" tabindex="-1"></a><span class="at">      </span><span class="kw">-</span><span class="at"> </span><span class="fu">uses</span><span class="kw">:</span><span class="at"> docker/setup-buildx-action@v3</span></span>
+<span id="cb19-37"><a href="#cb19-37" aria-hidden="true" tabindex="-1"></a><span class="at">      </span><span class="kw">-</span><span class="at"> </span><span class="fu">uses</span><span class="kw">:</span><span class="at"> docker/login-action@v3</span></span>
+<span id="cb19-38"><a href="#cb19-38" aria-hidden="true" tabindex="-1"></a><span class="at">        </span><span class="fu">with</span><span class="kw">:</span></span>
+<span id="cb19-39"><a href="#cb19-39" aria-hidden="true" tabindex="-1"></a><span class="at">          </span><span class="fu">registry</span><span class="kw">:</span><span class="at"> ${{ env.REGISTRY }}</span></span>
+<span id="cb19-40"><a href="#cb19-40" aria-hidden="true" tabindex="-1"></a><span class="at">          </span><span class="fu">username</span><span class="kw">:</span><span class="at"> ${{ github.actor }}</span></span>
+<span id="cb19-41"><a href="#cb19-41" aria-hidden="true" tabindex="-1"></a><span class="at">          </span><span class="fu">password</span><span class="kw">:</span><span class="at"> ${{ secrets.GITHUB_TOKEN }}</span></span>
+<span id="cb19-42"><a href="#cb19-42" aria-hidden="true" tabindex="-1"></a><span class="at">      </span><span class="kw">-</span><span class="at"> </span><span class="fu">uses</span><span class="kw">:</span><span class="at"> docker/build-push-action@v5</span></span>
+<span id="cb19-43"><a href="#cb19-43" aria-hidden="true" tabindex="-1"></a><span class="at">        </span><span class="fu">with</span><span class="kw">:</span></span>
+<span id="cb19-44"><a href="#cb19-44" aria-hidden="true" tabindex="-1"></a><span class="at">          </span><span class="fu">push</span><span class="kw">:</span><span class="at"> </span><span class="ch">true</span></span>
+<span id="cb19-45"><a href="#cb19-45" aria-hidden="true" tabindex="-1"></a><span class="at">          </span><span class="fu">tags</span><span class="kw">:</span><span class="at"> ${{ env.REGISTRY }}/${{ env.IMAGE_NAME }}:${{ github.sha }}</span></span>
+<span id="cb19-46"><a href="#cb19-46" aria-hidden="true" tabindex="-1"></a><span class="at">          </span><span class="fu">cache-from</span><span class="kw">:</span><span class="at"> type=gha</span></span>
+<span id="cb19-47"><a href="#cb19-47" aria-hidden="true" tabindex="-1"></a><span class="at">          </span><span class="fu">cache-to</span><span class="kw">:</span><span class="at"> type=gha,mode=max</span></span></code></pre></div>
+<h2 id="git-best-practices">10. Git Best Practices</h2>
+<h3 id="conventional-commits">Conventional Commits</h3>
+<pre><code>&lt;type&gt;(&lt;scope&gt;): &lt;description&gt;
+
+feat(auth): add OAuth2 login support
+fix(api): handle null pointer in user endpoint
+docs(readme): update installation instructions
+chore(deps): upgrade axios to 1.6.0
+refactor(db): extract connection pool logic
+test(unit): add tests for payment service
+perf(query): add index on orders.user_id
+ci(github): add docker layer caching</code></pre>
+<h3 id="commit-message-rules">Commit Message Rules</h3>
+<ol type="1">
+<li>Use imperative mood: “Add feature” not “Added feature”</li>
+<li>72 char limit on subject line</li>
+<li>Blank line between subject and body</li>
+<li>Explain WHY, not WHAT (code shows what)</li>
+<li>Reference issues: <code>Closes #123</code>,
+<code>Fixes JIRA-456</code></li>
+</ol>
+<h2 id="resources">📚 Resources</h2>
+<ul>
+<li>https://git-scm.com/book/en/v2 — Pro Git (free book)</li>
+<li>https://learngitbranching.js.org/ — Interactive git
+visualization</li>
+<li>https://ohshitgit.com/ — Common git mistake recovery</li>
+<li>https://www.conventionalcommits.org/ — Commit message standard</li>
+<li>https://trunkbaseddevelopment.com/ — TBD patterns</li>
+</ul>
+</body>
+</html>

@@ -1,0 +1,561 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" lang="" xml:lang="">
+<head>
+  <meta charset="utf-8" />
+  <meta name="generator" content="pandoc" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes" />
+  <title>DevOps Mastery: all-cheatsheets</title>
+  <style>
+    code{white-space: pre-wrap;}
+    span.smallcaps{font-variant: small-caps;}
+    div.columns{display: flex; gap: min(4vw, 1.5em);}
+    div.column{flex: auto; overflow-x: auto;}
+    div.hanging-indent{margin-left: 1.5em; text-indent: -1.5em;}
+    /* The extra [class] is a hack that increases specificity enough to
+       override a similar rule in reveal.js */
+    ul.task-list[class]{list-style: none;}
+    ul.task-list li input[type="checkbox"] {
+      font-size: inherit;
+      width: 0.8em;
+      margin: 0 0.8em 0.2em -1.6em;
+      vertical-align: middle;
+    }
+    .display.math{display: block; text-align: center; margin: 0.5rem auto;}
+    /* CSS for syntax highlighting */
+    pre > code.sourceCode { white-space: pre; position: relative; }
+    pre > code.sourceCode > span { line-height: 1.25; }
+    pre > code.sourceCode > span:empty { height: 1.2em; }
+    .sourceCode { overflow: visible; }
+    code.sourceCode > span { color: inherit; text-decoration: inherit; }
+    div.sourceCode { margin: 1em 0; }
+    pre.sourceCode { margin: 0; }
+    @media screen {
+    div.sourceCode { overflow: auto; }
+    }
+    @media print {
+    pre > code.sourceCode { white-space: pre-wrap; }
+    pre > code.sourceCode > span { text-indent: -5em; padding-left: 5em; }
+    }
+    pre.numberSource code
+      { counter-reset: source-line 0; }
+    pre.numberSource code > span
+      { position: relative; left: -4em; counter-increment: source-line; }
+    pre.numberSource code > span > a:first-child::before
+      { content: counter(source-line);
+        position: relative; left: -1em; text-align: right; vertical-align: baseline;
+        border: none; display: inline-block;
+        -webkit-touch-callout: none; -webkit-user-select: none;
+        -khtml-user-select: none; -moz-user-select: none;
+        -ms-user-select: none; user-select: none;
+        padding: 0 4px; width: 4em;
+        color: #aaaaaa;
+      }
+    pre.numberSource { margin-left: 3em; border-left: 1px solid #aaaaaa;  padding-left: 4px; }
+    div.sourceCode
+      {  background-color: #f8f8f8; }
+    @media screen {
+    pre > code.sourceCode > span > a:first-child::before { text-decoration: underline; }
+    }
+    code span.al { color: #ef2929; } /* Alert */
+    code span.an { color: #8f5902; font-weight: bold; font-style: italic; } /* Annotation */
+    code span.at { color: #204a87; } /* Attribute */
+    code span.bn { color: #0000cf; } /* BaseN */
+    code span.cf { color: #204a87; font-weight: bold; } /* ControlFlow */
+    code span.ch { color: #4e9a06; } /* Char */
+    code span.cn { color: #8f5902; } /* Constant */
+    code span.co { color: #8f5902; font-style: italic; } /* Comment */
+    code span.cv { color: #8f5902; font-weight: bold; font-style: italic; } /* CommentVar */
+    code span.do { color: #8f5902; font-weight: bold; font-style: italic; } /* Documentation */
+    code span.dt { color: #204a87; } /* DataType */
+    code span.dv { color: #0000cf; } /* DecVal */
+    code span.er { color: #a40000; font-weight: bold; } /* Error */
+    code span.ex { } /* Extension */
+    code span.fl { color: #0000cf; } /* Float */
+    code span.fu { color: #204a87; font-weight: bold; } /* Function */
+    code span.im { } /* Import */
+    code span.in { color: #8f5902; font-weight: bold; font-style: italic; } /* Information */
+    code span.kw { color: #204a87; font-weight: bold; } /* Keyword */
+    code span.op { color: #ce5c00; font-weight: bold; } /* Operator */
+    code span.ot { color: #8f5902; } /* Other */
+    code span.pp { color: #8f5902; font-style: italic; } /* Preprocessor */
+    code span.sc { color: #ce5c00; font-weight: bold; } /* SpecialChar */
+    code span.ss { color: #4e9a06; } /* SpecialString */
+    code span.st { color: #4e9a06; } /* String */
+    code span.va { color: #000000; } /* Variable */
+    code span.vs { color: #4e9a06; } /* VerbatimString */
+    code span.wa { color: #8f5902; font-weight: bold; font-style: italic; } /* Warning */
+  </style>
+  <link rel="stylesheet" href="/tmp/devops-style.css" />
+</head>
+<body>
+<header id="title-block-header">
+<h1 class="title">DevOps Mastery: all-cheatsheets</h1>
+</header>
+<nav id="TOC" role="doc-toc">
+<ul>
+<li><a href="#devops-master-cheatsheet-all-domains"
+id="toc-devops-master-cheatsheet-all-domains">DevOps Master Cheatsheet —
+All Domains</a>
+<ul>
+<li><a href="#linux-commands" id="toc-linux-commands">Linux
+Commands</a></li>
+<li><a href="#git-commands" id="toc-git-commands">Git Commands</a></li>
+<li><a href="#docker-commands" id="toc-docker-commands">Docker
+Commands</a></li>
+<li><a href="#terraform-commands" id="toc-terraform-commands">Terraform
+Commands</a></li>
+<li><a href="#aws-cli" id="toc-aws-cli">AWS CLI</a></li>
+<li><a href="#helm-quick-reference" id="toc-helm-quick-reference">Helm
+Quick Reference</a></li>
+<li><a href="#prometheus-promql-quick-reference"
+id="toc-prometheus-promql-quick-reference">Prometheus / PromQL Quick
+Reference</a></li>
+<li><a href="#security-scanning-commands"
+id="toc-security-scanning-commands">Security Scanning Commands</a></li>
+<li><a href="#quick-reference-cards"
+id="toc-quick-reference-cards">Quick Reference Cards</a>
+<ul>
+<li><a href="#http-status-codes" id="toc-http-status-codes">HTTP Status
+Codes</a></li>
+<li><a href="#port-quick-reference" id="toc-port-quick-reference">Port
+Quick Reference</a></li>
+<li><a href="#git-commit-message-convention-conventional-commits"
+id="toc-git-commit-message-convention-conventional-commits">Git Commit
+Message Convention (Conventional Commits)</a></li>
+<li><a href="#file-permissions-quick-reference"
+id="toc-file-permissions-quick-reference">File Permissions Quick
+Reference</a></li>
+</ul></li>
+</ul></li>
+</ul>
+</nav>
+<h1 id="devops-master-cheatsheet-all-domains">DevOps Master Cheatsheet —
+All Domains</h1>
+<hr />
+<h2 id="linux-commands">Linux Commands</h2>
+<div class="sourceCode" id="cb1"><pre
+class="sourceCode bash"><code class="sourceCode bash"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a><span class="co"># PROCESS</span></span>
+<span id="cb1-2"><a href="#cb1-2" aria-hidden="true" tabindex="-1"></a><span class="fu">ps</span> aux                           <span class="co"># all processes</span></span>
+<span id="cb1-3"><a href="#cb1-3" aria-hidden="true" tabindex="-1"></a><span class="fu">ps</span> <span class="at">-ef</span> <span class="at">--forest</span>                  <span class="co"># tree view</span></span>
+<span id="cb1-4"><a href="#cb1-4" aria-hidden="true" tabindex="-1"></a><span class="fu">pstree</span> <span class="at">-p</span>                        <span class="co"># visual tree</span></span>
+<span id="cb1-5"><a href="#cb1-5" aria-hidden="true" tabindex="-1"></a><span class="ex">top</span> / htop                       <span class="co"># live monitor</span></span>
+<span id="cb1-6"><a href="#cb1-6" aria-hidden="true" tabindex="-1"></a><span class="bu">kill</span> <span class="at">-SIGTERM</span> PID                <span class="co"># graceful stop</span></span>
+<span id="cb1-7"><a href="#cb1-7" aria-hidden="true" tabindex="-1"></a><span class="bu">kill</span> <span class="at">-9</span> PID                      <span class="co"># force kill</span></span>
+<span id="cb1-8"><a href="#cb1-8" aria-hidden="true" tabindex="-1"></a><span class="ex">strace</span> <span class="at">-p</span> PID                    <span class="co"># system call trace</span></span>
+<span id="cb1-9"><a href="#cb1-9" aria-hidden="true" tabindex="-1"></a><span class="ex">lsof</span> <span class="at">-p</span> PID                      <span class="co"># files open by process</span></span>
+<span id="cb1-10"><a href="#cb1-10" aria-hidden="true" tabindex="-1"></a><span class="ex">lsof</span> <span class="at">-i</span> :PORT                    <span class="co"># what&#39;s on a port</span></span>
+<span id="cb1-11"><a href="#cb1-11" aria-hidden="true" tabindex="-1"></a><span class="fu">nice</span> <span class="at">-n</span> 10 CMD                   <span class="co"># lower priority</span></span>
+<span id="cb1-12"><a href="#cb1-12" aria-hidden="true" tabindex="-1"></a><span class="ex">renice</span> <span class="at">-n</span> <span class="at">-5</span> <span class="at">-p</span> PID              <span class="co"># change running priority</span></span>
+<span id="cb1-13"><a href="#cb1-13" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-14"><a href="#cb1-14" aria-hidden="true" tabindex="-1"></a><span class="co"># PERFORMANCE</span></span>
+<span id="cb1-15"><a href="#cb1-15" aria-hidden="true" tabindex="-1"></a><span class="fu">vmstat</span> 1                         <span class="co"># memory, swap, cpu, io</span></span>
+<span id="cb1-16"><a href="#cb1-16" aria-hidden="true" tabindex="-1"></a><span class="ex">iostat</span> <span class="at">-xz</span> 1                     <span class="co"># disk I/O per device</span></span>
+<span id="cb1-17"><a href="#cb1-17" aria-hidden="true" tabindex="-1"></a><span class="ex">sar</span> <span class="at">-r</span> 1 10                      <span class="co"># memory history</span></span>
+<span id="cb1-18"><a href="#cb1-18" aria-hidden="true" tabindex="-1"></a><span class="ex">mpstat</span> <span class="at">-P</span> ALL 1                  <span class="co"># per-CPU usage</span></span>
+<span id="cb1-19"><a href="#cb1-19" aria-hidden="true" tabindex="-1"></a><span class="ex">perf</span> top                         <span class="co"># CPU hotspots</span></span>
+<span id="cb1-20"><a href="#cb1-20" aria-hidden="true" tabindex="-1"></a><span class="fu">free</span> <span class="at">-m</span>                          <span class="co"># memory in MB</span></span>
+<span id="cb1-21"><a href="#cb1-21" aria-hidden="true" tabindex="-1"></a><span class="fu">uptime</span>                           <span class="co"># load average (1/5/15 min)</span></span>
+<span id="cb1-22"><a href="#cb1-22" aria-hidden="true" tabindex="-1"></a><span class="fu">df</span> <span class="at">-h</span>                            <span class="co"># disk usage</span></span>
+<span id="cb1-23"><a href="#cb1-23" aria-hidden="true" tabindex="-1"></a><span class="fu">du</span> <span class="at">-sh</span> /path/<span class="pp">*</span>                   <span class="co"># directory sizes</span></span>
+<span id="cb1-24"><a href="#cb1-24" aria-hidden="true" tabindex="-1"></a><span class="fu">dmesg</span> <span class="kw">|</span> <span class="fu">tail</span> <span class="at">-50</span>                 <span class="co"># kernel messages</span></span>
+<span id="cb1-25"><a href="#cb1-25" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-26"><a href="#cb1-26" aria-hidden="true" tabindex="-1"></a><span class="co"># FILES</span></span>
+<span id="cb1-27"><a href="#cb1-27" aria-hidden="true" tabindex="-1"></a><span class="fu">find</span> / <span class="at">-name</span> <span class="st">&quot;*.log&quot;</span> <span class="at">-mtime</span> <span class="at">-1</span>   <span class="co"># recent logs</span></span>
+<span id="cb1-28"><a href="#cb1-28" aria-hidden="true" tabindex="-1"></a><span class="fu">find</span> / <span class="at">-size</span> +100M               <span class="co"># large files</span></span>
+<span id="cb1-29"><a href="#cb1-29" aria-hidden="true" tabindex="-1"></a><span class="ex">lsof</span> <span class="kw">|</span> <span class="fu">grep</span> deleted              <span class="co"># open deleted files (disk leak!)</span></span>
+<span id="cb1-30"><a href="#cb1-30" aria-hidden="true" tabindex="-1"></a><span class="fu">stat</span> file                        <span class="co"># inode info</span></span>
+<span id="cb1-31"><a href="#cb1-31" aria-hidden="true" tabindex="-1"></a><span class="fu">ln</span> <span class="at">-s</span> TARGET LINK                <span class="co"># symbolic link</span></span>
+<span id="cb1-32"><a href="#cb1-32" aria-hidden="true" tabindex="-1"></a><span class="fu">ln</span> TARGET LINK                   <span class="co"># hard link</span></span>
+<span id="cb1-33"><a href="#cb1-33" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-34"><a href="#cb1-34" aria-hidden="true" tabindex="-1"></a><span class="co"># NETWORKING</span></span>
+<span id="cb1-35"><a href="#cb1-35" aria-hidden="true" tabindex="-1"></a><span class="ex">ss</span> <span class="at">-tlnp</span>                         <span class="co"># listening ports + PID</span></span>
+<span id="cb1-36"><a href="#cb1-36" aria-hidden="true" tabindex="-1"></a><span class="fu">netstat</span> <span class="at">-tulpn</span>                   <span class="co"># older (deprecated)</span></span>
+<span id="cb1-37"><a href="#cb1-37" aria-hidden="true" tabindex="-1"></a><span class="ex">tcpdump</span> <span class="at">-i</span> eth0 <span class="at">-n</span> port 443      <span class="co"># capture traffic</span></span>
+<span id="cb1-38"><a href="#cb1-38" aria-hidden="true" tabindex="-1"></a><span class="ex">tcpdump</span> <span class="at">-w</span> capture.pcap          <span class="co"># save capture</span></span>
+<span id="cb1-39"><a href="#cb1-39" aria-hidden="true" tabindex="-1"></a><span class="ex">ip</span> addr show                     <span class="co"># interfaces</span></span>
+<span id="cb1-40"><a href="#cb1-40" aria-hidden="true" tabindex="-1"></a><span class="ex">ip</span> route show                    <span class="co"># routing table</span></span>
+<span id="cb1-41"><a href="#cb1-41" aria-hidden="true" tabindex="-1"></a><span class="ex">ip</span> neigh show                    <span class="co"># ARP table</span></span>
+<span id="cb1-42"><a href="#cb1-42" aria-hidden="true" tabindex="-1"></a><span class="ex">traceroute</span> HOST                  <span class="co"># path tracing</span></span>
+<span id="cb1-43"><a href="#cb1-43" aria-hidden="true" tabindex="-1"></a><span class="ex">mtr</span> HOST                         <span class="co"># continuous traceroute</span></span>
+<span id="cb1-44"><a href="#cb1-44" aria-hidden="true" tabindex="-1"></a><span class="ex">dig</span> domain A                     <span class="co"># DNS lookup</span></span>
+<span id="cb1-45"><a href="#cb1-45" aria-hidden="true" tabindex="-1"></a><span class="ex">dig</span> +trace domain.com            <span class="co"># full DNS resolution trace</span></span>
+<span id="cb1-46"><a href="#cb1-46" aria-hidden="true" tabindex="-1"></a><span class="ex">nslookup</span> domain                  <span class="co"># simple DNS</span></span>
+<span id="cb1-47"><a href="#cb1-47" aria-hidden="true" tabindex="-1"></a><span class="ex">curl</span> <span class="at">-v</span> https://url              <span class="co"># verbose HTTP</span></span>
+<span id="cb1-48"><a href="#cb1-48" aria-hidden="true" tabindex="-1"></a><span class="ex">curl</span> <span class="at">-I</span> url                      <span class="co"># headers only</span></span>
+<span id="cb1-49"><a href="#cb1-49" aria-hidden="true" tabindex="-1"></a><span class="ex">curl</span> <span class="at">-o</span> /dev/null <span class="at">-w</span> <span class="st">&quot;%{http_code}&quot;</span> url   <span class="co"># status code only</span></span>
+<span id="cb1-50"><a href="#cb1-50" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-51"><a href="#cb1-51" aria-hidden="true" tabindex="-1"></a><span class="co"># SYSTEMD</span></span>
+<span id="cb1-52"><a href="#cb1-52" aria-hidden="true" tabindex="-1"></a><span class="ex">systemctl</span> status svc             <span class="co"># service status</span></span>
+<span id="cb1-53"><a href="#cb1-53" aria-hidden="true" tabindex="-1"></a><span class="ex">systemctl</span> start/stop/restart svc</span>
+<span id="cb1-54"><a href="#cb1-54" aria-hidden="true" tabindex="-1"></a><span class="ex">systemctl</span> enable/disable svc     <span class="co"># boot persistence</span></span>
+<span id="cb1-55"><a href="#cb1-55" aria-hidden="true" tabindex="-1"></a><span class="ex">systemctl</span> list-units <span class="at">--type</span><span class="op">=</span>service <span class="at">--state</span><span class="op">=</span>running</span>
+<span id="cb1-56"><a href="#cb1-56" aria-hidden="true" tabindex="-1"></a><span class="ex">journalctl</span> <span class="at">-u</span> svc <span class="at">-f</span>             <span class="co"># follow logs</span></span>
+<span id="cb1-57"><a href="#cb1-57" aria-hidden="true" tabindex="-1"></a><span class="ex">journalctl</span> <span class="at">-u</span> svc <span class="at">--since</span> <span class="st">&quot;1 hour ago&quot;</span></span>
+<span id="cb1-58"><a href="#cb1-58" aria-hidden="true" tabindex="-1"></a><span class="ex">journalctl</span> <span class="at">-p</span> err <span class="at">-n</span> 50          <span class="co"># last 50 errors</span></span>
+<span id="cb1-59"><a href="#cb1-59" aria-hidden="true" tabindex="-1"></a><span class="ex">systemd-analyze</span> blame            <span class="co"># slow boot services</span></span></code></pre></div>
+<hr />
+<h2 id="git-commands">Git Commands</h2>
+<div class="sourceCode" id="cb2"><pre
+class="sourceCode bash"><code class="sourceCode bash"><span id="cb2-1"><a href="#cb2-1" aria-hidden="true" tabindex="-1"></a><span class="co"># SETUP</span></span>
+<span id="cb2-2"><a href="#cb2-2" aria-hidden="true" tabindex="-1"></a><span class="fu">git</span> config <span class="at">--global</span> user.name <span class="st">&quot;Name&quot;</span></span>
+<span id="cb2-3"><a href="#cb2-3" aria-hidden="true" tabindex="-1"></a><span class="fu">git</span> config <span class="at">--global</span> user.email <span class="st">&quot;email&quot;</span></span>
+<span id="cb2-4"><a href="#cb2-4" aria-hidden="true" tabindex="-1"></a><span class="fu">git</span> config <span class="at">--global</span> pull.rebase true      <span class="co"># prefer rebase on pull</span></span>
+<span id="cb2-5"><a href="#cb2-5" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb2-6"><a href="#cb2-6" aria-hidden="true" tabindex="-1"></a><span class="co"># BASICS</span></span>
+<span id="cb2-7"><a href="#cb2-7" aria-hidden="true" tabindex="-1"></a><span class="fu">git</span> init / git clone URL</span>
+<span id="cb2-8"><a href="#cb2-8" aria-hidden="true" tabindex="-1"></a><span class="fu">git</span> add <span class="at">-p</span>                               <span class="co"># interactive stage hunks</span></span>
+<span id="cb2-9"><a href="#cb2-9" aria-hidden="true" tabindex="-1"></a><span class="fu">git</span> commit <span class="at">-m</span> <span class="st">&quot;feat: add payment API&quot;</span></span>
+<span id="cb2-10"><a href="#cb2-10" aria-hidden="true" tabindex="-1"></a><span class="fu">git</span> status / git log <span class="at">--oneline</span> <span class="at">--graph</span></span>
+<span id="cb2-11"><a href="#cb2-11" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb2-12"><a href="#cb2-12" aria-hidden="true" tabindex="-1"></a><span class="co"># BRANCHES</span></span>
+<span id="cb2-13"><a href="#cb2-13" aria-hidden="true" tabindex="-1"></a><span class="fu">git</span> branch <span class="at">-vv</span>                           <span class="co"># branches + tracking</span></span>
+<span id="cb2-14"><a href="#cb2-14" aria-hidden="true" tabindex="-1"></a><span class="fu">git</span> checkout <span class="at">-b</span> BRANCH                   <span class="co"># create + switch</span></span>
+<span id="cb2-15"><a href="#cb2-15" aria-hidden="true" tabindex="-1"></a><span class="fu">git</span> switch <span class="at">-c</span> BRANCH                     <span class="co"># modern syntax</span></span>
+<span id="cb2-16"><a href="#cb2-16" aria-hidden="true" tabindex="-1"></a><span class="fu">git</span> push <span class="at">-u</span> origin BRANCH               <span class="co"># push + track remote</span></span>
+<span id="cb2-17"><a href="#cb2-17" aria-hidden="true" tabindex="-1"></a><span class="fu">git</span> branch <span class="at">-d</span> BRANCH                     <span class="co"># delete local</span></span>
+<span id="cb2-18"><a href="#cb2-18" aria-hidden="true" tabindex="-1"></a><span class="fu">git</span> push origin <span class="at">--delete</span> BRANCH          <span class="co"># delete remote</span></span>
+<span id="cb2-19"><a href="#cb2-19" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb2-20"><a href="#cb2-20" aria-hidden="true" tabindex="-1"></a><span class="co"># ADVANCED</span></span>
+<span id="cb2-21"><a href="#cb2-21" aria-hidden="true" tabindex="-1"></a><span class="fu">git</span> rebase <span class="at">-i</span> HEAD~5                     <span class="co"># interactive rebase last 5</span></span>
+<span id="cb2-22"><a href="#cb2-22" aria-hidden="true" tabindex="-1"></a><span class="fu">git</span> rebase main                          <span class="co"># rebase onto main</span></span>
+<span id="cb2-23"><a href="#cb2-23" aria-hidden="true" tabindex="-1"></a><span class="fu">git</span> cherry-pick COMMIT_HASH              <span class="co"># apply specific commit</span></span>
+<span id="cb2-24"><a href="#cb2-24" aria-hidden="true" tabindex="-1"></a><span class="fu">git</span> cherry-pick A..B                     <span class="co"># range of commits</span></span>
+<span id="cb2-25"><a href="#cb2-25" aria-hidden="true" tabindex="-1"></a><span class="fu">git</span> bisect start<span class="kw">;</span> <span class="fu">git</span> bisect bad<span class="kw">;</span> <span class="fu">git</span> bisect good HASH  <span class="co"># bug search</span></span>
+<span id="cb2-26"><a href="#cb2-26" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb2-27"><a href="#cb2-27" aria-hidden="true" tabindex="-1"></a><span class="co"># UNDO</span></span>
+<span id="cb2-28"><a href="#cb2-28" aria-hidden="true" tabindex="-1"></a><span class="fu">git</span> restore file                         <span class="co"># discard working changes</span></span>
+<span id="cb2-29"><a href="#cb2-29" aria-hidden="true" tabindex="-1"></a><span class="fu">git</span> restore <span class="at">--staged</span> file                <span class="co"># unstage</span></span>
+<span id="cb2-30"><a href="#cb2-30" aria-hidden="true" tabindex="-1"></a><span class="fu">git</span> reset <span class="at">--soft</span> HEAD~1                 <span class="co"># undo commit, keep staged</span></span>
+<span id="cb2-31"><a href="#cb2-31" aria-hidden="true" tabindex="-1"></a><span class="fu">git</span> reset <span class="at">--mixed</span> HEAD~1                <span class="co"># undo commit, keep working dir</span></span>
+<span id="cb2-32"><a href="#cb2-32" aria-hidden="true" tabindex="-1"></a><span class="fu">git</span> reset <span class="at">--hard</span> HEAD~1                 <span class="co"># undo commit, discard changes</span></span>
+<span id="cb2-33"><a href="#cb2-33" aria-hidden="true" tabindex="-1"></a><span class="fu">git</span> revert COMMIT                        <span class="co"># safe undo (creates new commit)</span></span>
+<span id="cb2-34"><a href="#cb2-34" aria-hidden="true" tabindex="-1"></a><span class="fu">git</span> reflog                               <span class="co"># recover anything (90 days)</span></span>
+<span id="cb2-35"><a href="#cb2-35" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb2-36"><a href="#cb2-36" aria-hidden="true" tabindex="-1"></a><span class="co"># STASH</span></span>
+<span id="cb2-37"><a href="#cb2-37" aria-hidden="true" tabindex="-1"></a><span class="fu">git</span> stash push <span class="at">-m</span> <span class="st">&quot;WIP: payment feature&quot;</span></span>
+<span id="cb2-38"><a href="#cb2-38" aria-hidden="true" tabindex="-1"></a><span class="fu">git</span> stash list</span>
+<span id="cb2-39"><a href="#cb2-39" aria-hidden="true" tabindex="-1"></a><span class="fu">git</span> stash pop                            <span class="co"># apply + drop</span></span>
+<span id="cb2-40"><a href="#cb2-40" aria-hidden="true" tabindex="-1"></a><span class="fu">git</span> stash apply stash@{2}              <span class="co"># apply specific</span></span>
+<span id="cb2-41"><a href="#cb2-41" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb2-42"><a href="#cb2-42" aria-hidden="true" tabindex="-1"></a><span class="co"># REMOTE</span></span>
+<span id="cb2-43"><a href="#cb2-43" aria-hidden="true" tabindex="-1"></a><span class="fu">git</span> fetch <span class="at">--prune</span>                        <span class="co"># sync + remove stale remote branches</span></span>
+<span id="cb2-44"><a href="#cb2-44" aria-hidden="true" tabindex="-1"></a><span class="fu">git</span> remote <span class="at">-v</span>                            <span class="co"># list remotes</span></span>
+<span id="cb2-45"><a href="#cb2-45" aria-hidden="true" tabindex="-1"></a><span class="fu">git</span> remote set-url origin NEW_URL</span>
+<span id="cb2-46"><a href="#cb2-46" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb2-47"><a href="#cb2-47" aria-hidden="true" tabindex="-1"></a><span class="co"># INSPECT</span></span>
+<span id="cb2-48"><a href="#cb2-48" aria-hidden="true" tabindex="-1"></a><span class="fu">git</span> log <span class="at">--oneline</span> <span class="at">--graph</span> <span class="at">--all</span>         <span class="co"># visual branch history</span></span>
+<span id="cb2-49"><a href="#cb2-49" aria-hidden="true" tabindex="-1"></a><span class="fu">git</span> diff HEAD~1..HEAD                   <span class="co"># last commit changes</span></span>
+<span id="cb2-50"><a href="#cb2-50" aria-hidden="true" tabindex="-1"></a><span class="fu">git</span> show COMMIT                         <span class="co"># commit details</span></span>
+<span id="cb2-51"><a href="#cb2-51" aria-hidden="true" tabindex="-1"></a><span class="fu">git</span> blame file                          <span class="co"># who changed each line</span></span>
+<span id="cb2-52"><a href="#cb2-52" aria-hidden="true" tabindex="-1"></a><span class="fu">git</span> log <span class="at">--follow</span> <span class="at">-p</span> <span class="at">--</span> file            <span class="co"># file history with diffs</span></span>
+<span id="cb2-53"><a href="#cb2-53" aria-hidden="true" tabindex="-1"></a><span class="fu">git</span> shortlog <span class="at">-sn</span>                        <span class="co"># commits per author</span></span>
+<span id="cb2-54"><a href="#cb2-54" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb2-55"><a href="#cb2-55" aria-hidden="true" tabindex="-1"></a><span class="co"># TAGS</span></span>
+<span id="cb2-56"><a href="#cb2-56" aria-hidden="true" tabindex="-1"></a><span class="fu">git</span> tag v1.2.3                          <span class="co"># lightweight tag</span></span>
+<span id="cb2-57"><a href="#cb2-57" aria-hidden="true" tabindex="-1"></a><span class="fu">git</span> tag <span class="at">-a</span> v1.2.3 <span class="at">-m</span> <span class="st">&quot;Release v1.2.3&quot;</span> <span class="co"># annotated</span></span>
+<span id="cb2-58"><a href="#cb2-58" aria-hidden="true" tabindex="-1"></a><span class="fu">git</span> push origin <span class="at">--tags</span>                  <span class="co"># push all tags</span></span>
+<span id="cb2-59"><a href="#cb2-59" aria-hidden="true" tabindex="-1"></a><span class="fu">git</span> push origin v1.2.3                 <span class="co"># push specific tag</span></span></code></pre></div>
+<hr />
+<h2 id="docker-commands">Docker Commands</h2>
+<div class="sourceCode" id="cb3"><pre
+class="sourceCode bash"><code class="sourceCode bash"><span id="cb3-1"><a href="#cb3-1" aria-hidden="true" tabindex="-1"></a><span class="co"># IMAGES</span></span>
+<span id="cb3-2"><a href="#cb3-2" aria-hidden="true" tabindex="-1"></a><span class="ex">docker</span> build <span class="at">-t</span> myapp:1.0.0 .</span>
+<span id="cb3-3"><a href="#cb3-3" aria-hidden="true" tabindex="-1"></a><span class="ex">docker</span> build <span class="at">--target</span> production <span class="at">-t</span> myapp:1.0.0 .     <span class="co"># multi-stage target</span></span>
+<span id="cb3-4"><a href="#cb3-4" aria-hidden="true" tabindex="-1"></a><span class="ex">docker</span> build <span class="at">--no-cache</span> <span class="at">-t</span> myapp:1.0.0 .</span>
+<span id="cb3-5"><a href="#cb3-5" aria-hidden="true" tabindex="-1"></a><span class="ex">docker</span> images                                         <span class="co"># list images</span></span>
+<span id="cb3-6"><a href="#cb3-6" aria-hidden="true" tabindex="-1"></a><span class="ex">docker</span> rmi IMAGE_ID                                   <span class="co"># remove</span></span>
+<span id="cb3-7"><a href="#cb3-7" aria-hidden="true" tabindex="-1"></a><span class="ex">docker</span> image prune <span class="at">-a</span>                                 <span class="co"># remove unused</span></span>
+<span id="cb3-8"><a href="#cb3-8" aria-hidden="true" tabindex="-1"></a><span class="ex">docker</span> inspect IMAGE                                  <span class="co"># metadata</span></span>
+<span id="cb3-9"><a href="#cb3-9" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb3-10"><a href="#cb3-10" aria-hidden="true" tabindex="-1"></a><span class="co"># CONTAINERS</span></span>
+<span id="cb3-11"><a href="#cb3-11" aria-hidden="true" tabindex="-1"></a><span class="ex">docker</span> run <span class="at">-d</span> <span class="at">--name</span> myapp <span class="at">-p</span> 8080:8080 myapp:1.0.0</span>
+<span id="cb3-12"><a href="#cb3-12" aria-hidden="true" tabindex="-1"></a><span class="ex">docker</span> run <span class="at">--rm</span> <span class="at">-it</span> myapp:1.0.0 bash                 <span class="co"># interactive, auto-delete</span></span>
+<span id="cb3-13"><a href="#cb3-13" aria-hidden="true" tabindex="-1"></a><span class="ex">docker</span> run <span class="at">--env-file</span> .env myapp:1.0.0</span>
+<span id="cb3-14"><a href="#cb3-14" aria-hidden="true" tabindex="-1"></a><span class="ex">docker</span> run <span class="at">-v</span> <span class="va">$(</span><span class="bu">pwd</span><span class="va">)</span>:/app <span class="at">-w</span> /app myapp:1.0.0</span>
+<span id="cb3-15"><a href="#cb3-15" aria-hidden="true" tabindex="-1"></a><span class="ex">docker</span> run <span class="at">--memory</span><span class="op">=</span><span class="st">&quot;512m&quot;</span> <span class="at">--cpus</span><span class="op">=</span><span class="st">&quot;0.5&quot;</span> myapp:1.0.0</span>
+<span id="cb3-16"><a href="#cb3-16" aria-hidden="true" tabindex="-1"></a><span class="ex">docker</span> run <span class="at">--read-only</span> <span class="at">--tmpfs</span> /tmp myapp:1.0.0       <span class="co"># security hardened</span></span>
+<span id="cb3-17"><a href="#cb3-17" aria-hidden="true" tabindex="-1"></a><span class="ex">docker</span> run <span class="at">--user</span> 1001:1001 myapp:1.0.0</span>
+<span id="cb3-18"><a href="#cb3-18" aria-hidden="true" tabindex="-1"></a><span class="ex">docker</span> ps <span class="at">-a</span>                                          <span class="co"># all containers</span></span>
+<span id="cb3-19"><a href="#cb3-19" aria-hidden="true" tabindex="-1"></a><span class="ex">docker</span> stop / start / restart NAME</span>
+<span id="cb3-20"><a href="#cb3-20" aria-hidden="true" tabindex="-1"></a><span class="ex">docker</span> rm <span class="at">-f</span> NAME                                     <span class="co"># force remove</span></span>
+<span id="cb3-21"><a href="#cb3-21" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb3-22"><a href="#cb3-22" aria-hidden="true" tabindex="-1"></a><span class="co"># LOGS &amp; DEBUG</span></span>
+<span id="cb3-23"><a href="#cb3-23" aria-hidden="true" tabindex="-1"></a><span class="ex">docker</span> logs <span class="at">-f</span> CONTAINER                              <span class="co"># stream logs</span></span>
+<span id="cb3-24"><a href="#cb3-24" aria-hidden="true" tabindex="-1"></a><span class="ex">docker</span> logs <span class="at">--tail</span><span class="op">=</span>100 CONTAINER</span>
+<span id="cb3-25"><a href="#cb3-25" aria-hidden="true" tabindex="-1"></a><span class="ex">docker</span> exec <span class="at">-it</span> CONTAINER bash                        <span class="co"># shell</span></span>
+<span id="cb3-26"><a href="#cb3-26" aria-hidden="true" tabindex="-1"></a><span class="ex">docker</span> inspect CONTAINER                              <span class="co"># full details</span></span>
+<span id="cb3-27"><a href="#cb3-27" aria-hidden="true" tabindex="-1"></a><span class="ex">docker</span> stats                                         <span class="co"># live resource usage</span></span>
+<span id="cb3-28"><a href="#cb3-28" aria-hidden="true" tabindex="-1"></a><span class="ex">docker</span> top CONTAINER                                  <span class="co"># processes inside</span></span>
+<span id="cb3-29"><a href="#cb3-29" aria-hidden="true" tabindex="-1"></a><span class="ex">docker</span> diff CONTAINER                                 <span class="co"># filesystem changes</span></span>
+<span id="cb3-30"><a href="#cb3-30" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb3-31"><a href="#cb3-31" aria-hidden="true" tabindex="-1"></a><span class="co"># REGISTRY</span></span>
+<span id="cb3-32"><a href="#cb3-32" aria-hidden="true" tabindex="-1"></a><span class="ex">docker</span> login REGISTRY</span>
+<span id="cb3-33"><a href="#cb3-33" aria-hidden="true" tabindex="-1"></a><span class="ex">docker</span> tag myapp:1.0.0 ghcr.io/org/myapp:1.0.0</span>
+<span id="cb3-34"><a href="#cb3-34" aria-hidden="true" tabindex="-1"></a><span class="ex">docker</span> push ghcr.io/org/myapp:1.0.0</span>
+<span id="cb3-35"><a href="#cb3-35" aria-hidden="true" tabindex="-1"></a><span class="ex">docker</span> pull IMAGE</span>
+<span id="cb3-36"><a href="#cb3-36" aria-hidden="true" tabindex="-1"></a><span class="ex">docker</span> save IMAGE <span class="op">&gt;</span> image.tar                         <span class="co"># export</span></span>
+<span id="cb3-37"><a href="#cb3-37" aria-hidden="true" tabindex="-1"></a><span class="ex">docker</span> load <span class="op">&lt;</span> image.tar                               <span class="co"># import</span></span>
+<span id="cb3-38"><a href="#cb3-38" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb3-39"><a href="#cb3-39" aria-hidden="true" tabindex="-1"></a><span class="co"># VOLUMES &amp; NETWORK</span></span>
+<span id="cb3-40"><a href="#cb3-40" aria-hidden="true" tabindex="-1"></a><span class="ex">docker</span> volume ls / create NAME / rm NAME / inspect NAME</span>
+<span id="cb3-41"><a href="#cb3-41" aria-hidden="true" tabindex="-1"></a><span class="ex">docker</span> network ls / create NAME / inspect NAME</span>
+<span id="cb3-42"><a href="#cb3-42" aria-hidden="true" tabindex="-1"></a><span class="ex">docker</span> network connect NETWORK CONTAINER</span>
+<span id="cb3-43"><a href="#cb3-43" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb3-44"><a href="#cb3-44" aria-hidden="true" tabindex="-1"></a><span class="co"># CLEANUP</span></span>
+<span id="cb3-45"><a href="#cb3-45" aria-hidden="true" tabindex="-1"></a><span class="ex">docker</span> system prune <span class="at">-af</span>                               <span class="co"># remove all unused</span></span>
+<span id="cb3-46"><a href="#cb3-46" aria-hidden="true" tabindex="-1"></a><span class="ex">docker</span> system df                                      <span class="co"># disk usage</span></span>
+<span id="cb3-47"><a href="#cb3-47" aria-hidden="true" tabindex="-1"></a><span class="ex">docker</span> builder prune                                  <span class="co"># clear build cache</span></span>
+<span id="cb3-48"><a href="#cb3-48" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb3-49"><a href="#cb3-49" aria-hidden="true" tabindex="-1"></a><span class="co"># COMPOSE</span></span>
+<span id="cb3-50"><a href="#cb3-50" aria-hidden="true" tabindex="-1"></a><span class="ex">docker</span> compose up <span class="at">-d</span> <span class="at">--build</span></span>
+<span id="cb3-51"><a href="#cb3-51" aria-hidden="true" tabindex="-1"></a><span class="ex">docker</span> compose down <span class="at">-v</span>                                <span class="co"># remove volumes too</span></span>
+<span id="cb3-52"><a href="#cb3-52" aria-hidden="true" tabindex="-1"></a><span class="ex">docker</span> compose ps / logs <span class="at">-f</span> / top</span>
+<span id="cb3-53"><a href="#cb3-53" aria-hidden="true" tabindex="-1"></a><span class="ex">docker</span> compose exec SERVICE bash</span>
+<span id="cb3-54"><a href="#cb3-54" aria-hidden="true" tabindex="-1"></a><span class="ex">docker</span> compose config                                 <span class="co"># validate</span></span>
+<span id="cb3-55"><a href="#cb3-55" aria-hidden="true" tabindex="-1"></a><span class="ex">docker</span> compose pull                                   <span class="co"># pull images</span></span></code></pre></div>
+<hr />
+<h2 id="terraform-commands">Terraform Commands</h2>
+<div class="sourceCode" id="cb4"><pre
+class="sourceCode bash"><code class="sourceCode bash"><span id="cb4-1"><a href="#cb4-1" aria-hidden="true" tabindex="-1"></a><span class="co"># INIT</span></span>
+<span id="cb4-2"><a href="#cb4-2" aria-hidden="true" tabindex="-1"></a><span class="ex">terraform</span> init                           <span class="co"># initialize + download providers</span></span>
+<span id="cb4-3"><a href="#cb4-3" aria-hidden="true" tabindex="-1"></a><span class="ex">terraform</span> init <span class="at">-upgrade</span>                  <span class="co"># upgrade providers</span></span>
+<span id="cb4-4"><a href="#cb4-4" aria-hidden="true" tabindex="-1"></a><span class="ex">terraform</span> init <span class="at">-reconfigure</span>              <span class="co"># change backend</span></span>
+<span id="cb4-5"><a href="#cb4-5" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb4-6"><a href="#cb4-6" aria-hidden="true" tabindex="-1"></a><span class="co"># PLAN &amp; APPLY</span></span>
+<span id="cb4-7"><a href="#cb4-7" aria-hidden="true" tabindex="-1"></a><span class="ex">terraform</span> plan                           <span class="co"># show what will change</span></span>
+<span id="cb4-8"><a href="#cb4-8" aria-hidden="true" tabindex="-1"></a><span class="ex">terraform</span> plan <span class="at">-out</span><span class="op">=</span>tfplan              <span class="co"># save plan</span></span>
+<span id="cb4-9"><a href="#cb4-9" aria-hidden="true" tabindex="-1"></a><span class="ex">terraform</span> plan <span class="at">-target</span><span class="op">=</span>resource.name   <span class="co"># target specific resource</span></span>
+<span id="cb4-10"><a href="#cb4-10" aria-hidden="true" tabindex="-1"></a><span class="ex">terraform</span> plan <span class="at">-var</span><span class="op">=</span><span class="st">&quot;env=production&quot;</span></span>
+<span id="cb4-11"><a href="#cb4-11" aria-hidden="true" tabindex="-1"></a><span class="ex">terraform</span> plan <span class="at">-var-file</span><span class="op">=</span><span class="st">&quot;prod.tfvars&quot;</span></span>
+<span id="cb4-12"><a href="#cb4-12" aria-hidden="true" tabindex="-1"></a><span class="ex">terraform</span> apply tfplan                  <span class="co"># apply saved plan</span></span>
+<span id="cb4-13"><a href="#cb4-13" aria-hidden="true" tabindex="-1"></a><span class="ex">terraform</span> apply <span class="at">-auto-approve</span>           <span class="co"># skip confirmation (CI only!)</span></span>
+<span id="cb4-14"><a href="#cb4-14" aria-hidden="true" tabindex="-1"></a><span class="ex">terraform</span> destroy <span class="at">-target</span><span class="op">=</span>resource.name</span>
+<span id="cb4-15"><a href="#cb4-15" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb4-16"><a href="#cb4-16" aria-hidden="true" tabindex="-1"></a><span class="co"># STATE</span></span>
+<span id="cb4-17"><a href="#cb4-17" aria-hidden="true" tabindex="-1"></a><span class="ex">terraform</span> state list                    <span class="co"># list all resources in state</span></span>
+<span id="cb4-18"><a href="#cb4-18" aria-hidden="true" tabindex="-1"></a><span class="ex">terraform</span> state show resource.name     <span class="co"># show resource details</span></span>
+<span id="cb4-19"><a href="#cb4-19" aria-hidden="true" tabindex="-1"></a><span class="ex">terraform</span> state mv OLD NEW             <span class="co"># rename (avoid destroy/recreate)</span></span>
+<span id="cb4-20"><a href="#cb4-20" aria-hidden="true" tabindex="-1"></a><span class="ex">terraform</span> state rm resource.name       <span class="co"># remove from state (keep real resource)</span></span>
+<span id="cb4-21"><a href="#cb4-21" aria-hidden="true" tabindex="-1"></a><span class="ex">terraform</span> state pull                   <span class="co"># download remote state</span></span>
+<span id="cb4-22"><a href="#cb4-22" aria-hidden="true" tabindex="-1"></a><span class="ex">terraform</span> import resource.name REAL_ID <span class="co"># import existing infra</span></span>
+<span id="cb4-23"><a href="#cb4-23" aria-hidden="true" tabindex="-1"></a><span class="ex">terraform</span> force-unlock LOCK_ID         <span class="co"># release stuck lock (careful!)</span></span>
+<span id="cb4-24"><a href="#cb4-24" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb4-25"><a href="#cb4-25" aria-hidden="true" tabindex="-1"></a><span class="co"># VALIDATE &amp; FORMAT</span></span>
+<span id="cb4-26"><a href="#cb4-26" aria-hidden="true" tabindex="-1"></a><span class="ex">terraform</span> fmt <span class="at">-recursive</span>               <span class="co"># format all .tf files</span></span>
+<span id="cb4-27"><a href="#cb4-27" aria-hidden="true" tabindex="-1"></a><span class="ex">terraform</span> fmt <span class="at">-check</span>                   <span class="co"># check formatting (CI)</span></span>
+<span id="cb4-28"><a href="#cb4-28" aria-hidden="true" tabindex="-1"></a><span class="ex">terraform</span> validate                     <span class="co"># syntax + logic check</span></span>
+<span id="cb4-29"><a href="#cb4-29" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb4-30"><a href="#cb4-30" aria-hidden="true" tabindex="-1"></a><span class="co"># WORKSPACE</span></span>
+<span id="cb4-31"><a href="#cb4-31" aria-hidden="true" tabindex="-1"></a><span class="ex">terraform</span> workspace list</span>
+<span id="cb4-32"><a href="#cb4-32" aria-hidden="true" tabindex="-1"></a><span class="ex">terraform</span> workspace new staging</span>
+<span id="cb4-33"><a href="#cb4-33" aria-hidden="true" tabindex="-1"></a><span class="ex">terraform</span> workspace select production</span>
+<span id="cb4-34"><a href="#cb4-34" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb4-35"><a href="#cb4-35" aria-hidden="true" tabindex="-1"></a><span class="co"># OUTPUT</span></span>
+<span id="cb4-36"><a href="#cb4-36" aria-hidden="true" tabindex="-1"></a><span class="ex">terraform</span> output                        <span class="co"># show all outputs</span></span>
+<span id="cb4-37"><a href="#cb4-37" aria-hidden="true" tabindex="-1"></a><span class="ex">terraform</span> output <span class="at">-json</span>                  <span class="co"># JSON format</span></span>
+<span id="cb4-38"><a href="#cb4-38" aria-hidden="true" tabindex="-1"></a><span class="ex">terraform</span> output output_name            <span class="co"># specific output</span></span>
+<span id="cb4-39"><a href="#cb4-39" aria-hidden="true" tabindex="-1"></a><span class="ex">terraform</span> refresh                       <span class="co"># sync state with real infra</span></span>
+<span id="cb4-40"><a href="#cb4-40" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb4-41"><a href="#cb4-41" aria-hidden="true" tabindex="-1"></a><span class="co"># GRAPH</span></span>
+<span id="cb4-42"><a href="#cb4-42" aria-hidden="true" tabindex="-1"></a><span class="ex">terraform</span> graph <span class="kw">|</span> <span class="ex">dot</span> <span class="at">-Tsvg</span> <span class="op">&gt;</span> graph.svg  <span class="co"># visualize dependency graph</span></span></code></pre></div>
+<hr />
+<h2 id="aws-cli">AWS CLI</h2>
+<div class="sourceCode" id="cb5"><pre
+class="sourceCode bash"><code class="sourceCode bash"><span id="cb5-1"><a href="#cb5-1" aria-hidden="true" tabindex="-1"></a><span class="co"># CONFIG</span></span>
+<span id="cb5-2"><a href="#cb5-2" aria-hidden="true" tabindex="-1"></a><span class="ex">aws</span> configure                           <span class="co"># set credentials</span></span>
+<span id="cb5-3"><a href="#cb5-3" aria-hidden="true" tabindex="-1"></a><span class="ex">aws</span> configure <span class="at">--profile</span> prod            <span class="co"># named profile</span></span>
+<span id="cb5-4"><a href="#cb5-4" aria-hidden="true" tabindex="-1"></a><span class="bu">export</span> <span class="va">AWS_PROFILE</span><span class="op">=</span>prod                 <span class="co"># use profile</span></span>
+<span id="cb5-5"><a href="#cb5-5" aria-hidden="true" tabindex="-1"></a><span class="bu">export</span> <span class="va">AWS_DEFAULT_REGION</span><span class="op">=</span>us-east-1</span>
+<span id="cb5-6"><a href="#cb5-6" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb5-7"><a href="#cb5-7" aria-hidden="true" tabindex="-1"></a><span class="co"># EC2</span></span>
+<span id="cb5-8"><a href="#cb5-8" aria-hidden="true" tabindex="-1"></a><span class="ex">aws</span> ec2 describe-instances <span class="at">--filters</span> <span class="st">&quot;Name=instance-state-name,Values=running&quot;</span></span>
+<span id="cb5-9"><a href="#cb5-9" aria-hidden="true" tabindex="-1"></a><span class="ex">aws</span> ec2 describe-instances <span class="at">--query</span> <span class="st">&#39;Reservations[*].Instances[*].[InstanceId,PrivateIpAddress,State.Name]&#39;</span> <span class="at">--output</span> table</span>
+<span id="cb5-10"><a href="#cb5-10" aria-hidden="true" tabindex="-1"></a><span class="ex">aws</span> ec2 stop-instances <span class="at">--instance-ids</span> i-1234567890abcdef0</span>
+<span id="cb5-11"><a href="#cb5-11" aria-hidden="true" tabindex="-1"></a><span class="ex">aws</span> ec2 start-instances <span class="at">--instance-ids</span> i-1234567890abcdef0</span>
+<span id="cb5-12"><a href="#cb5-12" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb5-13"><a href="#cb5-13" aria-hidden="true" tabindex="-1"></a><span class="co"># S3</span></span>
+<span id="cb5-14"><a href="#cb5-14" aria-hidden="true" tabindex="-1"></a><span class="ex">aws</span> s3 ls s3://bucket-name/</span>
+<span id="cb5-15"><a href="#cb5-15" aria-hidden="true" tabindex="-1"></a><span class="ex">aws</span> s3 cp file.txt s3://bucket/path/</span>
+<span id="cb5-16"><a href="#cb5-16" aria-hidden="true" tabindex="-1"></a><span class="ex">aws</span> s3 sync ./local-dir s3://bucket/path/ <span class="at">--delete</span></span>
+<span id="cb5-17"><a href="#cb5-17" aria-hidden="true" tabindex="-1"></a><span class="ex">aws</span> s3 rb s3://bucket <span class="at">--force</span>              <span class="co"># remove bucket + contents</span></span>
+<span id="cb5-18"><a href="#cb5-18" aria-hidden="true" tabindex="-1"></a><span class="ex">aws</span> s3api get-object-acl <span class="at">--bucket</span> NAME <span class="at">--key</span> KEY</span>
+<span id="cb5-19"><a href="#cb5-19" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb5-20"><a href="#cb5-20" aria-hidden="true" tabindex="-1"></a><span class="co"># IAM</span></span>
+<span id="cb5-21"><a href="#cb5-21" aria-hidden="true" tabindex="-1"></a><span class="ex">aws</span> iam list-users</span>
+<span id="cb5-22"><a href="#cb5-22" aria-hidden="true" tabindex="-1"></a><span class="ex">aws</span> iam list-roles <span class="at">--query</span> <span class="st">&#39;Roles[*].[RoleName,CreateDate]&#39;</span> <span class="at">--output</span> table</span>
+<span id="cb5-23"><a href="#cb5-23" aria-hidden="true" tabindex="-1"></a><span class="ex">aws</span> iam get-role <span class="at">--role-name</span> ROLE_NAME</span>
+<span id="cb5-24"><a href="#cb5-24" aria-hidden="true" tabindex="-1"></a><span class="ex">aws</span> sts get-caller-identity               <span class="co"># who am I?</span></span>
+<span id="cb5-25"><a href="#cb5-25" aria-hidden="true" tabindex="-1"></a><span class="ex">aws</span> sts assume-role <span class="at">--role-arn</span> ARN <span class="at">--role-session-name</span> SESSION</span>
+<span id="cb5-26"><a href="#cb5-26" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb5-27"><a href="#cb5-27" aria-hidden="true" tabindex="-1"></a><span class="co"># SECRETS MANAGER</span></span>
+<span id="cb5-28"><a href="#cb5-28" aria-hidden="true" tabindex="-1"></a><span class="ex">aws</span> secretsmanager get-secret-value <span class="at">--secret-id</span> NAME <span class="at">--query</span> SecretString <span class="at">--output</span> text</span>
+<span id="cb5-29"><a href="#cb5-29" aria-hidden="true" tabindex="-1"></a><span class="ex">aws</span> secretsmanager list-secrets <span class="at">--query</span> <span class="st">&#39;SecretList[*].[Name,LastChangedDate]&#39;</span></span>
+<span id="cb5-30"><a href="#cb5-30" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb5-31"><a href="#cb5-31" aria-hidden="true" tabindex="-1"></a><span class="co"># EKS</span></span>
+<span id="cb5-32"><a href="#cb5-32" aria-hidden="true" tabindex="-1"></a><span class="ex">aws</span> eks update-kubeconfig <span class="at">--name</span> CLUSTER_NAME <span class="at">--region</span> REGION</span>
+<span id="cb5-33"><a href="#cb5-33" aria-hidden="true" tabindex="-1"></a><span class="ex">aws</span> eks list-clusters</span>
+<span id="cb5-34"><a href="#cb5-34" aria-hidden="true" tabindex="-1"></a><span class="ex">aws</span> eks describe-cluster <span class="at">--name</span> CLUSTER_NAME <span class="at">--query</span> <span class="st">&#39;cluster.[status,version,endpoint]&#39;</span></span>
+<span id="cb5-35"><a href="#cb5-35" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb5-36"><a href="#cb5-36" aria-hidden="true" tabindex="-1"></a><span class="co"># LOGS</span></span>
+<span id="cb5-37"><a href="#cb5-37" aria-hidden="true" tabindex="-1"></a><span class="ex">aws</span> logs describe-log-groups</span>
+<span id="cb5-38"><a href="#cb5-38" aria-hidden="true" tabindex="-1"></a><span class="ex">aws</span> logs tail /aws/eks/cluster/cluster <span class="at">--follow</span></span>
+<span id="cb5-39"><a href="#cb5-39" aria-hidden="true" tabindex="-1"></a><span class="ex">aws</span> logs filter-log-events <span class="at">--log-group-name</span> NAME <span class="at">--filter-pattern</span> <span class="st">&quot;ERROR&quot;</span></span>
+<span id="cb5-40"><a href="#cb5-40" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb5-41"><a href="#cb5-41" aria-hidden="true" tabindex="-1"></a><span class="co"># COST</span></span>
+<span id="cb5-42"><a href="#cb5-42" aria-hidden="true" tabindex="-1"></a><span class="ex">aws</span> ce get-cost-and-usage <span class="dt">\</span></span>
+<span id="cb5-43"><a href="#cb5-43" aria-hidden="true" tabindex="-1"></a>  <span class="at">--time-period</span> Start=2026-04-01,End=2026-04-30 <span class="dt">\</span></span>
+<span id="cb5-44"><a href="#cb5-44" aria-hidden="true" tabindex="-1"></a>  <span class="at">--granularity</span> MONTHLY <span class="dt">\</span></span>
+<span id="cb5-45"><a href="#cb5-45" aria-hidden="true" tabindex="-1"></a>  <span class="at">--metrics</span> BlendedCost <span class="dt">\</span></span>
+<span id="cb5-46"><a href="#cb5-46" aria-hidden="true" tabindex="-1"></a>  <span class="at">--group-by</span> Type=SERVICE,Key=SERVICE</span></code></pre></div>
+<hr />
+<h2 id="helm-quick-reference">Helm Quick Reference</h2>
+<div class="sourceCode" id="cb6"><pre
+class="sourceCode bash"><code class="sourceCode bash"><span id="cb6-1"><a href="#cb6-1" aria-hidden="true" tabindex="-1"></a><span class="ex">helm</span> repo add bitnami https://charts.bitnami.com/bitnami</span>
+<span id="cb6-2"><a href="#cb6-2" aria-hidden="true" tabindex="-1"></a><span class="ex">helm</span> repo update</span>
+<span id="cb6-3"><a href="#cb6-3" aria-hidden="true" tabindex="-1"></a><span class="ex">helm</span> search repo bitnami/postgresql <span class="at">--versions</span></span>
+<span id="cb6-4"><a href="#cb6-4" aria-hidden="true" tabindex="-1"></a><span class="ex">helm</span> show values bitnami/postgresql</span>
+<span id="cb6-5"><a href="#cb6-5" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb6-6"><a href="#cb6-6" aria-hidden="true" tabindex="-1"></a><span class="ex">helm</span> install my-postgres bitnami/postgresql <span class="dt">\</span></span>
+<span id="cb6-7"><a href="#cb6-7" aria-hidden="true" tabindex="-1"></a>  <span class="at">--namespace</span> databases <span class="at">--create-namespace</span> <span class="dt">\</span></span>
+<span id="cb6-8"><a href="#cb6-8" aria-hidden="true" tabindex="-1"></a>  <span class="at">-f</span> postgres-values.yaml <span class="dt">\</span></span>
+<span id="cb6-9"><a href="#cb6-9" aria-hidden="true" tabindex="-1"></a>  <span class="at">--set</span> auth.postgresPassword=PASS</span>
+<span id="cb6-10"><a href="#cb6-10" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb6-11"><a href="#cb6-11" aria-hidden="true" tabindex="-1"></a><span class="ex">helm</span> upgrade my-postgres bitnami/postgresql <span class="at">-f</span> values.yaml</span>
+<span id="cb6-12"><a href="#cb6-12" aria-hidden="true" tabindex="-1"></a><span class="ex">helm</span> upgrade <span class="at">--install</span> my-postgres bitnami/postgresql  <span class="co"># idempotent</span></span>
+<span id="cb6-13"><a href="#cb6-13" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb6-14"><a href="#cb6-14" aria-hidden="true" tabindex="-1"></a><span class="ex">helm</span> list <span class="at">-A</span></span>
+<span id="cb6-15"><a href="#cb6-15" aria-hidden="true" tabindex="-1"></a><span class="ex">helm</span> status my-postgres <span class="at">-n</span> databases</span>
+<span id="cb6-16"><a href="#cb6-16" aria-hidden="true" tabindex="-1"></a><span class="ex">helm</span> history my-postgres <span class="at">-n</span> databases</span>
+<span id="cb6-17"><a href="#cb6-17" aria-hidden="true" tabindex="-1"></a><span class="ex">helm</span> rollback my-postgres 2 <span class="at">-n</span> databases</span>
+<span id="cb6-18"><a href="#cb6-18" aria-hidden="true" tabindex="-1"></a><span class="ex">helm</span> uninstall my-postgres <span class="at">-n</span> databases</span>
+<span id="cb6-19"><a href="#cb6-19" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb6-20"><a href="#cb6-20" aria-hidden="true" tabindex="-1"></a><span class="ex">helm</span> template my-postgres bitnami/postgresql <span class="at">-f</span> values.yaml  <span class="co"># render</span></span>
+<span id="cb6-21"><a href="#cb6-21" aria-hidden="true" tabindex="-1"></a><span class="ex">helm</span> get values my-postgres <span class="at">-n</span> databases                      <span class="co"># installed values</span></span>
+<span id="cb6-22"><a href="#cb6-22" aria-hidden="true" tabindex="-1"></a><span class="ex">helm</span> get manifest my-postgres <span class="at">-n</span> databases                    <span class="co"># rendered manifests</span></span></code></pre></div>
+<hr />
+<h2 id="prometheus-promql-quick-reference">Prometheus / PromQL Quick
+Reference</h2>
+<pre class="promql"><code># Rate (counter) — requests per second
+rate(http_requests_total{job=&quot;api&quot;}[5m])
+
+# Error percentage
+rate(http_requests_total{status=~&quot;5..&quot;}[5m]) /
+rate(http_requests_total[5m]) * 100
+
+# P99 latency from histogram
+histogram_quantile(0.99,
+  sum(rate(http_request_duration_seconds_bucket[5m])) by (le, service)
+)
+
+# Memory usage %
+container_memory_working_set_bytes /
+container_spec_memory_limit_bytes * 100
+
+# CPU throttling %
+rate(container_cpu_cfs_throttled_seconds_total[5m]) /
+rate(container_cpu_cfs_periods_total[5m]) * 100
+
+# Pods not ready
+kube_deployment_spec_replicas - kube_deployment_status_ready_replicas
+
+# Disk fill prediction (4 hours)
+predict_linear(node_filesystem_free_bytes[2h], 4 * 3600) &lt; 0
+
+# Aggregations
+sum by (service) (rate(requests_total[5m]))   # per service
+avg without (instance) (cpu_usage[5m])        # collapse instance label
+topk(5, memory_bytes)                          # top 5</code></pre>
+<hr />
+<h2 id="security-scanning-commands">Security Scanning Commands</h2>
+<div class="sourceCode" id="cb8"><pre
+class="sourceCode bash"><code class="sourceCode bash"><span id="cb8-1"><a href="#cb8-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Container image scanning</span></span>
+<span id="cb8-2"><a href="#cb8-2" aria-hidden="true" tabindex="-1"></a><span class="ex">trivy</span> image myapp:latest</span>
+<span id="cb8-3"><a href="#cb8-3" aria-hidden="true" tabindex="-1"></a><span class="ex">trivy</span> image <span class="at">--severity</span> HIGH,CRITICAL myapp:latest</span>
+<span id="cb8-4"><a href="#cb8-4" aria-hidden="true" tabindex="-1"></a><span class="ex">trivy</span> image <span class="at">--exit-code</span> 1 <span class="at">--severity</span> CRITICAL myapp:latest</span>
+<span id="cb8-5"><a href="#cb8-5" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb8-6"><a href="#cb8-6" aria-hidden="true" tabindex="-1"></a><span class="co"># Filesystem scan (dependencies, IaC, secrets)</span></span>
+<span id="cb8-7"><a href="#cb8-7" aria-hidden="true" tabindex="-1"></a><span class="ex">trivy</span> fs <span class="at">--security-checks</span> vuln,config,secret ./</span>
+<span id="cb8-8"><a href="#cb8-8" aria-hidden="true" tabindex="-1"></a><span class="ex">grype</span> myapp:latest</span>
+<span id="cb8-9"><a href="#cb8-9" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb8-10"><a href="#cb8-10" aria-hidden="true" tabindex="-1"></a><span class="co"># SBOM generation</span></span>
+<span id="cb8-11"><a href="#cb8-11" aria-hidden="true" tabindex="-1"></a><span class="ex">syft</span> myapp:latest <span class="at">-o</span> spdx-json <span class="op">&gt;</span> sbom.json</span>
+<span id="cb8-12"><a href="#cb8-12" aria-hidden="true" tabindex="-1"></a><span class="ex">syft</span> myapp:latest <span class="at">-o</span> cyclonedx-json <span class="op">&gt;</span> sbom-cdx.json</span>
+<span id="cb8-13"><a href="#cb8-13" aria-hidden="true" tabindex="-1"></a><span class="ex">grype</span> sbom:./sbom.json</span>
+<span id="cb8-14"><a href="#cb8-14" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb8-15"><a href="#cb8-15" aria-hidden="true" tabindex="-1"></a><span class="co"># Image signing</span></span>
+<span id="cb8-16"><a href="#cb8-16" aria-hidden="true" tabindex="-1"></a><span class="ex">cosign</span> sign <span class="at">--yes</span> registry.io/org/myapp:v1.0.0</span>
+<span id="cb8-17"><a href="#cb8-17" aria-hidden="true" tabindex="-1"></a><span class="ex">cosign</span> verify <span class="at">--certificate-identity</span><span class="op">=</span>CI@COMPANY.com <span class="dt">\</span></span>
+<span id="cb8-18"><a href="#cb8-18" aria-hidden="true" tabindex="-1"></a>  <span class="at">--certificate-oidc-issuer</span><span class="op">=</span>https://token.actions.githubusercontent.com <span class="dt">\</span></span>
+<span id="cb8-19"><a href="#cb8-19" aria-hidden="true" tabindex="-1"></a>  registry.io/org/myapp:v1.0.0</span>
+<span id="cb8-20"><a href="#cb8-20" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb8-21"><a href="#cb8-21" aria-hidden="true" tabindex="-1"></a><span class="co"># IaC scanning</span></span>
+<span id="cb8-22"><a href="#cb8-22" aria-hidden="true" tabindex="-1"></a><span class="ex">checkov</span> <span class="at">-d</span> ./terraform <span class="at">--compact</span></span>
+<span id="cb8-23"><a href="#cb8-23" aria-hidden="true" tabindex="-1"></a><span class="ex">tfsec</span> ./terraform</span>
+<span id="cb8-24"><a href="#cb8-24" aria-hidden="true" tabindex="-1"></a><span class="ex">kube-score</span> score deployment.yaml</span>
+<span id="cb8-25"><a href="#cb8-25" aria-hidden="true" tabindex="-1"></a><span class="ex">kubesec</span> scan pod.yaml</span>
+<span id="cb8-26"><a href="#cb8-26" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb8-27"><a href="#cb8-27" aria-hidden="true" tabindex="-1"></a><span class="co"># Secret scanning</span></span>
+<span id="cb8-28"><a href="#cb8-28" aria-hidden="true" tabindex="-1"></a><span class="ex">gitleaks</span> detect <span class="at">--source</span><span class="op">=</span>. <span class="at">--verbose</span></span>
+<span id="cb8-29"><a href="#cb8-29" aria-hidden="true" tabindex="-1"></a><span class="ex">detect-secrets</span> scan . <span class="op">&gt;</span> .secrets.baseline</span>
+<span id="cb8-30"><a href="#cb8-30" aria-hidden="true" tabindex="-1"></a><span class="ex">detect-secrets</span> audit .secrets.baseline</span>
+<span id="cb8-31"><a href="#cb8-31" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb8-32"><a href="#cb8-32" aria-hidden="true" tabindex="-1"></a><span class="co"># K8s security audit</span></span>
+<span id="cb8-33"><a href="#cb8-33" aria-hidden="true" tabindex="-1"></a><span class="ex">kube-bench</span> run <span class="at">--targets</span> master,node</span>
+<span id="cb8-34"><a href="#cb8-34" aria-hidden="true" tabindex="-1"></a><span class="ex">kubectl</span> auth can-i <span class="at">--list</span> <span class="at">--as</span><span class="op">=</span>system:serviceaccount:default:myapp</span></code></pre></div>
+<hr />
+<h2 id="quick-reference-cards">Quick Reference Cards</h2>
+<h3 id="http-status-codes">HTTP Status Codes</h3>
+<pre><code>2xx Success:  200 OK, 201 Created, 204 No Content
+3xx Redirect: 301 Permanent, 302 Temp, 304 Not Modified
+4xx Client:   400 Bad Request, 401 Unauthorized, 403 Forbidden, 404 Not Found, 429 Too Many Requests
+5xx Server:   500 Internal Error, 502 Bad Gateway, 503 Service Unavailable, 504 Gateway Timeout</code></pre>
+<h3 id="port-quick-reference">Port Quick Reference</h3>
+<pre><code>22    SSH
+25    SMTP
+53    DNS (TCP+UDP)
+80    HTTP
+443   HTTPS
+2379  etcd client
+2380  etcd peer
+6443  Kubernetes API
+8080  HTTP alt
+9090  Prometheus
+9093  Alertmanager
+3000  Grafana
+3100  Loki
+5432  PostgreSQL
+3306  MySQL
+6379  Redis
+5672  RabbitMQ AMQP
+9092  Kafka
+2181  ZooKeeper</code></pre>
+<h3 id="git-commit-message-convention-conventional-commits">Git Commit
+Message Convention (Conventional Commits)</h3>
+<pre><code>feat:     new feature
+fix:      bug fix
+docs:     documentation
+style:    formatting (no logic change)
+refactor: code restructure (no feature/fix)
+perf:     performance improvement
+test:     adding tests
+build:    build system changes
+ci:       CI config changes
+chore:    maintenance tasks
+revert:   revert previous commit
+
+Examples:
+feat(auth): add JWT refresh token rotation
+fix(api): prevent double-charge on timeout retry
+feat!: drop support for Python 3.8  (! = breaking change)</code></pre>
+<h3 id="file-permissions-quick-reference">File Permissions Quick
+Reference</h3>
+<pre><code>chmod 755 → rwxr-xr-x (owner all, group/other read+exec)
+chmod 644 → rw-r--r--  (owner read+write, group/other read)
+chmod 600 → rw-------  (owner only, use for SSH keys)
+chmod 777 → rwxrwxrwx  (NEVER in production)
+chmod +x file           (add execute for all)
+chmod u+s file          (SUID — run as owner)
+chmod g+s dir           (SGID — new files inherit group)
+chmod +t dir            (sticky — only owner can delete)</code></pre>
+</body>
+</html>

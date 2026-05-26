@@ -1,0 +1,394 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" lang="" xml:lang="">
+<head>
+  <meta charset="utf-8" />
+  <meta name="generator" content="pandoc" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes" />
+  <title>DevOps Mastery: mock-interview</title>
+  <style>
+    code{white-space: pre-wrap;}
+    span.smallcaps{font-variant: small-caps;}
+    div.columns{display: flex; gap: min(4vw, 1.5em);}
+    div.column{flex: auto; overflow-x: auto;}
+    div.hanging-indent{margin-left: 1.5em; text-indent: -1.5em;}
+    /* The extra [class] is a hack that increases specificity enough to
+       override a similar rule in reveal.js */
+    ul.task-list[class]{list-style: none;}
+    ul.task-list li input[type="checkbox"] {
+      font-size: inherit;
+      width: 0.8em;
+      margin: 0 0.8em 0.2em -1.6em;
+      vertical-align: middle;
+    }
+    .display.math{display: block; text-align: center; margin: 0.5rem auto;}
+  </style>
+  <link rel="stylesheet" href="/tmp/devops-style.css" />
+</head>
+<body>
+<header id="title-block-header">
+<h1 class="title">DevOps Mastery: mock-interview</h1>
+</header>
+<nav id="TOC" role="doc-toc">
+<ul>
+<li><a href="#mock-interview-senior-devops-engineer"
+id="toc-mock-interview-senior-devops-engineer">Mock Interview — Senior
+DevOps Engineer</a>
+<ul>
+<li><a href="#instructions-for-self-practice"
+id="toc-instructions-for-self-practice">Instructions for
+Self-Practice</a></li>
+<li><a href="#round-1-architecture-design-45-min"
+id="toc-round-1-architecture-design-45-min">Round 1: Architecture &amp;
+Design (45 min)</a>
+<ul>
+<li><a href="#q1-system-design" id="toc-q1-system-design">Q1: System
+Design</a></li>
+<li><a href="#q2-incident-scenario" id="toc-q2-incident-scenario">Q2:
+Incident Scenario</a></li>
+<li><a href="#q3-trade-offs" id="toc-q3-trade-offs">Q3:
+Trade-offs</a></li>
+</ul></li>
+<li><a href="#round-2-technical-depth-30-min"
+id="toc-round-2-technical-depth-30-min">Round 2: Technical Depth (30
+min)</a>
+<ul>
+<li><a href="#q4-kubernetes-networking"
+id="toc-q4-kubernetes-networking">Q4: Kubernetes Networking</a></li>
+<li><a href="#q5-prometheus-deep-dive"
+id="toc-q5-prometheus-deep-dive">Q5: Prometheus Deep Dive</a></li>
+<li><a href="#q6-security" id="toc-q6-security">Q6: Security</a></li>
+</ul></li>
+<li><a href="#round-3-behavioral-20-min"
+id="toc-round-3-behavioral-20-min">Round 3: Behavioral (20 min)</a>
+<ul>
+<li><a href="#q7-conflict-resolution"
+id="toc-q7-conflict-resolution">Q7: Conflict Resolution</a></li>
+<li><a href="#q8-failure" id="toc-q8-failure">Q8: Failure</a></li>
+</ul></li>
+<li><a href="#scoring-rubric" id="toc-scoring-rubric">Scoring
+Rubric</a></li>
+<li><a href="#day-interview-prep-plan"
+id="toc-day-interview-prep-plan">30-Day Interview Prep Plan</a></li>
+</ul></li>
+</ul>
+</nav>
+<h1 id="mock-interview-senior-devops-engineer">Mock Interview — Senior
+DevOps Engineer</h1>
+<h2 id="instructions-for-self-practice">Instructions for
+Self-Practice</h2>
+<ol type="1">
+<li>Cover the answers section below each question</li>
+<li>Set a 3-minute timer and answer out loud (record yourself)</li>
+<li>Uncover the answer and compare</li>
+<li>Rate yourself: Depth (1-5) · Clarity (1-5) · Completeness (1-5)</li>
+<li>Repeat weak areas until consistent 4+ scores</li>
+</ol>
+<hr />
+<h2 id="round-1-architecture-design-45-min">Round 1: Architecture &amp;
+Design (45 min)</h2>
+<h3 id="q1-system-design">Q1: System Design</h3>
+<blockquote>
+<p><strong>“Design the CI/CD infrastructure for a company deploying 50
+microservices 30 times a day to Kubernetes. They have
+dev/staging/production environments.”</strong></p>
+</blockquote>
+<p><strong>Ideal answer covers:</strong></p>
+<p><strong>Clarifying questions to ask first:</strong> - Team size?
+(affects pipeline parallelism needs) - Monorepo or polyrepo? -
+Kubernetes managed (EKS/GKE) or self-managed? - Any compliance
+requirements (SOC 2, PCI)? - Current tooling or greenfield?</p>
+<p><strong>Architecture decision:</strong> - GitOps model: Git is source
+of truth, ArgoCD pulls desired state - GitHub Actions for CI (build,
+test, scan, push image) - ArgoCD for CD (sync manifests from Git to
+cluster) - Separate pipelines per service but shared runner pool</p>
+<p><strong>Pipeline flow:</strong> 1. Developer pushes → PR created 2.
+CI: lint → unit test → SAST → build image → Trivy scan → push to ECR
+with SHA tag 3. CI updates Helm values file in GitOps repo with new
+image tag 4. ArgoCD auto-syncs staging within minutes 5. Smoke tests run
+against staging 6. Production promotion: PR to GitOps repo → reviewer
+approves → ArgoCD syncs production</p>
+<p><strong>Environment isolation:</strong> - Separate K8s namespaces
+with RBAC - Separate AWS accounts for production (blast radius
+containment) - Separate ArgoCD projects with access control</p>
+<p><strong>Observability:</strong> - Deployment annotations in Grafana →
+correlate deploys with metric changes - ArgoCD sync status → alert if
+sync fails or drift detected - DORA metrics tracked: deployment
+frequency, lead time, MTTR, change failure rate</p>
+<hr />
+<h3 id="q2-incident-scenario">Q2: Incident Scenario</h3>
+<blockquote>
+<p><strong>“At 2am you get paged: ‘checkout is down, all purchases
+failing.’ You are the IC. Walk me through your response.”</strong></p>
+</blockquote>
+<p><strong>Ideal answer covers:</strong></p>
+<p><strong>First 2 minutes:</strong> - Open incident channel
+<code>#inc-20260525-checkout-down</code> - Assign Tech Lead if
+available, set Comms role - Set severity: SEV-1 (revenue-impacting, all
+users) - Acknowledge alert to stop repeat pages</p>
+<p><strong>Investigate (3-10 min):</strong> - Check Grafana dashboard:
+error rate, latency, traffic drop -
+<code>kubectl get pods -n production</code> — any CrashLoopBackOff,
+OOMKilled? -
+<code>kubectl get events -n production --sort-by=.lastTimestamp</code> -
+Check recent deployments: ArgoCD history, deployment annotations on
+dashboard - Check downstream dependencies: payment API, database
+response times</p>
+<p><strong>Mitigation before root cause (10-20 min):</strong> - If
+recent deploy:
+<code>kubectl rollout undo deploy/checkout -n production</code> —
+rollback first, investigate later - If database: check connection pool,
+query times, read replica lag - Scale up if traffic spike:
+<code>kubectl scale deploy/checkout --replicas=10</code> - Update status
+page and stakeholder channel every 10-15 minutes</p>
+<p><strong>Recovery confirmation:</strong> - Error rate returns to
+baseline (&lt; 0.1%) - Successful end-to-end checkout test - Monitor for
+10 minutes before declaring resolved</p>
+<p><strong>Post-incident:</strong> - Blameless post-mortem within 48
+hours - Action items with owners and due dates - Update runbook with new
+failure mode</p>
+<hr />
+<h3 id="q3-trade-offs">Q3: Trade-offs</h3>
+<blockquote>
+<p><strong>“When would you choose Blue-Green over Canary deployment?
+What about Feature Flags?”</strong></p>
+</blockquote>
+<p><strong>Blue-Green — choose when:</strong> - Need instant rollback
+capability (&lt; 30 seconds, just flip the load balancer) - Stateless
+services only (sessions don’t cross environments) - Full environment
+parity required for testing - DB migrations already applied and
+backwards-compatible - Cost: requires double infrastructure during
+switch</p>
+<p><strong>Canary — choose when:</strong> - Need to validate behavior
+with real production traffic gradually - Can monitor error rate and
+auto-rollback on threshold breach - Traffic shaping at ingress level
+(NGINX weighted routing or Argo Rollouts) - More gradual risk: 5% → 25%
+→ 100% - Takes longer but catches issues before full blast radius</p>
+<p><strong>Feature Flags — choose when:</strong> - Want to decouple
+deploy from release (deploy the code, turn on the feature separately) -
+A/B testing different implementations - Emergency kill switch needed
+(turn off feature without redeploying) - Targeting specific
+users/cohorts/regions - Dark launching: code in production but feature
+off for all users</p>
+<p><strong>Real answer:</strong> Use all three together. Deploy with
+canary, controlled by feature flags, with blue-green for rollback. The
+combination gives maximum safety with fine-grained control.</p>
+<hr />
+<h2 id="round-2-technical-depth-30-min">Round 2: Technical Depth (30
+min)</h2>
+<h3 id="q4-kubernetes-networking">Q4: Kubernetes Networking</h3>
+<blockquote>
+<p><strong>“Explain exactly what happens when a pod in namespace A calls
+<code>http://myservice.namespace-b.svc.cluster.local:80</code>.”</strong></p>
+</blockquote>
+<p><strong>Answer:</strong> 1. Pod’s DNS resolver (stub resolver)
+queries <code>169.254.20.10:53</code> (or CoreDNS ClusterIP on port 53)
+2. CoreDNS looks up <code>myservice.namespace-b.svc.cluster.local</code>
+3. CoreDNS returns the Service’s ClusterIP
+(e.g. <code>10.96.45.12</code>) 4. Pod initiates TCP connection to
+<code>10.96.45.12:80</code> 5. The packet hits
+<code>iptables</code>/<code>ipvs</code> rules installed by
+<code>kube-proxy</code> on the source node 6. <code>kube-proxy</code>
+DNAT rule rewrites destination: <code>10.96.45.12:80</code> → one of the
+pod IPs in the Endpoints list (e.g. <code>10.244.2.5:8080</code>) 7.
+Packet is routed to the destination node via the CNI overlay network
+(VXLAN/BGP depending on CNI) 8. Pod receives the request on its actual
+IP</p>
+<p><strong>What can go wrong:</strong> - DNS failure: CoreDNS pod down,
+or <code>ndots:5</code> search domain causing excessive DNS queries -
+Empty Endpoints: pod label selector doesn’t match Service selector -
+NetworkPolicy blocking: source pod or destination pod has restrictive
+policy - kube-proxy iptables rules stale: <code>kube-proxy</code> pod
+crashed or node network issue</p>
+<hr />
+<h3 id="q5-prometheus-deep-dive">Q5: Prometheus Deep Dive</h3>
+<blockquote>
+<p><strong>“We have 100 microservices. How do you prevent Prometheus
+from running out of memory? What is cardinality and how do you control
+it?”</strong></p>
+</blockquote>
+<p><strong>Answer:</strong> Cardinality = total number of unique time
+series = unique combinations of all label values.</p>
+<p><strong>What causes high cardinality:</strong> - User IDs, order IDs,
+session IDs as labels → millions of unique series - URLs with path
+parameters: <code>/users/12345/orders</code> as a label - Pod names in
+labels (rotate constantly) - Timestamps or request IDs</p>
+<p><strong>Why it’s dangerous:</strong> Each unique series requires
+memory in the TSDB. A Prometheus with 10 million series might need 10-20
+GB RAM just for the head block. Series churn (new series created
+constantly) makes it worse.</p>
+<p><strong>Controls:</strong> 1. <strong>Relabeling rules</strong> in
+Prometheus scrape config: drop high-cardinality labels before ingestion
+2. <strong>Recording rules</strong>: pre-aggregate expensive PromQL
+expressions, store as lower-cardinality series 3. <strong>Metric labels
+review</strong>: enforce label naming standards in code review 4.
+<strong>Cardinality monitoring</strong>: alert when a job’s series count
+exceeds threshold 5. <strong>Remote write filtering</strong>: use
+<code>write_relabel_configs</code> to drop before sending to Thanos 6.
+<strong>Tool</strong>: <code>mimirtool analyze</code> or Grafana’s
+Cardinality Management page shows worst offenders</p>
+<p><strong>For 100 services:</strong> - Federated Prometheus: one
+Prometheus per namespace/team, global Prometheus scrapes aggregated
+metrics only - Or: Thanos/Cortex/Mimir for horizontally scalable storage
+— multiple Prometheus instances, Thanos Querier provides global view</p>
+<hr />
+<h3 id="q6-security">Q6: Security</h3>
+<blockquote>
+<p><strong>“A developer accidentally committed an AWS secret key to the
+public GitHub repo 2 hours ago. What do you do?”</strong></p>
+</blockquote>
+<p><strong>Immediate (minutes):</strong> 1. Rotate the key immediately —
+AWS console → IAM → Security credentials → make inactive + delete 2.
+Create a new access key if the service still needs it (or switch to
+IRSA/role-based) 3. Check CloudTrail for API calls with the compromised
+key in the last 2 hours 4. Look for: unusual regions, new IAM users
+created, new EC2 instances, S3 data access/exfiltration</p>
+<p><strong>Clean up Git history:</strong> 5.
+<code>git filter-repo</code> (preferred) or BFG Repo-Cleaner to remove
+secret from all history 6. Force-push to overwrite remote history
+(coordinate with team — they need to re-clone) 7. GitHub has a secret
+scanning feature that may have already flagged it — check security
+alerts</p>
+<p><strong>Communicate:</strong> 8. Notify security team per incident
+process 9. Document: what was exposed, what was accessed, what was done
+10. If customer data was accessible: legal/compliance review for breach
+notification</p>
+<p><strong>Prevent recurrence:</strong> 11. Enable GitHub Secret
+Scanning and push protection (blocks commits with secrets) 12. Add
+gitleaks as pre-commit hook for all developers 13. Eliminate static
+credentials entirely: switch to IRSA for EC2/EKS, OIDC for CI/CD</p>
+<hr />
+<h2 id="round-3-behavioral-20-min">Round 3: Behavioral (20 min)</h2>
+<h3 id="q7-conflict-resolution">Q7: Conflict Resolution</h3>
+<blockquote>
+<p><strong>“Tell me about a time you disagreed with your manager about a
+technical decision.”</strong></p>
+</blockquote>
+<p><strong>Framework:</strong> - State the disagreement clearly and
+factually (don’t be vague) - Show you heard their position and tried to
+understand their reasoning - Explain how you raised your concern (data,
+not opinion) - Show you were willing to accept the decision even if not
+your preference - Explain the outcome honestly</p>
+<p><strong>Red flags to avoid:</strong> - “I was right and they
+eventually realized it” (arrogant) - “I just did what they said” (no
+backbone) - “We never disagree” (not credible)</p>
+<p><strong>Strong structure:</strong> &gt; “My manager wanted to skip
+the canary phase and do a direct blue-green release for a critical
+payment service change. I was concerned because the new code path had
+significantly different DB query patterns we hadn’t load-tested. I
+prepared a short risk analysis — estimated 15 minutes of canary
+observation would tell us if queries were performing correctly. I
+proposed we time-box it: 15-minute canary at 5%, if no latency spike we
+go straight to 100%. They agreed. We did find a slow query during the
+canary that would have caused degradation at full load. Caught it with 5
+minutes of impact vs potentially 30 minutes.”</p>
+<hr />
+<h3 id="q8-failure">Q8: Failure</h3>
+<blockquote>
+<p><strong>“Describe the biggest technical mistake you’ve made in your
+career.”</strong></p>
+</blockquote>
+<p><strong>What interviewers are evaluating:</strong> - Self-awareness
+(can you identify your own failures?) - Maturity (do you blame others,
+or own it?) - Learning mindset (what changed as a result?) - Judgment
+(is the mistake proportionate to seniority — was it actually a hard
+problem?)</p>
+<p><strong>Structure:</strong> 1. Describe what happened clearly and
+specifically 2. Own your part without excessive self-flagellation 3.
+Describe the impact honestly (affected X users for Y minutes) 4.
+Describe what you changed: process, tooling, behavior 5. End with the
+systemic fix, not the personal lesson</p>
+<hr />
+<h2 id="scoring-rubric">Scoring Rubric</h2>
+<table>
+<colgroup>
+<col style="width: 15%" />
+<col style="width: 19%" />
+<col style="width: 30%" />
+<col style="width: 34%" />
+</colgroup>
+<thead>
+<tr class="header">
+<th>Score</th>
+<th>Technical</th>
+<th>Communication</th>
+<th>Problem Solving</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td>5</td>
+<td>Deep expertise, tradeoffs articulated clearly</td>
+<td>Clear structure, concise, no rambling</td>
+<td>Systematic, asks good questions</td>
+</tr>
+<tr class="even">
+<td>4</td>
+<td>Solid knowledge, one or two gaps</td>
+<td>Good clarity, minor organization issues</td>
+<td>Logical approach, finds answer</td>
+</tr>
+<tr class="odd">
+<td>3</td>
+<td>Surface knowledge, can’t go deep</td>
+<td>Understandable but disorganized</td>
+<td>Gets there with hints</td>
+</tr>
+<tr class="even">
+<td>2</td>
+<td>Misconceptions, significant gaps</td>
+<td>Hard to follow</td>
+<td>Struggles without guidance</td>
+</tr>
+<tr class="odd">
+<td>1</td>
+<td>Incorrect or no knowledge</td>
+<td>Cannot explain</td>
+<td>No structured approach</td>
+</tr>
+</tbody>
+</table>
+<p><strong>Target for Senior DevOps role: 4+ on all
+dimensions</strong></p>
+<hr />
+<h2 id="day-interview-prep-plan">30-Day Interview Prep Plan</h2>
+<table>
+<colgroup>
+<col style="width: 27%" />
+<col style="width: 31%" />
+<col style="width: 40%" />
+</colgroup>
+<thead>
+<tr class="header">
+<th>Week</th>
+<th>Focus</th>
+<th>Practice</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td>1</td>
+<td>K8s deep dive + Linux internals</td>
+<td>2 mock sessions on architecture</td>
+</tr>
+<tr class="even">
+<td>2</td>
+<td>Cloud (AWS) + Terraform</td>
+<td>Design a multi-region architecture</td>
+</tr>
+<tr class="odd">
+<td>3</td>
+<td>Monitoring + SRE + Security</td>
+<td>Incident simulation exercise</td>
+</tr>
+<tr class="even">
+<td>4</td>
+<td>Behavioral + full mocks</td>
+<td>3 full end-to-end mock interviews</td>
+</tr>
+</tbody>
+</table>
+<p><strong>Daily habits:</strong> - 30 min: Read one topic from notes
+(rotate domains) - 15 min: Practice one PromQL query / kubectl command
+set - 15 min: One behavioral question, answered out loud</p>
+</body>
+</html>

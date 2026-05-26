@@ -1,0 +1,245 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" lang="" xml:lang="">
+<head>
+  <meta charset="utf-8" />
+  <meta name="generator" content="pandoc" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes" />
+  <title>DevOps Mastery: interview-questions</title>
+  <style>
+    code{white-space: pre-wrap;}
+    span.smallcaps{font-variant: small-caps;}
+    div.columns{display: flex; gap: min(4vw, 1.5em);}
+    div.column{flex: auto; overflow-x: auto;}
+    div.hanging-indent{margin-left: 1.5em; text-indent: -1.5em;}
+    /* The extra [class] is a hack that increases specificity enough to
+       override a similar rule in reveal.js */
+    ul.task-list[class]{list-style: none;}
+    ul.task-list li input[type="checkbox"] {
+      font-size: inherit;
+      width: 0.8em;
+      margin: 0 0.8em 0.2em -1.6em;
+      vertical-align: middle;
+    }
+    .display.math{display: block; text-align: center; margin: 0.5rem auto;}
+    /* CSS for syntax highlighting */
+    pre > code.sourceCode { white-space: pre; position: relative; }
+    pre > code.sourceCode > span { line-height: 1.25; }
+    pre > code.sourceCode > span:empty { height: 1.2em; }
+    .sourceCode { overflow: visible; }
+    code.sourceCode > span { color: inherit; text-decoration: inherit; }
+    div.sourceCode { margin: 1em 0; }
+    pre.sourceCode { margin: 0; }
+    @media screen {
+    div.sourceCode { overflow: auto; }
+    }
+    @media print {
+    pre > code.sourceCode { white-space: pre-wrap; }
+    pre > code.sourceCode > span { text-indent: -5em; padding-left: 5em; }
+    }
+    pre.numberSource code
+      { counter-reset: source-line 0; }
+    pre.numberSource code > span
+      { position: relative; left: -4em; counter-increment: source-line; }
+    pre.numberSource code > span > a:first-child::before
+      { content: counter(source-line);
+        position: relative; left: -1em; text-align: right; vertical-align: baseline;
+        border: none; display: inline-block;
+        -webkit-touch-callout: none; -webkit-user-select: none;
+        -khtml-user-select: none; -moz-user-select: none;
+        -ms-user-select: none; user-select: none;
+        padding: 0 4px; width: 4em;
+        color: #aaaaaa;
+      }
+    pre.numberSource { margin-left: 3em; border-left: 1px solid #aaaaaa;  padding-left: 4px; }
+    div.sourceCode
+      {  background-color: #f8f8f8; }
+    @media screen {
+    pre > code.sourceCode > span > a:first-child::before { text-decoration: underline; }
+    }
+    code span.al { color: #ef2929; } /* Alert */
+    code span.an { color: #8f5902; font-weight: bold; font-style: italic; } /* Annotation */
+    code span.at { color: #204a87; } /* Attribute */
+    code span.bn { color: #0000cf; } /* BaseN */
+    code span.cf { color: #204a87; font-weight: bold; } /* ControlFlow */
+    code span.ch { color: #4e9a06; } /* Char */
+    code span.cn { color: #8f5902; } /* Constant */
+    code span.co { color: #8f5902; font-style: italic; } /* Comment */
+    code span.cv { color: #8f5902; font-weight: bold; font-style: italic; } /* CommentVar */
+    code span.do { color: #8f5902; font-weight: bold; font-style: italic; } /* Documentation */
+    code span.dt { color: #204a87; } /* DataType */
+    code span.dv { color: #0000cf; } /* DecVal */
+    code span.er { color: #a40000; font-weight: bold; } /* Error */
+    code span.ex { } /* Extension */
+    code span.fl { color: #0000cf; } /* Float */
+    code span.fu { color: #204a87; font-weight: bold; } /* Function */
+    code span.im { } /* Import */
+    code span.in { color: #8f5902; font-weight: bold; font-style: italic; } /* Information */
+    code span.kw { color: #204a87; font-weight: bold; } /* Keyword */
+    code span.op { color: #ce5c00; font-weight: bold; } /* Operator */
+    code span.ot { color: #8f5902; } /* Other */
+    code span.pp { color: #8f5902; font-style: italic; } /* Preprocessor */
+    code span.sc { color: #ce5c00; font-weight: bold; } /* SpecialChar */
+    code span.ss { color: #4e9a06; } /* SpecialString */
+    code span.st { color: #4e9a06; } /* String */
+    code span.va { color: #000000; } /* Variable */
+    code span.vs { color: #4e9a06; } /* VerbatimString */
+    code span.wa { color: #8f5902; font-weight: bold; font-style: italic; } /* Warning */
+  </style>
+  <link rel="stylesheet" href="/tmp/devops-style.css" />
+</head>
+<body>
+<header id="title-block-header">
+<h1 class="title">DevOps Mastery: interview-questions</h1>
+</header>
+<nav id="TOC" role="doc-toc">
+<ul>
+<li><a href="#docker-interview-questions-answers"
+id="toc-docker-interview-questions-answers">Docker — Interview Questions
+&amp; Answers</a></li>
+</ul>
+</nav>
+<h1 id="docker-interview-questions-answers">Docker — Interview Questions
+&amp; Answers</h1>
+<p><strong>Q1: What is the difference between a Docker image and a
+container?</strong> &gt; <strong>Image:</strong> Read-only template with
+layers. Blueprint. Stored in registry. &gt; <strong>Container:</strong>
+Running instance of an image. Has a writable layer on top. Ephemeral
+(data lost on removal unless using volumes).</p>
+<p><strong>Q2: Explain Docker layer caching and how to optimize
+it.</strong> &gt; Each instruction in Dockerfile creates a layer. Cache
+is invalidated when a layer changes — all subsequent layers rebuild.
+&gt; <strong>Optimization:</strong> &gt; 1. Put instructions that change
+rarely at the top (FROM, RUN apt-get) &gt; 2. Copy dependency files
+before source code:</p>
+<div class="sourceCode" id="cb1"><pre
+class="sourceCode dockerfile"><code class="sourceCode dockerfile"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a><span class="kw">COPY</span> requirements.txt .    <span class="co"># cache this layer</span></span>
+<span id="cb1-2"><a href="#cb1-2" aria-hidden="true" tabindex="-1"></a><span class="kw">RUN</span> <span class="ex">pip</span> install <span class="at">-r</span> requirements.txt</span>
+<span id="cb1-3"><a href="#cb1-3" aria-hidden="true" tabindex="-1"></a><span class="kw">COPY</span> . .                   <span class="co"># only invalidates from here</span></span></code></pre></div>
+<blockquote>
+<ol start="3" type="1">
+<li>Use <code>--mount=type=cache</code> in BuildKit</li>
+</ol>
+</blockquote>
+<p><strong>Q3: What is a multi-stage build and why is it
+important?</strong> &gt; Allows using multiple FROM instructions. Build
+artifacts compiled in one stage (with all build tools) are copied to a
+minimal final image. Result: production image has no build tools =
+smaller attack surface, faster pull times. &gt; Example: 400MB Go
+builder → 8MB distroless final image.</p>
+<p><strong>Q4: How does Docker networking work? What is the difference
+between bridge and host networking?</strong> &gt;
+<strong>Bridge:</strong> Default. Creates virtual network interface on
+host (<code>docker0</code>). Containers get private IPs, NAT for
+outbound. Port mapping creates iptables DNAT rules. &gt;
+<strong>Host:</strong> Container shares host’s network namespace
+directly. No NAT, no port mapping needed. Best performance. Security
+risk — container can see all host interfaces.</p>
+<p><strong>Q5: How do you handle secrets in Docker?</strong> &gt;
+<strong>DON’T:</strong> Bake into image (ENV, COPY of secret files) —
+visible in image history &gt; <strong>DO:</strong> &gt; 1. Pass at
+runtime:
+<code>docker run -e SECRET=$(vault kv get -field=value secret/myapp)</code>
+&gt; 2. Docker secrets (Swarm):
+<code>docker secret create mysecret file</code> → mounted at
+<code>/run/secrets/</code> &gt; 3. Build-time secrets with BuildKit:
+<code>--secret id=npmrc,src=~/.npmrc</code> &gt; 4. Kubernetes secrets /
+Vault agent sidecar in production</p>
+<p><strong>Q6: Container A cannot reach Container B. How do you
+debug?</strong></p>
+<div class="sourceCode" id="cb2"><pre
+class="sourceCode bash"><code class="sourceCode bash"><span id="cb2-1"><a href="#cb2-1" aria-hidden="true" tabindex="-1"></a><span class="co"># 1. Are they on the same network?</span></span>
+<span id="cb2-2"><a href="#cb2-2" aria-hidden="true" tabindex="-1"></a><span class="ex">docker</span> inspect A <span class="kw">|</span> <span class="fu">grep</span> Networks</span>
+<span id="cb2-3"><a href="#cb2-3" aria-hidden="true" tabindex="-1"></a><span class="ex">docker</span> inspect B <span class="kw">|</span> <span class="fu">grep</span> Networks</span>
+<span id="cb2-4"><a href="#cb2-4" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb2-5"><a href="#cb2-5" aria-hidden="true" tabindex="-1"></a><span class="co"># 2. Can A ping B?</span></span>
+<span id="cb2-6"><a href="#cb2-6" aria-hidden="true" tabindex="-1"></a><span class="ex">docker</span> exec A ping B</span>
+<span id="cb2-7"><a href="#cb2-7" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb2-8"><a href="#cb2-8" aria-hidden="true" tabindex="-1"></a><span class="co"># 3. Check port — is B listening?</span></span>
+<span id="cb2-9"><a href="#cb2-9" aria-hidden="true" tabindex="-1"></a><span class="ex">docker</span> exec B ss <span class="at">-tlnp</span></span>
+<span id="cb2-10"><a href="#cb2-10" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb2-11"><a href="#cb2-11" aria-hidden="true" tabindex="-1"></a><span class="co"># 4. Test TCP connection</span></span>
+<span id="cb2-12"><a href="#cb2-12" aria-hidden="true" tabindex="-1"></a><span class="ex">docker</span> exec A nc <span class="at">-zv</span> B 8080</span>
+<span id="cb2-13"><a href="#cb2-13" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb2-14"><a href="#cb2-14" aria-hidden="true" tabindex="-1"></a><span class="co"># 5. Check container IPs</span></span>
+<span id="cb2-15"><a href="#cb2-15" aria-hidden="true" tabindex="-1"></a><span class="ex">docker</span> inspect <span class="at">-f</span> <span class="st">&#39;{{.NetworkSettings.IPAddress}}&#39;</span> B</span>
+<span id="cb2-16"><a href="#cb2-16" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb2-17"><a href="#cb2-17" aria-hidden="true" tabindex="-1"></a><span class="co"># 6. If different networks, connect to same network:</span></span>
+<span id="cb2-18"><a href="#cb2-18" aria-hidden="true" tabindex="-1"></a><span class="ex">docker</span> network connect mynet A</span></code></pre></div>
+<p><strong>Q7: How would you reduce a Docker image from 800MB to
+&lt;100MB?</strong> &gt; 1. Use minimal base:
+<code>FROM node:20-alpine</code> (50MB) vs <code>FROM node:20</code>
+(1GB) &gt; 2. Multi-stage build — exclude node_modules from final image
+if possible &gt; 3. Combine RUN commands to reduce layers &gt; 4. Remove
+apt cache: <code>rm -rf /var/lib/apt/lists/*</code> &gt; 5. Use
+<code>--no-install-recommends</code> for apt &gt; 6. Delete build
+artifacts after compilation &gt; 7. <code>.dockerignore</code> to
+exclude test files, docs &gt; 8. Consider distroless base</p>
+<p><strong>Q8: What is the <code>ENTRYPOINT</code> vs
+<code>CMD</code>?</strong> &gt; <strong>ENTRYPOINT:</strong> The
+executable. Not easily overridden (requires <code>--entrypoint</code>
+flag). &gt; <strong>CMD:</strong> Default arguments to ENTRYPOINT,
+easily overridden at runtime.</p>
+<div class="sourceCode" id="cb3"><pre
+class="sourceCode dockerfile"><code class="sourceCode dockerfile"><span id="cb3-1"><a href="#cb3-1" aria-hidden="true" tabindex="-1"></a><span class="kw">ENTRYPOINT</span> [<span class="st">&quot;/app/server&quot;</span>]   <span class="co"># always run server</span></span>
+<span id="cb3-2"><a href="#cb3-2" aria-hidden="true" tabindex="-1"></a><span class="kw">CMD</span> [<span class="st">&quot;--port&quot;</span>, <span class="st">&quot;8080&quot;</span>]       <span class="co"># default port, override with: docker run img --port 9090</span></span></code></pre></div>
+<blockquote>
+<p>Exec form <code>["cmd"]</code> preferred over shell form
+<code>cmd</code> (no shell wrapping, signals go directly to
+process).</p>
+</blockquote>
+<p><strong>Q9: How does <code>COPY --from=builder</code> work in
+multi-stage builds?</strong> &gt; Copies files from another named build
+stage. The builder stage is not included in the final image. You can
+also copy from external images:
+<code>COPY --from=gcr.io/distroless/static /busybox /busybox</code>.</p>
+<p><strong>Q10: Explain Docker’s <code>restart</code> policies.</strong>
+| Policy | Behavior | |——–|———| | <code>no</code> | Never restart
+(default) | | <code>always</code> | Always restart, including on daemon
+start | | <code>on-failure</code> | Restart if exit code non-zero | |
+<code>unless-stopped</code> | Always restart unless manually stopped |
+&gt; Use <code>unless-stopped</code> for production services.</p>
+<p><strong>Q11: How do you perform a zero-downtime deployment with
+Docker Compose?</strong></p>
+<div class="sourceCode" id="cb4"><pre
+class="sourceCode bash"><code class="sourceCode bash"><span id="cb4-1"><a href="#cb4-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Scale up new version</span></span>
+<span id="cb4-2"><a href="#cb4-2" aria-hidden="true" tabindex="-1"></a><span class="ex">docker-compose</span> up <span class="at">-d</span> <span class="at">--scale</span> api=2 <span class="at">--no-recreate</span></span>
+<span id="cb4-3"><a href="#cb4-3" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb4-4"><a href="#cb4-4" aria-hidden="true" tabindex="-1"></a><span class="co"># Once healthy, remove old containers</span></span>
+<span id="cb4-5"><a href="#cb4-5" aria-hidden="true" tabindex="-1"></a><span class="ex">docker-compose</span> up <span class="at">-d</span> <span class="at">--remove-orphans</span></span>
+<span id="cb4-6"><a href="#cb4-6" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb4-7"><a href="#cb4-7" aria-hidden="true" tabindex="-1"></a><span class="co"># Or use rolling updates with Swarm:</span></span>
+<span id="cb4-8"><a href="#cb4-8" aria-hidden="true" tabindex="-1"></a><span class="ex">docker</span> service update <span class="at">--image</span> myapp:v2 <span class="at">--update-parallelism</span> 1 <span class="dt">\</span></span>
+<span id="cb4-9"><a href="#cb4-9" aria-hidden="true" tabindex="-1"></a>  <span class="at">--update-delay</span> 30s myapp_service</span></code></pre></div>
+<p><strong>Q12: How do you monitor container resource
+usage?</strong></p>
+<div class="sourceCode" id="cb5"><pre
+class="sourceCode bash"><code class="sourceCode bash"><span id="cb5-1"><a href="#cb5-1" aria-hidden="true" tabindex="-1"></a><span class="ex">docker</span> stats                          <span class="co"># live CPU/memory/network/disk</span></span>
+<span id="cb5-2"><a href="#cb5-2" aria-hidden="true" tabindex="-1"></a><span class="ex">docker</span> stats <span class="at">--no-stream</span> <span class="at">--format</span> <span class="dt">\</span></span>
+<span id="cb5-3"><a href="#cb5-3" aria-hidden="true" tabindex="-1"></a>  <span class="st">&quot;table {{.Container}}\t{{.CPUPerc}}\t{{.MemUsage}}&quot;</span></span>
+<span id="cb5-4"><a href="#cb5-4" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb5-5"><a href="#cb5-5" aria-hidden="true" tabindex="-1"></a><span class="co"># cAdvisor for metrics export to Prometheus</span></span>
+<span id="cb5-6"><a href="#cb5-6" aria-hidden="true" tabindex="-1"></a><span class="ex">docker</span> run <span class="at">-d</span> <span class="at">--name</span> cadvisor <span class="dt">\</span></span>
+<span id="cb5-7"><a href="#cb5-7" aria-hidden="true" tabindex="-1"></a>  <span class="at">-v</span> /:/rootfs:ro <span class="dt">\</span></span>
+<span id="cb5-8"><a href="#cb5-8" aria-hidden="true" tabindex="-1"></a>  <span class="at">-v</span> /var/run:/var/run:ro <span class="dt">\</span></span>
+<span id="cb5-9"><a href="#cb5-9" aria-hidden="true" tabindex="-1"></a>  <span class="at">-v</span> /sys:/sys:ro <span class="dt">\</span></span>
+<span id="cb5-10"><a href="#cb5-10" aria-hidden="true" tabindex="-1"></a>  <span class="at">-v</span> /var/lib/docker:/var/lib/docker:ro <span class="dt">\</span></span>
+<span id="cb5-11"><a href="#cb5-11" aria-hidden="true" tabindex="-1"></a>  <span class="at">-p</span> 8080:8080 <span class="dt">\</span></span>
+<span id="cb5-12"><a href="#cb5-12" aria-hidden="true" tabindex="-1"></a>  gcr.io/cadvisor/cadvisor:latest</span></code></pre></div>
+<p><strong>Q13: What is a distroless image? When should you use
+it?</strong> &gt; Distroless images (by Google) contain only the
+application and its runtime dependencies. No shell, no package manager,
+no OS utilities. &gt; <strong>Benefits:</strong> Tiny size, minimal
+CVEs, reduced attack surface (no shell = harder to exploit) &gt;
+<strong>Drawback:</strong> Harder to debug (no <code>exec</code> with
+bash) &gt; <strong>Use for:</strong> Production containers. Have a debug
+variant: <code>FROM gcr.io/distroless/java17-debian12:debug</code></p>
+<p><strong>Q14: How do you implement health checks?</strong></p>
+<div class="sourceCode" id="cb6"><pre
+class="sourceCode dockerfile"><code class="sourceCode dockerfile"><span id="cb6-1"><a href="#cb6-1" aria-hidden="true" tabindex="-1"></a><span class="kw">HEALTHCHECK</span> <span class="op">--interval=30s</span> <span class="op">--timeout=10s</span> <span class="op">--start-period=40s</span> <span class="op">--retries=3</span> \</span>
+<span id="cb6-2"><a href="#cb6-2" aria-hidden="true" tabindex="-1"></a>  <span class="kw">CMD</span> <span class="ex">curl</span> <span class="at">-f</span> http://localhost:8080/health <span class="kw">||</span> <span class="bu">exit</span> 1</span></code></pre></div>
+<div class="sourceCode" id="cb7"><pre
+class="sourceCode bash"><code class="sourceCode bash"><span id="cb7-1"><a href="#cb7-1" aria-hidden="true" tabindex="-1"></a><span class="ex">docker</span> ps   <span class="co"># shows Up (healthy) or Up (unhealthy)</span></span>
+<span id="cb7-2"><a href="#cb7-2" aria-hidden="true" tabindex="-1"></a><span class="ex">docker</span> inspect <span class="at">--format</span><span class="op">=</span><span class="st">&#39;{{.State.Health.Status}}&#39;</span> container</span>
+<span id="cb7-3"><a href="#cb7-3" aria-hidden="true" tabindex="-1"></a><span class="ex">docker</span> inspect <span class="at">--format</span><span class="op">=</span><span class="st">&#39;{{range .State.Health.Log}}{{.Output}}{{end}}&#39;</span> container</span></code></pre></div>
+</body>
+</html>

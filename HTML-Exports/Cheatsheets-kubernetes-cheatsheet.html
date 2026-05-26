@@ -1,0 +1,411 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" lang="" xml:lang="">
+<head>
+  <meta charset="utf-8" />
+  <meta name="generator" content="pandoc" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes" />
+  <title>DevOps Mastery: kubernetes-cheatsheet</title>
+  <style>
+    code{white-space: pre-wrap;}
+    span.smallcaps{font-variant: small-caps;}
+    div.columns{display: flex; gap: min(4vw, 1.5em);}
+    div.column{flex: auto; overflow-x: auto;}
+    div.hanging-indent{margin-left: 1.5em; text-indent: -1.5em;}
+    /* The extra [class] is a hack that increases specificity enough to
+       override a similar rule in reveal.js */
+    ul.task-list[class]{list-style: none;}
+    ul.task-list li input[type="checkbox"] {
+      font-size: inherit;
+      width: 0.8em;
+      margin: 0 0.8em 0.2em -1.6em;
+      vertical-align: middle;
+    }
+    .display.math{display: block; text-align: center; margin: 0.5rem auto;}
+    /* CSS for syntax highlighting */
+    pre > code.sourceCode { white-space: pre; position: relative; }
+    pre > code.sourceCode > span { line-height: 1.25; }
+    pre > code.sourceCode > span:empty { height: 1.2em; }
+    .sourceCode { overflow: visible; }
+    code.sourceCode > span { color: inherit; text-decoration: inherit; }
+    div.sourceCode { margin: 1em 0; }
+    pre.sourceCode { margin: 0; }
+    @media screen {
+    div.sourceCode { overflow: auto; }
+    }
+    @media print {
+    pre > code.sourceCode { white-space: pre-wrap; }
+    pre > code.sourceCode > span { text-indent: -5em; padding-left: 5em; }
+    }
+    pre.numberSource code
+      { counter-reset: source-line 0; }
+    pre.numberSource code > span
+      { position: relative; left: -4em; counter-increment: source-line; }
+    pre.numberSource code > span > a:first-child::before
+      { content: counter(source-line);
+        position: relative; left: -1em; text-align: right; vertical-align: baseline;
+        border: none; display: inline-block;
+        -webkit-touch-callout: none; -webkit-user-select: none;
+        -khtml-user-select: none; -moz-user-select: none;
+        -ms-user-select: none; user-select: none;
+        padding: 0 4px; width: 4em;
+        color: #aaaaaa;
+      }
+    pre.numberSource { margin-left: 3em; border-left: 1px solid #aaaaaa;  padding-left: 4px; }
+    div.sourceCode
+      {  background-color: #f8f8f8; }
+    @media screen {
+    pre > code.sourceCode > span > a:first-child::before { text-decoration: underline; }
+    }
+    code span.al { color: #ef2929; } /* Alert */
+    code span.an { color: #8f5902; font-weight: bold; font-style: italic; } /* Annotation */
+    code span.at { color: #204a87; } /* Attribute */
+    code span.bn { color: #0000cf; } /* BaseN */
+    code span.cf { color: #204a87; font-weight: bold; } /* ControlFlow */
+    code span.ch { color: #4e9a06; } /* Char */
+    code span.cn { color: #8f5902; } /* Constant */
+    code span.co { color: #8f5902; font-style: italic; } /* Comment */
+    code span.cv { color: #8f5902; font-weight: bold; font-style: italic; } /* CommentVar */
+    code span.do { color: #8f5902; font-weight: bold; font-style: italic; } /* Documentation */
+    code span.dt { color: #204a87; } /* DataType */
+    code span.dv { color: #0000cf; } /* DecVal */
+    code span.er { color: #a40000; font-weight: bold; } /* Error */
+    code span.ex { } /* Extension */
+    code span.fl { color: #0000cf; } /* Float */
+    code span.fu { color: #204a87; font-weight: bold; } /* Function */
+    code span.im { } /* Import */
+    code span.in { color: #8f5902; font-weight: bold; font-style: italic; } /* Information */
+    code span.kw { color: #204a87; font-weight: bold; } /* Keyword */
+    code span.op { color: #ce5c00; font-weight: bold; } /* Operator */
+    code span.ot { color: #8f5902; } /* Other */
+    code span.pp { color: #8f5902; font-style: italic; } /* Preprocessor */
+    code span.sc { color: #ce5c00; font-weight: bold; } /* SpecialChar */
+    code span.ss { color: #4e9a06; } /* SpecialString */
+    code span.st { color: #4e9a06; } /* String */
+    code span.va { color: #000000; } /* Variable */
+    code span.vs { color: #4e9a06; } /* VerbatimString */
+    code span.wa { color: #8f5902; font-weight: bold; font-style: italic; } /* Warning */
+  </style>
+  <link rel="stylesheet" href="/tmp/devops-style.css" />
+</head>
+<body>
+<header id="title-block-header">
+<h1 class="title">DevOps Mastery: kubernetes-cheatsheet</h1>
+</header>
+<nav id="TOC" role="doc-toc">
+<ul>
+<li><a href="#kubernetes-cheatsheet-production-commands-patterns"
+id="toc-kubernetes-cheatsheet-production-commands-patterns">Kubernetes
+Cheatsheet — Production Commands &amp; Patterns</a>
+<ul>
+<li><a href="#kubectl-context-config"
+id="toc-kubectl-context-config">kubectl Context &amp; Config</a></li>
+<li><a href="#getting-resources" id="toc-getting-resources">Getting
+Resources</a></li>
+<li><a href="#describe-debug" id="toc-describe-debug">Describe &amp;
+Debug</a></li>
+<li><a href="#apply-manage" id="toc-apply-manage">Apply &amp;
+Manage</a></li>
+<li><a href="#deployments" id="toc-deployments">Deployments</a></li>
+<li><a href="#namespaces-rbac" id="toc-namespaces-rbac">Namespaces &amp;
+RBAC</a></li>
+<li><a href="#resource-usage-capacity"
+id="toc-resource-usage-capacity">Resource Usage &amp; Capacity</a></li>
+<li><a href="#secrets-configmaps" id="toc-secrets-configmaps">Secrets
+&amp; ConfigMaps</a></li>
+<li><a href="#network-troubleshooting"
+id="toc-network-troubleshooting">Network Troubleshooting</a></li>
+<li><a href="#node-management" id="toc-node-management">Node
+Management</a></li>
+<li><a href="#useful-one-liners" id="toc-useful-one-liners">Useful
+One-Liners</a></li>
+<li><a href="#helm-commands" id="toc-helm-commands">Helm
+Commands</a></li>
+<li><a href="#essential-manifest-snippets"
+id="toc-essential-manifest-snippets">Essential Manifest Snippets</a>
+<ul>
+<li><a href="#pod-with-security-hardening"
+id="toc-pod-with-security-hardening">Pod with security
+hardening</a></li>
+<li><a href="#hpa-with-custom-metric"
+id="toc-hpa-with-custom-metric">HPA with custom metric</a></li>
+<li><a href="#poddisruptionbudget"
+id="toc-poddisruptionbudget">PodDisruptionBudget</a></li>
+<li><a href="#topology-spread-multi-az-ha"
+id="toc-topology-spread-multi-az-ha">Topology Spread (multi-AZ
+HA)</a></li>
+</ul></li>
+<li><a href="#exit-codes-reference" id="toc-exit-codes-reference">Exit
+Codes Reference</a></li>
+</ul></li>
+</ul>
+</nav>
+<h1 id="kubernetes-cheatsheet-production-commands-patterns">Kubernetes
+Cheatsheet — Production Commands &amp; Patterns</h1>
+<h2 id="kubectl-context-config">kubectl Context &amp; Config</h2>
+<div class="sourceCode" id="cb1"><pre
+class="sourceCode bash"><code class="sourceCode bash"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a><span class="ex">kubectl</span> config get-contexts                    <span class="co"># list all clusters</span></span>
+<span id="cb1-2"><a href="#cb1-2" aria-hidden="true" tabindex="-1"></a><span class="ex">kubectl</span> config use-context CONTEXT_NAME        <span class="co"># switch cluster</span></span>
+<span id="cb1-3"><a href="#cb1-3" aria-hidden="true" tabindex="-1"></a><span class="ex">kubectl</span> config current-context                 <span class="co"># show active cluster</span></span>
+<span id="cb1-4"><a href="#cb1-4" aria-hidden="true" tabindex="-1"></a><span class="ex">kubectl</span> config set-context <span class="at">--current</span> <span class="at">--namespace</span><span class="op">=</span>NAMESPACE  <span class="co"># set default ns</span></span>
+<span id="cb1-5"><a href="#cb1-5" aria-hidden="true" tabindex="-1"></a><span class="ex">kubens</span> NAMESPACE                               <span class="co"># (kubens plugin) switch namespace</span></span>
+<span id="cb1-6"><a href="#cb1-6" aria-hidden="true" tabindex="-1"></a><span class="ex">kubectx</span> CONTEXT                               <span class="co"># (kubectx plugin) switch context</span></span></code></pre></div>
+<h2 id="getting-resources">Getting Resources</h2>
+<div class="sourceCode" id="cb2"><pre
+class="sourceCode bash"><code class="sourceCode bash"><span id="cb2-1"><a href="#cb2-1" aria-hidden="true" tabindex="-1"></a><span class="co"># List with extra info</span></span>
+<span id="cb2-2"><a href="#cb2-2" aria-hidden="true" tabindex="-1"></a><span class="ex">kubectl</span> get pods <span class="at">-o</span> wide                       <span class="co"># show node, IP</span></span>
+<span id="cb2-3"><a href="#cb2-3" aria-hidden="true" tabindex="-1"></a><span class="ex">kubectl</span> get pods <span class="at">-A</span>                            <span class="co"># all namespaces</span></span>
+<span id="cb2-4"><a href="#cb2-4" aria-hidden="true" tabindex="-1"></a><span class="ex">kubectl</span> get pods <span class="at">-n</span> NAMESPACE <span class="at">-l</span> app=myapp     <span class="co"># label selector</span></span>
+<span id="cb2-5"><a href="#cb2-5" aria-hidden="true" tabindex="-1"></a><span class="ex">kubectl</span> get all <span class="at">-n</span> NAMESPACE                   <span class="co"># all resource types</span></span>
+<span id="cb2-6"><a href="#cb2-6" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb2-7"><a href="#cb2-7" aria-hidden="true" tabindex="-1"></a><span class="co"># Watch mode</span></span>
+<span id="cb2-8"><a href="#cb2-8" aria-hidden="true" tabindex="-1"></a><span class="ex">kubectl</span> get pods <span class="at">-w</span>                            <span class="co"># live updates</span></span>
+<span id="cb2-9"><a href="#cb2-9" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb2-10"><a href="#cb2-10" aria-hidden="true" tabindex="-1"></a><span class="co"># Output formats</span></span>
+<span id="cb2-11"><a href="#cb2-11" aria-hidden="true" tabindex="-1"></a><span class="ex">kubectl</span> get pod POD_NAME <span class="at">-o</span> yaml               <span class="co"># raw YAML</span></span>
+<span id="cb2-12"><a href="#cb2-12" aria-hidden="true" tabindex="-1"></a><span class="ex">kubectl</span> get pod POD_NAME <span class="at">-o</span> json               <span class="co"># raw JSON</span></span>
+<span id="cb2-13"><a href="#cb2-13" aria-hidden="true" tabindex="-1"></a><span class="ex">kubectl</span> get pods <span class="at">-o</span> jsonpath=<span class="st">&#39;{.items[*].metadata.name}&#39;</span>  <span class="co"># extract fields</span></span>
+<span id="cb2-14"><a href="#cb2-14" aria-hidden="true" tabindex="-1"></a><span class="ex">kubectl</span> get pods <span class="at">-o</span> custom-columns=NAME:.metadata.name,STATUS:.status.phase</span>
+<span id="cb2-15"><a href="#cb2-15" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb2-16"><a href="#cb2-16" aria-hidden="true" tabindex="-1"></a><span class="co"># Sort &amp; filter</span></span>
+<span id="cb2-17"><a href="#cb2-17" aria-hidden="true" tabindex="-1"></a><span class="ex">kubectl</span> get events <span class="at">--sort-by</span><span class="op">=</span><span class="st">&#39;.lastTimestamp&#39;</span> <span class="at">-n</span> NAMESPACE</span>
+<span id="cb2-18"><a href="#cb2-18" aria-hidden="true" tabindex="-1"></a><span class="ex">kubectl</span> get pods <span class="at">--field-selector</span><span class="op">=</span>status.phase=Running</span>
+<span id="cb2-19"><a href="#cb2-19" aria-hidden="true" tabindex="-1"></a><span class="ex">kubectl</span> get pods <span class="at">--field-selector</span><span class="op">=</span>spec.nodeName=NODE_NAME</span></code></pre></div>
+<h2 id="describe-debug">Describe &amp; Debug</h2>
+<div class="sourceCode" id="cb3"><pre
+class="sourceCode bash"><code class="sourceCode bash"><span id="cb3-1"><a href="#cb3-1" aria-hidden="true" tabindex="-1"></a><span class="ex">kubectl</span> describe pod POD_NAME <span class="at">-n</span> NAMESPACE     <span class="co"># full details + events</span></span>
+<span id="cb3-2"><a href="#cb3-2" aria-hidden="true" tabindex="-1"></a><span class="ex">kubectl</span> describe node NODE_NAME                <span class="co"># node capacity, conditions</span></span>
+<span id="cb3-3"><a href="#cb3-3" aria-hidden="true" tabindex="-1"></a><span class="ex">kubectl</span> describe svc SERVICE_NAME              <span class="co"># endpoints, selectors</span></span>
+<span id="cb3-4"><a href="#cb3-4" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb3-5"><a href="#cb3-5" aria-hidden="true" tabindex="-1"></a><span class="co"># Logs</span></span>
+<span id="cb3-6"><a href="#cb3-6" aria-hidden="true" tabindex="-1"></a><span class="ex">kubectl</span> logs POD_NAME                          <span class="co"># container stdout</span></span>
+<span id="cb3-7"><a href="#cb3-7" aria-hidden="true" tabindex="-1"></a><span class="ex">kubectl</span> logs POD_NAME <span class="at">-c</span> CONTAINER_NAME        <span class="co"># specific container</span></span>
+<span id="cb3-8"><a href="#cb3-8" aria-hidden="true" tabindex="-1"></a><span class="ex">kubectl</span> logs POD_NAME <span class="at">--previous</span>               <span class="co"># last crashed container</span></span>
+<span id="cb3-9"><a href="#cb3-9" aria-hidden="true" tabindex="-1"></a><span class="ex">kubectl</span> logs <span class="at">-f</span> POD_NAME                       <span class="co"># follow / stream</span></span>
+<span id="cb3-10"><a href="#cb3-10" aria-hidden="true" tabindex="-1"></a><span class="ex">kubectl</span> logs <span class="at">-l</span> app=myapp <span class="at">--tail</span><span class="op">=</span>100           <span class="co"># label selector, last 100 lines</span></span>
+<span id="cb3-11"><a href="#cb3-11" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb3-12"><a href="#cb3-12" aria-hidden="true" tabindex="-1"></a><span class="co"># Shell access</span></span>
+<span id="cb3-13"><a href="#cb3-13" aria-hidden="true" tabindex="-1"></a><span class="ex">kubectl</span> exec <span class="at">-it</span> POD_NAME <span class="at">--</span> bash              <span class="co"># interactive shell</span></span>
+<span id="cb3-14"><a href="#cb3-14" aria-hidden="true" tabindex="-1"></a><span class="ex">kubectl</span> exec <span class="at">-it</span> POD_NAME <span class="at">-c</span> CONTAINER <span class="at">--</span> sh   <span class="co"># specific container</span></span>
+<span id="cb3-15"><a href="#cb3-15" aria-hidden="true" tabindex="-1"></a><span class="ex">kubectl</span> exec POD_NAME <span class="at">--</span> ls /app               <span class="co"># single command</span></span>
+<span id="cb3-16"><a href="#cb3-16" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb3-17"><a href="#cb3-17" aria-hidden="true" tabindex="-1"></a><span class="co"># Port forwarding (local access without exposing)</span></span>
+<span id="cb3-18"><a href="#cb3-18" aria-hidden="true" tabindex="-1"></a><span class="ex">kubectl</span> port-forward pod/POD_NAME 8080:8080</span>
+<span id="cb3-19"><a href="#cb3-19" aria-hidden="true" tabindex="-1"></a><span class="ex">kubectl</span> port-forward svc/SERVICE_NAME 8080:80</span>
+<span id="cb3-20"><a href="#cb3-20" aria-hidden="true" tabindex="-1"></a><span class="ex">kubectl</span> port-forward deploy/DEPLOY_NAME 8080:8080</span>
+<span id="cb3-21"><a href="#cb3-21" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb3-22"><a href="#cb3-22" aria-hidden="true" tabindex="-1"></a><span class="co"># Quick debug pod</span></span>
+<span id="cb3-23"><a href="#cb3-23" aria-hidden="true" tabindex="-1"></a><span class="ex">kubectl</span> run debug <span class="at">--image</span><span class="op">=</span>busybox:latest <span class="at">--rm</span> <span class="at">-it</span> <span class="at">--restart</span><span class="op">=</span>Never <span class="at">--</span> sh</span>
+<span id="cb3-24"><a href="#cb3-24" aria-hidden="true" tabindex="-1"></a><span class="ex">kubectl</span> run netdebug <span class="at">--image</span><span class="op">=</span>nicolaka/netshoot <span class="at">--rm</span> <span class="at">-it</span> <span class="at">--restart</span><span class="op">=</span>Never <span class="at">--</span> bash</span></code></pre></div>
+<h2 id="apply-manage">Apply &amp; Manage</h2>
+<div class="sourceCode" id="cb4"><pre
+class="sourceCode bash"><code class="sourceCode bash"><span id="cb4-1"><a href="#cb4-1" aria-hidden="true" tabindex="-1"></a><span class="ex">kubectl</span> apply <span class="at">-f</span> manifest.yaml                 <span class="co"># declarative apply</span></span>
+<span id="cb4-2"><a href="#cb4-2" aria-hidden="true" tabindex="-1"></a><span class="ex">kubectl</span> apply <span class="at">-f</span> ./directory/                  <span class="co"># apply all in dir</span></span>
+<span id="cb4-3"><a href="#cb4-3" aria-hidden="true" tabindex="-1"></a><span class="ex">kubectl</span> apply <span class="at">-k</span> ./kustomize-dir/              <span class="co"># kustomize</span></span>
+<span id="cb4-4"><a href="#cb4-4" aria-hidden="true" tabindex="-1"></a><span class="ex">kubectl</span> delete <span class="at">-f</span> manifest.yaml               <span class="co"># delete by manifest</span></span>
+<span id="cb4-5"><a href="#cb4-5" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb4-6"><a href="#cb4-6" aria-hidden="true" tabindex="-1"></a><span class="ex">kubectl</span> create deployment NAME <span class="at">--image</span><span class="op">=</span>IMAGE   <span class="co"># imperative create</span></span>
+<span id="cb4-7"><a href="#cb4-7" aria-hidden="true" tabindex="-1"></a><span class="ex">kubectl</span> expose deployment NAME <span class="at">--port</span><span class="op">=</span>80       <span class="co"># create service</span></span>
+<span id="cb4-8"><a href="#cb4-8" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb4-9"><a href="#cb4-9" aria-hidden="true" tabindex="-1"></a><span class="co"># Dry run (test without applying)</span></span>
+<span id="cb4-10"><a href="#cb4-10" aria-hidden="true" tabindex="-1"></a><span class="ex">kubectl</span> apply <span class="at">-f</span> manifest.yaml <span class="at">--dry-run</span><span class="op">=</span>client</span>
+<span id="cb4-11"><a href="#cb4-11" aria-hidden="true" tabindex="-1"></a><span class="ex">kubectl</span> apply <span class="at">-f</span> manifest.yaml <span class="at">--dry-run</span><span class="op">=</span>server  <span class="co"># validates against API</span></span></code></pre></div>
+<h2 id="deployments">Deployments</h2>
+<div class="sourceCode" id="cb5"><pre
+class="sourceCode bash"><code class="sourceCode bash"><span id="cb5-1"><a href="#cb5-1" aria-hidden="true" tabindex="-1"></a><span class="ex">kubectl</span> rollout status deploy/NAME             <span class="co"># watch rollout progress</span></span>
+<span id="cb5-2"><a href="#cb5-2" aria-hidden="true" tabindex="-1"></a><span class="ex">kubectl</span> rollout history deploy/NAME            <span class="co"># list revisions</span></span>
+<span id="cb5-3"><a href="#cb5-3" aria-hidden="true" tabindex="-1"></a><span class="ex">kubectl</span> rollout undo deploy/NAME               <span class="co"># rollback 1 version</span></span>
+<span id="cb5-4"><a href="#cb5-4" aria-hidden="true" tabindex="-1"></a><span class="ex">kubectl</span> rollout undo deploy/NAME <span class="at">--to-revision</span><span class="op">=</span>3  <span class="co"># rollback to specific</span></span>
+<span id="cb5-5"><a href="#cb5-5" aria-hidden="true" tabindex="-1"></a><span class="ex">kubectl</span> rollout pause deploy/NAME              <span class="co"># pause rollout</span></span>
+<span id="cb5-6"><a href="#cb5-6" aria-hidden="true" tabindex="-1"></a><span class="ex">kubectl</span> rollout resume deploy/NAME             <span class="co"># resume rollout</span></span>
+<span id="cb5-7"><a href="#cb5-7" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb5-8"><a href="#cb5-8" aria-hidden="true" tabindex="-1"></a><span class="ex">kubectl</span> scale deploy NAME <span class="at">--replicas</span><span class="op">=</span>5         <span class="co"># scale</span></span>
+<span id="cb5-9"><a href="#cb5-9" aria-hidden="true" tabindex="-1"></a><span class="ex">kubectl</span> set image deploy/NAME container=image:tag  <span class="co"># update image</span></span>
+<span id="cb5-10"><a href="#cb5-10" aria-hidden="true" tabindex="-1"></a><span class="ex">kubectl</span> autoscale deploy NAME <span class="at">--min</span><span class="op">=</span>2 <span class="at">--max</span><span class="op">=</span>10 <span class="at">--cpu-percent</span><span class="op">=</span>70  <span class="co"># HPA</span></span>
+<span id="cb5-11"><a href="#cb5-11" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb5-12"><a href="#cb5-12" aria-hidden="true" tabindex="-1"></a><span class="co"># Annotate rollout (shows in history)</span></span>
+<span id="cb5-13"><a href="#cb5-13" aria-hidden="true" tabindex="-1"></a><span class="ex">kubectl</span> annotate deploy NAME kubernetes.io/change-cause=<span class="st">&quot;Deploy v1.2.3 — added payment feature&quot;</span></span></code></pre></div>
+<h2 id="namespaces-rbac">Namespaces &amp; RBAC</h2>
+<div class="sourceCode" id="cb6"><pre
+class="sourceCode bash"><code class="sourceCode bash"><span id="cb6-1"><a href="#cb6-1" aria-hidden="true" tabindex="-1"></a><span class="ex">kubectl</span> get namespaces</span>
+<span id="cb6-2"><a href="#cb6-2" aria-hidden="true" tabindex="-1"></a><span class="ex">kubectl</span> create namespace myapp-prod</span>
+<span id="cb6-3"><a href="#cb6-3" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb6-4"><a href="#cb6-4" aria-hidden="true" tabindex="-1"></a><span class="co"># RBAC</span></span>
+<span id="cb6-5"><a href="#cb6-5" aria-hidden="true" tabindex="-1"></a><span class="ex">kubectl</span> get roles,rolebindings <span class="at">-n</span> NAMESPACE</span>
+<span id="cb6-6"><a href="#cb6-6" aria-hidden="true" tabindex="-1"></a><span class="ex">kubectl</span> get clusterroles,clusterrolebindings</span>
+<span id="cb6-7"><a href="#cb6-7" aria-hidden="true" tabindex="-1"></a><span class="ex">kubectl</span> auth can-i list pods <span class="at">--namespace</span> default                    <span class="co"># current user</span></span>
+<span id="cb6-8"><a href="#cb6-8" aria-hidden="true" tabindex="-1"></a><span class="ex">kubectl</span> auth can-i list pods <span class="at">--as</span><span class="op">=</span>USER <span class="at">--namespace</span> default         <span class="co"># as user</span></span>
+<span id="cb6-9"><a href="#cb6-9" aria-hidden="true" tabindex="-1"></a><span class="ex">kubectl</span> auth can-i list pods <span class="at">--as</span><span class="op">=</span>system:serviceaccount:ns:sa      <span class="co"># as SA</span></span>
+<span id="cb6-10"><a href="#cb6-10" aria-hidden="true" tabindex="-1"></a><span class="ex">kubectl</span> auth can-i <span class="at">--list</span> <span class="at">--namespace</span> NAMESPACE                    <span class="co"># all perms</span></span></code></pre></div>
+<h2 id="resource-usage-capacity">Resource Usage &amp; Capacity</h2>
+<div class="sourceCode" id="cb7"><pre
+class="sourceCode bash"><code class="sourceCode bash"><span id="cb7-1"><a href="#cb7-1" aria-hidden="true" tabindex="-1"></a><span class="ex">kubectl</span> top nodes                              <span class="co"># node CPU/memory</span></span>
+<span id="cb7-2"><a href="#cb7-2" aria-hidden="true" tabindex="-1"></a><span class="ex">kubectl</span> top pods <span class="at">-n</span> NAMESPACE                 <span class="co"># pod CPU/memory</span></span>
+<span id="cb7-3"><a href="#cb7-3" aria-hidden="true" tabindex="-1"></a><span class="ex">kubectl</span> top pods <span class="at">--sort-by</span><span class="op">=</span>cpu <span class="at">-A</span>             <span class="co"># sort by CPU</span></span>
+<span id="cb7-4"><a href="#cb7-4" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb7-5"><a href="#cb7-5" aria-hidden="true" tabindex="-1"></a><span class="co"># Node capacity and allocations</span></span>
+<span id="cb7-6"><a href="#cb7-6" aria-hidden="true" tabindex="-1"></a><span class="ex">kubectl</span> describe node NODE <span class="kw">|</span> <span class="fu">grep</span> <span class="at">-A8</span> <span class="st">&quot;Allocated resources&quot;</span></span></code></pre></div>
+<h2 id="secrets-configmaps">Secrets &amp; ConfigMaps</h2>
+<div class="sourceCode" id="cb8"><pre
+class="sourceCode bash"><code class="sourceCode bash"><span id="cb8-1"><a href="#cb8-1" aria-hidden="true" tabindex="-1"></a><span class="ex">kubectl</span> create secret generic NAME <span class="at">--from-literal</span><span class="op">=</span>key=value</span>
+<span id="cb8-2"><a href="#cb8-2" aria-hidden="true" tabindex="-1"></a><span class="ex">kubectl</span> create secret generic NAME <span class="at">--from-file</span><span class="op">=</span>./secret-file</span>
+<span id="cb8-3"><a href="#cb8-3" aria-hidden="true" tabindex="-1"></a><span class="ex">kubectl</span> create secret docker-registry NAME <span class="dt">\</span></span>
+<span id="cb8-4"><a href="#cb8-4" aria-hidden="true" tabindex="-1"></a>  <span class="at">--docker-server</span><span class="op">=</span>REGISTRY <span class="dt">\</span></span>
+<span id="cb8-5"><a href="#cb8-5" aria-hidden="true" tabindex="-1"></a>  <span class="at">--docker-username</span><span class="op">=</span>USER <span class="dt">\</span></span>
+<span id="cb8-6"><a href="#cb8-6" aria-hidden="true" tabindex="-1"></a>  <span class="at">--docker-password</span><span class="op">=</span>PASS</span>
+<span id="cb8-7"><a href="#cb8-7" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb8-8"><a href="#cb8-8" aria-hidden="true" tabindex="-1"></a><span class="co"># View (base64 decode)</span></span>
+<span id="cb8-9"><a href="#cb8-9" aria-hidden="true" tabindex="-1"></a><span class="ex">kubectl</span> get secret NAME <span class="at">-o</span> jsonpath=<span class="st">&#39;{.data.key}&#39;</span> <span class="kw">|</span> <span class="fu">base64</span> <span class="at">-d</span></span>
+<span id="cb8-10"><a href="#cb8-10" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb8-11"><a href="#cb8-11" aria-hidden="true" tabindex="-1"></a><span class="ex">kubectl</span> create configmap NAME <span class="at">--from-literal</span><span class="op">=</span>key=value</span>
+<span id="cb8-12"><a href="#cb8-12" aria-hidden="true" tabindex="-1"></a><span class="ex">kubectl</span> create configmap NAME <span class="at">--from-file</span><span class="op">=</span>./config-file</span></code></pre></div>
+<h2 id="network-troubleshooting">Network Troubleshooting</h2>
+<div class="sourceCode" id="cb9"><pre
+class="sourceCode bash"><code class="sourceCode bash"><span id="cb9-1"><a href="#cb9-1" aria-hidden="true" tabindex="-1"></a><span class="co"># DNS resolution</span></span>
+<span id="cb9-2"><a href="#cb9-2" aria-hidden="true" tabindex="-1"></a><span class="ex">kubectl</span> exec <span class="at">-it</span> POD <span class="at">--</span> nslookup kubernetes.default.svc.cluster.local</span>
+<span id="cb9-3"><a href="#cb9-3" aria-hidden="true" tabindex="-1"></a><span class="ex">kubectl</span> exec <span class="at">-it</span> POD <span class="at">--</span> nslookup SERVICE_NAME.NAMESPACE.svc.cluster.local</span>
+<span id="cb9-4"><a href="#cb9-4" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb9-5"><a href="#cb9-5" aria-hidden="true" tabindex="-1"></a><span class="co"># Check if service has endpoints</span></span>
+<span id="cb9-6"><a href="#cb9-6" aria-hidden="true" tabindex="-1"></a><span class="ex">kubectl</span> get endpoints SERVICE_NAME <span class="at">-n</span> NAMESPACE</span>
+<span id="cb9-7"><a href="#cb9-7" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb9-8"><a href="#cb9-8" aria-hidden="true" tabindex="-1"></a><span class="co"># Test connectivity pod to service</span></span>
+<span id="cb9-9"><a href="#cb9-9" aria-hidden="true" tabindex="-1"></a><span class="ex">kubectl</span> exec <span class="at">-it</span> POD <span class="at">--</span> curl http://SERVICE_NAME.NAMESPACE.svc.cluster.local/health</span>
+<span id="cb9-10"><a href="#cb9-10" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb9-11"><a href="#cb9-11" aria-hidden="true" tabindex="-1"></a><span class="co"># Check network policies</span></span>
+<span id="cb9-12"><a href="#cb9-12" aria-hidden="true" tabindex="-1"></a><span class="ex">kubectl</span> get networkpolicies <span class="at">-n</span> NAMESPACE</span></code></pre></div>
+<h2 id="node-management">Node Management</h2>
+<div class="sourceCode" id="cb10"><pre
+class="sourceCode bash"><code class="sourceCode bash"><span id="cb10-1"><a href="#cb10-1" aria-hidden="true" tabindex="-1"></a><span class="ex">kubectl</span> cordon NODE_NAME                       <span class="co"># mark unschedulable</span></span>
+<span id="cb10-2"><a href="#cb10-2" aria-hidden="true" tabindex="-1"></a><span class="ex">kubectl</span> uncordon NODE_NAME                     <span class="co"># mark schedulable</span></span>
+<span id="cb10-3"><a href="#cb10-3" aria-hidden="true" tabindex="-1"></a><span class="ex">kubectl</span> drain NODE_NAME <span class="at">--ignore-daemonsets</span> <span class="at">--delete-emptydir-data</span>  <span class="co"># safe drain</span></span>
+<span id="cb10-4"><a href="#cb10-4" aria-hidden="true" tabindex="-1"></a><span class="ex">kubectl</span> taint nodes NODE key=value:NoSchedule  <span class="co"># add taint</span></span>
+<span id="cb10-5"><a href="#cb10-5" aria-hidden="true" tabindex="-1"></a><span class="ex">kubectl</span> taint nodes NODE key=value:NoSchedule- <span class="co"># remove taint (trailing -)</span></span></code></pre></div>
+<h2 id="useful-one-liners">Useful One-Liners</h2>
+<div class="sourceCode" id="cb11"><pre
+class="sourceCode bash"><code class="sourceCode bash"><span id="cb11-1"><a href="#cb11-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Get all image names running in cluster</span></span>
+<span id="cb11-2"><a href="#cb11-2" aria-hidden="true" tabindex="-1"></a><span class="ex">kubectl</span> get pods <span class="at">-A</span> <span class="at">-o</span> jsonpath=<span class="st">&#39;{range .items[*]}{.metadata.namespace}{&quot;\t&quot;}{.metadata.name}{&quot;\t&quot;}{range .spec.containers[*]}{.image}{&quot;\n&quot;}{end}{end}&#39;</span></span>
+<span id="cb11-3"><a href="#cb11-3" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb11-4"><a href="#cb11-4" aria-hidden="true" tabindex="-1"></a><span class="co"># Find pods NOT in Running state</span></span>
+<span id="cb11-5"><a href="#cb11-5" aria-hidden="true" tabindex="-1"></a><span class="ex">kubectl</span> get pods <span class="at">-A</span> <span class="at">--field-selector</span><span class="op">=</span>status.phase!=Running</span>
+<span id="cb11-6"><a href="#cb11-6" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb11-7"><a href="#cb11-7" aria-hidden="true" tabindex="-1"></a><span class="co"># Delete all Evicted pods</span></span>
+<span id="cb11-8"><a href="#cb11-8" aria-hidden="true" tabindex="-1"></a><span class="ex">kubectl</span> get pods <span class="at">-A</span> <span class="kw">|</span> <span class="fu">grep</span> Evicted <span class="kw">|</span> <span class="fu">awk</span> <span class="st">&#39;{print $1&quot; &quot;$2}&#39;</span> <span class="kw">|</span> <span class="fu">xargs</span> <span class="at">-n2</span> kubectl delete pod <span class="at">-n</span></span>
+<span id="cb11-9"><a href="#cb11-9" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb11-10"><a href="#cb11-10" aria-hidden="true" tabindex="-1"></a><span class="co"># Get pod restart counts</span></span>
+<span id="cb11-11"><a href="#cb11-11" aria-hidden="true" tabindex="-1"></a><span class="ex">kubectl</span> get pods <span class="at">-A</span> <span class="at">-o</span> custom-columns=<span class="st">&#39;NAMESPACE:.metadata.namespace,POD:.metadata.name,RESTARTS:.status.containerStatuses[0].restartCount&#39;</span> <span class="at">--sort-by</span><span class="op">=</span><span class="st">&#39;.status.containerStatuses[0].restartCount&#39;</span></span>
+<span id="cb11-12"><a href="#cb11-12" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb11-13"><a href="#cb11-13" aria-hidden="true" tabindex="-1"></a><span class="co"># Resource limits/requests summary</span></span>
+<span id="cb11-14"><a href="#cb11-14" aria-hidden="true" tabindex="-1"></a><span class="ex">kubectl</span> get pods <span class="at">-n</span> NAMESPACE <span class="at">-o</span> jsonpath=<span class="st">&#39;{range .items[*]}{.metadata.name}{&quot;\n&quot;}{range .spec.containers[*]}  {.name}: req={.resources.requests} lim={.resources.limits}{&quot;\n&quot;}{end}{end}&#39;</span></span>
+<span id="cb11-15"><a href="#cb11-15" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb11-16"><a href="#cb11-16" aria-hidden="true" tabindex="-1"></a><span class="co"># Force delete stuck terminating pod</span></span>
+<span id="cb11-17"><a href="#cb11-17" aria-hidden="true" tabindex="-1"></a><span class="ex">kubectl</span> delete pod POD_NAME <span class="at">--force</span> <span class="at">--grace-period</span><span class="op">=</span>0 <span class="at">-n</span> NAMESPACE</span></code></pre></div>
+<h2 id="helm-commands">Helm Commands</h2>
+<div class="sourceCode" id="cb12"><pre
+class="sourceCode bash"><code class="sourceCode bash"><span id="cb12-1"><a href="#cb12-1" aria-hidden="true" tabindex="-1"></a><span class="ex">helm</span> repo add NAME URL                        <span class="co"># add repo</span></span>
+<span id="cb12-2"><a href="#cb12-2" aria-hidden="true" tabindex="-1"></a><span class="ex">helm</span> repo update                              <span class="co"># refresh repos</span></span>
+<span id="cb12-3"><a href="#cb12-3" aria-hidden="true" tabindex="-1"></a><span class="ex">helm</span> search repo KEYWORD                      <span class="co"># search charts</span></span>
+<span id="cb12-4"><a href="#cb12-4" aria-hidden="true" tabindex="-1"></a><span class="ex">helm</span> show values REPO/CHART                  <span class="co"># see all values</span></span>
+<span id="cb12-5"><a href="#cb12-5" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb12-6"><a href="#cb12-6" aria-hidden="true" tabindex="-1"></a><span class="ex">helm</span> install RELEASE_NAME REPO/CHART         <span class="co"># install</span></span>
+<span id="cb12-7"><a href="#cb12-7" aria-hidden="true" tabindex="-1"></a><span class="ex">helm</span> install RELEASE_NAME REPO/CHART <span class="dt">\</span></span>
+<span id="cb12-8"><a href="#cb12-8" aria-hidden="true" tabindex="-1"></a>  <span class="at">--namespace</span> NS <span class="at">--create-namespace</span> <span class="dt">\</span></span>
+<span id="cb12-9"><a href="#cb12-9" aria-hidden="true" tabindex="-1"></a>  <span class="at">-f</span> values-override.yaml <span class="dt">\</span></span>
+<span id="cb12-10"><a href="#cb12-10" aria-hidden="true" tabindex="-1"></a>  <span class="at">--set</span> key=value</span>
+<span id="cb12-11"><a href="#cb12-11" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb12-12"><a href="#cb12-12" aria-hidden="true" tabindex="-1"></a><span class="ex">helm</span> upgrade RELEASE_NAME REPO/CHART <span class="at">-f</span> values.yaml</span>
+<span id="cb12-13"><a href="#cb12-13" aria-hidden="true" tabindex="-1"></a><span class="ex">helm</span> upgrade <span class="at">--install</span> RELEASE_NAME REPO/CHART  <span class="co"># idempotent</span></span>
+<span id="cb12-14"><a href="#cb12-14" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb12-15"><a href="#cb12-15" aria-hidden="true" tabindex="-1"></a><span class="ex">helm</span> list <span class="at">-A</span>                                  <span class="co"># all releases</span></span>
+<span id="cb12-16"><a href="#cb12-16" aria-hidden="true" tabindex="-1"></a><span class="ex">helm</span> status RELEASE_NAME                      <span class="co"># release info</span></span>
+<span id="cb12-17"><a href="#cb12-17" aria-hidden="true" tabindex="-1"></a><span class="ex">helm</span> history RELEASE_NAME                     <span class="co"># revision history</span></span>
+<span id="cb12-18"><a href="#cb12-18" aria-hidden="true" tabindex="-1"></a><span class="ex">helm</span> rollback RELEASE_NAME 2                  <span class="co"># rollback to revision 2</span></span>
+<span id="cb12-19"><a href="#cb12-19" aria-hidden="true" tabindex="-1"></a><span class="ex">helm</span> uninstall RELEASE_NAME</span>
+<span id="cb12-20"><a href="#cb12-20" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb12-21"><a href="#cb12-21" aria-hidden="true" tabindex="-1"></a><span class="ex">helm</span> template RELEASE_NAME REPO/CHART <span class="at">-f</span> values.yaml  <span class="co"># render without install</span></span>
+<span id="cb12-22"><a href="#cb12-22" aria-hidden="true" tabindex="-1"></a><span class="ex">helm</span> diff upgrade RELEASE_NAME REPO/CHART <span class="at">-f</span> values.yaml  <span class="co"># (plugin)</span></span></code></pre></div>
+<h2 id="essential-manifest-snippets">Essential Manifest Snippets</h2>
+<h3 id="pod-with-security-hardening">Pod with security hardening</h3>
+<div class="sourceCode" id="cb13"><pre
+class="sourceCode yaml"><code class="sourceCode yaml"><span id="cb13-1"><a href="#cb13-1" aria-hidden="true" tabindex="-1"></a><span class="fu">securityContext</span><span class="kw">:</span><span class="co">           # pod-level</span></span>
+<span id="cb13-2"><a href="#cb13-2" aria-hidden="true" tabindex="-1"></a><span class="at">  </span><span class="fu">runAsNonRoot</span><span class="kw">:</span><span class="at"> </span><span class="ch">true</span></span>
+<span id="cb13-3"><a href="#cb13-3" aria-hidden="true" tabindex="-1"></a><span class="at">  </span><span class="fu">runAsUser</span><span class="kw">:</span><span class="at"> </span><span class="dv">1001</span></span>
+<span id="cb13-4"><a href="#cb13-4" aria-hidden="true" tabindex="-1"></a><span class="at">  </span><span class="fu">fsGroup</span><span class="kw">:</span><span class="at"> </span><span class="dv">1001</span></span>
+<span id="cb13-5"><a href="#cb13-5" aria-hidden="true" tabindex="-1"></a><span class="at">  </span><span class="fu">seccompProfile</span><span class="kw">:</span></span>
+<span id="cb13-6"><a href="#cb13-6" aria-hidden="true" tabindex="-1"></a><span class="at">    </span><span class="fu">type</span><span class="kw">:</span><span class="at"> RuntimeDefault</span></span>
+<span id="cb13-7"><a href="#cb13-7" aria-hidden="true" tabindex="-1"></a><span class="fu">containers</span><span class="kw">:</span></span>
+<span id="cb13-8"><a href="#cb13-8" aria-hidden="true" tabindex="-1"></a><span class="at">  </span><span class="kw">-</span><span class="at"> </span><span class="fu">securityContext</span><span class="kw">:</span><span class="co">       # container-level</span></span>
+<span id="cb13-9"><a href="#cb13-9" aria-hidden="true" tabindex="-1"></a><span class="at">      </span><span class="fu">allowPrivilegeEscalation</span><span class="kw">:</span><span class="at"> </span><span class="ch">false</span></span>
+<span id="cb13-10"><a href="#cb13-10" aria-hidden="true" tabindex="-1"></a><span class="at">      </span><span class="fu">readOnlyRootFilesystem</span><span class="kw">:</span><span class="at"> </span><span class="ch">true</span></span>
+<span id="cb13-11"><a href="#cb13-11" aria-hidden="true" tabindex="-1"></a><span class="at">      </span><span class="fu">capabilities</span><span class="kw">:</span></span>
+<span id="cb13-12"><a href="#cb13-12" aria-hidden="true" tabindex="-1"></a><span class="at">        </span><span class="fu">drop</span><span class="kw">:</span><span class="at"> </span><span class="kw">[</span><span class="at">ALL</span><span class="kw">]</span></span></code></pre></div>
+<h3 id="hpa-with-custom-metric">HPA with custom metric</h3>
+<div class="sourceCode" id="cb14"><pre
+class="sourceCode yaml"><code class="sourceCode yaml"><span id="cb14-1"><a href="#cb14-1" aria-hidden="true" tabindex="-1"></a><span class="fu">apiVersion</span><span class="kw">:</span><span class="at"> autoscaling/v2</span></span>
+<span id="cb14-2"><a href="#cb14-2" aria-hidden="true" tabindex="-1"></a><span class="fu">kind</span><span class="kw">:</span><span class="at"> HorizontalPodAutoscaler</span></span>
+<span id="cb14-3"><a href="#cb14-3" aria-hidden="true" tabindex="-1"></a><span class="fu">spec</span><span class="kw">:</span></span>
+<span id="cb14-4"><a href="#cb14-4" aria-hidden="true" tabindex="-1"></a><span class="at">  </span><span class="fu">minReplicas</span><span class="kw">:</span><span class="at"> </span><span class="dv">2</span></span>
+<span id="cb14-5"><a href="#cb14-5" aria-hidden="true" tabindex="-1"></a><span class="at">  </span><span class="fu">maxReplicas</span><span class="kw">:</span><span class="at"> </span><span class="dv">20</span></span>
+<span id="cb14-6"><a href="#cb14-6" aria-hidden="true" tabindex="-1"></a><span class="at">  </span><span class="fu">metrics</span><span class="kw">:</span></span>
+<span id="cb14-7"><a href="#cb14-7" aria-hidden="true" tabindex="-1"></a><span class="at">    </span><span class="kw">-</span><span class="at"> </span><span class="fu">type</span><span class="kw">:</span><span class="at"> Resource</span></span>
+<span id="cb14-8"><a href="#cb14-8" aria-hidden="true" tabindex="-1"></a><span class="at">      </span><span class="fu">resource</span><span class="kw">:</span></span>
+<span id="cb14-9"><a href="#cb14-9" aria-hidden="true" tabindex="-1"></a><span class="at">        </span><span class="fu">name</span><span class="kw">:</span><span class="at"> cpu</span></span>
+<span id="cb14-10"><a href="#cb14-10" aria-hidden="true" tabindex="-1"></a><span class="at">        </span><span class="fu">target</span><span class="kw">:</span></span>
+<span id="cb14-11"><a href="#cb14-11" aria-hidden="true" tabindex="-1"></a><span class="at">          </span><span class="fu">type</span><span class="kw">:</span><span class="at"> Utilization</span></span>
+<span id="cb14-12"><a href="#cb14-12" aria-hidden="true" tabindex="-1"></a><span class="at">          </span><span class="fu">averageUtilization</span><span class="kw">:</span><span class="at"> </span><span class="dv">70</span></span>
+<span id="cb14-13"><a href="#cb14-13" aria-hidden="true" tabindex="-1"></a><span class="at">  </span><span class="fu">behavior</span><span class="kw">:</span></span>
+<span id="cb14-14"><a href="#cb14-14" aria-hidden="true" tabindex="-1"></a><span class="at">    </span><span class="fu">scaleDown</span><span class="kw">:</span></span>
+<span id="cb14-15"><a href="#cb14-15" aria-hidden="true" tabindex="-1"></a><span class="at">      </span><span class="fu">stabilizationWindowSeconds</span><span class="kw">:</span><span class="at"> </span><span class="dv">300</span></span></code></pre></div>
+<h3 id="poddisruptionbudget">PodDisruptionBudget</h3>
+<div class="sourceCode" id="cb15"><pre
+class="sourceCode yaml"><code class="sourceCode yaml"><span id="cb15-1"><a href="#cb15-1" aria-hidden="true" tabindex="-1"></a><span class="fu">apiVersion</span><span class="kw">:</span><span class="at"> policy/v1</span></span>
+<span id="cb15-2"><a href="#cb15-2" aria-hidden="true" tabindex="-1"></a><span class="fu">kind</span><span class="kw">:</span><span class="at"> PodDisruptionBudget</span></span>
+<span id="cb15-3"><a href="#cb15-3" aria-hidden="true" tabindex="-1"></a><span class="fu">spec</span><span class="kw">:</span></span>
+<span id="cb15-4"><a href="#cb15-4" aria-hidden="true" tabindex="-1"></a><span class="at">  </span><span class="fu">minAvailable</span><span class="kw">:</span><span class="at"> </span><span class="dv">2</span><span class="co">           # OR: maxUnavailable: 1</span></span>
+<span id="cb15-5"><a href="#cb15-5" aria-hidden="true" tabindex="-1"></a><span class="at">  </span><span class="fu">selector</span><span class="kw">:</span></span>
+<span id="cb15-6"><a href="#cb15-6" aria-hidden="true" tabindex="-1"></a><span class="at">    </span><span class="fu">matchLabels</span><span class="kw">:</span></span>
+<span id="cb15-7"><a href="#cb15-7" aria-hidden="true" tabindex="-1"></a><span class="at">      </span><span class="fu">app</span><span class="kw">:</span><span class="at"> myapp</span></span></code></pre></div>
+<h3 id="topology-spread-multi-az-ha">Topology Spread (multi-AZ HA)</h3>
+<div class="sourceCode" id="cb16"><pre
+class="sourceCode yaml"><code class="sourceCode yaml"><span id="cb16-1"><a href="#cb16-1" aria-hidden="true" tabindex="-1"></a><span class="fu">topologySpreadConstraints</span><span class="kw">:</span></span>
+<span id="cb16-2"><a href="#cb16-2" aria-hidden="true" tabindex="-1"></a><span class="at">  </span><span class="kw">-</span><span class="at"> </span><span class="fu">maxSkew</span><span class="kw">:</span><span class="at"> </span><span class="dv">1</span></span>
+<span id="cb16-3"><a href="#cb16-3" aria-hidden="true" tabindex="-1"></a><span class="at">    </span><span class="fu">topologyKey</span><span class="kw">:</span><span class="at"> topology.kubernetes.io/zone</span></span>
+<span id="cb16-4"><a href="#cb16-4" aria-hidden="true" tabindex="-1"></a><span class="at">    </span><span class="fu">whenUnsatisfiable</span><span class="kw">:</span><span class="at"> DoNotSchedule</span></span>
+<span id="cb16-5"><a href="#cb16-5" aria-hidden="true" tabindex="-1"></a><span class="at">    </span><span class="fu">labelSelector</span><span class="kw">:</span></span>
+<span id="cb16-6"><a href="#cb16-6" aria-hidden="true" tabindex="-1"></a><span class="at">      </span><span class="fu">matchLabels</span><span class="kw">:</span></span>
+<span id="cb16-7"><a href="#cb16-7" aria-hidden="true" tabindex="-1"></a><span class="at">        </span><span class="fu">app</span><span class="kw">:</span><span class="at"> myapp</span></span></code></pre></div>
+<h2 id="exit-codes-reference">Exit Codes Reference</h2>
+<table>
+<thead>
+<tr class="header">
+<th>Code</th>
+<th>Meaning</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td>0</td>
+<td>Success</td>
+</tr>
+<tr class="even">
+<td>1</td>
+<td>App error (check logs)</td>
+</tr>
+<tr class="odd">
+<td>137</td>
+<td>OOMKilled (increase memory limit)</td>
+</tr>
+<tr class="even">
+<td>139</td>
+<td>Segfault</td>
+</tr>
+<tr class="odd">
+<td>143</td>
+<td>SIGTERM received (graceful shutdown)</td>
+</tr>
+<tr class="even">
+<td>255</td>
+<td>Exit(-1) — check app code</td>
+</tr>
+</tbody>
+</table>
+</body>
+</html>

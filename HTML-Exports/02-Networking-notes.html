@@ -1,0 +1,649 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" lang="" xml:lang="">
+<head>
+  <meta charset="utf-8" />
+  <meta name="generator" content="pandoc" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes" />
+  <title>DevOps Mastery: notes</title>
+  <style>
+    code{white-space: pre-wrap;}
+    span.smallcaps{font-variant: small-caps;}
+    div.columns{display: flex; gap: min(4vw, 1.5em);}
+    div.column{flex: auto; overflow-x: auto;}
+    div.hanging-indent{margin-left: 1.5em; text-indent: -1.5em;}
+    /* The extra [class] is a hack that increases specificity enough to
+       override a similar rule in reveal.js */
+    ul.task-list[class]{list-style: none;}
+    ul.task-list li input[type="checkbox"] {
+      font-size: inherit;
+      width: 0.8em;
+      margin: 0 0.8em 0.2em -1.6em;
+      vertical-align: middle;
+    }
+    .display.math{display: block; text-align: center; margin: 0.5rem auto;}
+    /* CSS for syntax highlighting */
+    pre > code.sourceCode { white-space: pre; position: relative; }
+    pre > code.sourceCode > span { line-height: 1.25; }
+    pre > code.sourceCode > span:empty { height: 1.2em; }
+    .sourceCode { overflow: visible; }
+    code.sourceCode > span { color: inherit; text-decoration: inherit; }
+    div.sourceCode { margin: 1em 0; }
+    pre.sourceCode { margin: 0; }
+    @media screen {
+    div.sourceCode { overflow: auto; }
+    }
+    @media print {
+    pre > code.sourceCode { white-space: pre-wrap; }
+    pre > code.sourceCode > span { text-indent: -5em; padding-left: 5em; }
+    }
+    pre.numberSource code
+      { counter-reset: source-line 0; }
+    pre.numberSource code > span
+      { position: relative; left: -4em; counter-increment: source-line; }
+    pre.numberSource code > span > a:first-child::before
+      { content: counter(source-line);
+        position: relative; left: -1em; text-align: right; vertical-align: baseline;
+        border: none; display: inline-block;
+        -webkit-touch-callout: none; -webkit-user-select: none;
+        -khtml-user-select: none; -moz-user-select: none;
+        -ms-user-select: none; user-select: none;
+        padding: 0 4px; width: 4em;
+        color: #aaaaaa;
+      }
+    pre.numberSource { margin-left: 3em; border-left: 1px solid #aaaaaa;  padding-left: 4px; }
+    div.sourceCode
+      {  background-color: #f8f8f8; }
+    @media screen {
+    pre > code.sourceCode > span > a:first-child::before { text-decoration: underline; }
+    }
+    code span.al { color: #ef2929; } /* Alert */
+    code span.an { color: #8f5902; font-weight: bold; font-style: italic; } /* Annotation */
+    code span.at { color: #204a87; } /* Attribute */
+    code span.bn { color: #0000cf; } /* BaseN */
+    code span.cf { color: #204a87; font-weight: bold; } /* ControlFlow */
+    code span.ch { color: #4e9a06; } /* Char */
+    code span.cn { color: #8f5902; } /* Constant */
+    code span.co { color: #8f5902; font-style: italic; } /* Comment */
+    code span.cv { color: #8f5902; font-weight: bold; font-style: italic; } /* CommentVar */
+    code span.do { color: #8f5902; font-weight: bold; font-style: italic; } /* Documentation */
+    code span.dt { color: #204a87; } /* DataType */
+    code span.dv { color: #0000cf; } /* DecVal */
+    code span.er { color: #a40000; font-weight: bold; } /* Error */
+    code span.ex { } /* Extension */
+    code span.fl { color: #0000cf; } /* Float */
+    code span.fu { color: #204a87; font-weight: bold; } /* Function */
+    code span.im { } /* Import */
+    code span.in { color: #8f5902; font-weight: bold; font-style: italic; } /* Information */
+    code span.kw { color: #204a87; font-weight: bold; } /* Keyword */
+    code span.op { color: #ce5c00; font-weight: bold; } /* Operator */
+    code span.ot { color: #8f5902; } /* Other */
+    code span.pp { color: #8f5902; font-style: italic; } /* Preprocessor */
+    code span.sc { color: #ce5c00; font-weight: bold; } /* SpecialChar */
+    code span.ss { color: #4e9a06; } /* SpecialString */
+    code span.st { color: #4e9a06; } /* String */
+    code span.va { color: #000000; } /* Variable */
+    code span.vs { color: #4e9a06; } /* VerbatimString */
+    code span.wa { color: #8f5902; font-weight: bold; font-style: italic; } /* Warning */
+  </style>
+  <link rel="stylesheet" href="/tmp/devops-style.css" />
+</head>
+<body>
+<header id="title-block-header">
+<h1 class="title">DevOps Mastery: notes</h1>
+</header>
+<nav id="TOC" role="doc-toc">
+<ul>
+<li><a href="#networking-deep-dive-notes"
+id="toc-networking-deep-dive-notes">Networking — Deep Dive Notes</a>
+<ul>
+<li><a href="#osi-model-7-layers" id="toc-osi-model-7-layers">1. OSI
+Model (7 Layers)</a></li>
+<li><a href="#tcp-deep-dive" id="toc-tcp-deep-dive">2. TCP Deep Dive</a>
+<ul>
+<li><a href="#three-way-handshake"
+id="toc-three-way-handshake">Three-Way Handshake</a></li>
+<li><a href="#connection-termination-four-way"
+id="toc-connection-termination-four-way">Connection Termination
+(Four-way)</a></li>
+<li><a href="#tcp-states-important-for-troubleshooting"
+id="toc-tcp-states-important-for-troubleshooting">TCP States (Important
+for Troubleshooting)</a></li>
+<li><a href="#tcp-vs-udp" id="toc-tcp-vs-udp">TCP vs UDP</a></li>
+</ul></li>
+<li><a href="#ip-addressing-subnetting"
+id="toc-ip-addressing-subnetting">3. IP Addressing &amp; Subnetting</a>
+<ul>
+<li><a href="#cidr-notation" id="toc-cidr-notation">CIDR
+Notation</a></li>
+<li><a href="#private-ranges-rfc-1918"
+id="toc-private-ranges-rfc-1918">Private Ranges (RFC 1918)</a></li>
+<li><a href="#subnetting-quick-math"
+id="toc-subnetting-quick-math">Subnetting Quick Math</a></li>
+</ul></li>
+<li><a href="#dns" id="toc-dns">4. DNS</a>
+<ul>
+<li><a href="#record-types" id="toc-record-types">Record Types</a></li>
+<li><a href="#dns-resolution-flow" id="toc-dns-resolution-flow">DNS
+Resolution Flow</a></li>
+<li><a href="#troubleshooting-dns"
+id="toc-troubleshooting-dns">Troubleshooting DNS</a></li>
+</ul></li>
+<li><a href="#load-balancers" id="toc-load-balancers">5. Load
+Balancers</a>
+<ul>
+<li><a href="#layer-4-transport-layer-lb"
+id="toc-layer-4-transport-layer-lb">Layer 4 (Transport Layer)
+LB</a></li>
+<li><a href="#layer-7-application-layer-lb"
+id="toc-layer-7-application-layer-lb">Layer 7 (Application Layer)
+LB</a></li>
+<li><a href="#load-balancing-algorithms"
+id="toc-load-balancing-algorithms">Load Balancing Algorithms</a></li>
+<li><a href="#health-checks" id="toc-health-checks">Health
+Checks</a></li>
+</ul></li>
+<li><a href="#nginx-as-reverse-proxy-load-balancer"
+id="toc-nginx-as-reverse-proxy-load-balancer">6. NGINX as Reverse Proxy
+/ Load Balancer</a></li>
+<li><a href="#tlsssl-certificate-management"
+id="toc-tlsssl-certificate-management">7. TLS/SSL &amp; Certificate
+Management</a>
+<ul>
+<li><a href="#tls-handshake-tls-1.3" id="toc-tls-handshake-tls-1.3">TLS
+Handshake (TLS 1.3)</a></li>
+<li><a href="#certificate-types" id="toc-certificate-types">Certificate
+Types</a></li>
+<li><a href="#practical-tls" id="toc-practical-tls">Practical
+TLS</a></li>
+</ul></li>
+<li><a href="#firewalls-security-groups"
+id="toc-firewalls-security-groups">8. Firewalls &amp; Security
+Groups</a>
+<ul>
+<li><a href="#aws-security-groups" id="toc-aws-security-groups">AWS
+Security Groups</a></li>
+<li><a href="#iptables-chains" id="toc-iptables-chains">iptables
+Chains</a></li>
+</ul></li>
+<li><a href="#vpn-network-tunneling" id="toc-vpn-network-tunneling">9.
+VPN &amp; Network Tunneling</a>
+<ul>
+<li><a href="#vpn-types" id="toc-vpn-types">VPN Types</a></li>
+<li><a href="#wireguard-quick-setup"
+id="toc-wireguard-quick-setup">WireGuard Quick Setup</a></li>
+</ul></li>
+<li><a href="#service-mesh-networking-istiolinkerd"
+id="toc-service-mesh-networking-istiolinkerd">10. Service Mesh
+Networking (Istio/Linkerd)</a>
+<ul>
+<li><a href="#concepts" id="toc-concepts">Concepts</a></li>
+<li><a href="#what-a-service-mesh-provides"
+id="toc-what-a-service-mesh-provides">What a Service Mesh
+Provides</a></li>
+</ul></li>
+<li><a href="#resources" id="toc-resources">📚 Resources</a></li>
+</ul></li>
+</ul>
+</nav>
+<h1 id="networking-deep-dive-notes">Networking — Deep Dive Notes</h1>
+<h2 id="osi-model-7-layers">1. OSI Model (7 Layers)</h2>
+<table>
+<thead>
+<tr class="header">
+<th>Layer</th>
+<th>Name</th>
+<th>Protocol/Example</th>
+<th>PDU</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td>7</td>
+<td>Application</td>
+<td>HTTP, DNS, SMTP, SSH</td>
+<td>Data</td>
+</tr>
+<tr class="even">
+<td>6</td>
+<td>Presentation</td>
+<td>TLS/SSL, JPEG encoding</td>
+<td>Data</td>
+</tr>
+<tr class="odd">
+<td>5</td>
+<td>Session</td>
+<td>RPC, NetBIOS</td>
+<td>Data</td>
+</tr>
+<tr class="even">
+<td>4</td>
+<td>Transport</td>
+<td>TCP, UDP, SCTP</td>
+<td>Segment</td>
+</tr>
+<tr class="odd">
+<td>3</td>
+<td>Network</td>
+<td>IP, ICMP, OSPF</td>
+<td>Packet</td>
+</tr>
+<tr class="even">
+<td>2</td>
+<td>Data Link</td>
+<td>Ethernet, ARP, MAC</td>
+<td>Frame</td>
+</tr>
+<tr class="odd">
+<td>1</td>
+<td>Physical</td>
+<td>Cables, Wi-Fi signals</td>
+<td>Bits</td>
+</tr>
+</tbody>
+</table>
+<p><strong>DevOps Focus Areas:</strong> Layer 3 (routing), Layer 4
+(ports, load balancing), Layer 7 (HTTP proxying)</p>
+<hr />
+<h2 id="tcp-deep-dive">2. TCP Deep Dive</h2>
+<h3 id="three-way-handshake">Three-Way Handshake</h3>
+<pre><code>Client → Server: SYN (seq=x)
+Server → Client: SYN-ACK (seq=y, ack=x+1)
+Client → Server: ACK (seq=x+1, ack=y+1)</code></pre>
+<h3 id="connection-termination-four-way">Connection Termination
+(Four-way)</h3>
+<pre><code>Client → Server: FIN
+Server → Client: ACK
+Server → Client: FIN
+Client → Server: ACK (→ TIME_WAIT 2*MSL=60s)</code></pre>
+<h3 id="tcp-states-important-for-troubleshooting">TCP States (Important
+for Troubleshooting)</h3>
+<table>
+<thead>
+<tr class="header">
+<th>State</th>
+<th>Meaning</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td>LISTEN</td>
+<td>Waiting for connections</td>
+</tr>
+<tr class="even">
+<td>ESTABLISHED</td>
+<td>Active connection</td>
+</tr>
+<tr class="odd">
+<td>TIME_WAIT</td>
+<td>Waiting after close (60s) — can exhaust ports</td>
+</tr>
+<tr class="even">
+<td>CLOSE_WAIT</td>
+<td>Remote end closed, local hasn’t yet</td>
+</tr>
+<tr class="odd">
+<td>FIN_WAIT_2</td>
+<td>Sent FIN, waiting for remote FIN</td>
+</tr>
+</tbody>
+</table>
+<div class="sourceCode" id="cb3"><pre
+class="sourceCode bash"><code class="sourceCode bash"><span id="cb3-1"><a href="#cb3-1" aria-hidden="true" tabindex="-1"></a><span class="ex">ss</span> <span class="at">-tn</span> state established</span>
+<span id="cb3-2"><a href="#cb3-2" aria-hidden="true" tabindex="-1"></a><span class="ex">ss</span> <span class="at">-tn</span> state time-wait <span class="kw">|</span> <span class="fu">wc</span> <span class="at">-l</span>    <span class="co"># high = port exhaustion risk</span></span>
+<span id="cb3-3"><a href="#cb3-3" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb3-4"><a href="#cb3-4" aria-hidden="true" tabindex="-1"></a><span class="co"># Tune TIME_WAIT</span></span>
+<span id="cb3-5"><a href="#cb3-5" aria-hidden="true" tabindex="-1"></a><span class="bu">echo</span> 1 <span class="op">&gt;</span> /proc/sys/net/ipv4/tcp_tw_reuse</span></code></pre></div>
+<h3 id="tcp-vs-udp">TCP vs UDP</h3>
+<table>
+<thead>
+<tr class="header">
+<th>Feature</th>
+<th>TCP</th>
+<th>UDP</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td>Reliable</td>
+<td>Yes</td>
+<td>No</td>
+</tr>
+<tr class="even">
+<td>Ordered</td>
+<td>Yes</td>
+<td>No</td>
+</tr>
+<tr class="odd">
+<td>Connection</td>
+<td>Yes (handshake)</td>
+<td>No (connectionless)</td>
+</tr>
+<tr class="even">
+<td>Flow control</td>
+<td>Yes</td>
+<td>No</td>
+</tr>
+<tr class="odd">
+<td>Use cases</td>
+<td>HTTP, SSH, DB</td>
+<td>DNS, video streaming, games</td>
+</tr>
+</tbody>
+</table>
+<hr />
+<h2 id="ip-addressing-subnetting">3. IP Addressing &amp; Subnetting</h2>
+<h3 id="cidr-notation">CIDR Notation</h3>
+<pre><code>10.0.0.0/24  → 256 addresses (254 usable), mask: 255.255.255.0
+10.0.0.0/22  → 1024 addresses, mask: 255.255.252.0
+10.0.0.0/16  → 65536 addresses
+192.168.1.0/30 → 4 addresses (2 usable) — point-to-point links</code></pre>
+<h3 id="private-ranges-rfc-1918">Private Ranges (RFC 1918)</h3>
+<pre><code>10.0.0.0/8        → Class A private
+172.16.0.0/12     → Class B private
+192.168.0.0/16    → Class C private
+169.254.0.0/16    → Link-local (APIPA)
+127.0.0.0/8       → Loopback</code></pre>
+<h3 id="subnetting-quick-math">Subnetting Quick Math</h3>
+<pre><code>/24 = 256 hosts    /25 = 128    /26 = 64    /27 = 32    /28 = 16
+Formula: 2^(32-prefix) = total addresses; subtract 2 for network + broadcast</code></pre>
+<hr />
+<h2 id="dns">4. DNS</h2>
+<h3 id="record-types">Record Types</h3>
+<table>
+<thead>
+<tr class="header">
+<th>Type</th>
+<th>Purpose</th>
+<th>Example</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td>A</td>
+<td>IPv4 address</td>
+<td>example.com → 93.184.216.34</td>
+</tr>
+<tr class="even">
+<td>AAAA</td>
+<td>IPv6 address</td>
+<td>example.com → 2606:…</td>
+</tr>
+<tr class="odd">
+<td>CNAME</td>
+<td>Alias to another name</td>
+<td>www → example.com</td>
+</tr>
+<tr class="even">
+<td>MX</td>
+<td>Mail server</td>
+<td>example.com → mail.example.com (priority)</td>
+</tr>
+<tr class="odd">
+<td>TXT</td>
+<td>Arbitrary text (SPF, DKIM, ACME challenge)</td>
+<td></td>
+</tr>
+<tr class="even">
+<td>NS</td>
+<td>Nameserver</td>
+<td>example.com → ns1.example.com</td>
+</tr>
+<tr class="odd">
+<td>PTR</td>
+<td>Reverse DNS (IP → name)</td>
+<td></td>
+</tr>
+<tr class="even">
+<td>SRV</td>
+<td>Service discovery</td>
+<td>_http._tcp.example.com</td>
+</tr>
+<tr class="odd">
+<td>SOA</td>
+<td>Start of authority</td>
+<td>Zone info, TTL, serial</td>
+</tr>
+</tbody>
+</table>
+<h3 id="dns-resolution-flow">DNS Resolution Flow</h3>
+<pre><code>Browser → OS resolver cache → /etc/hosts → /etc/resolv.conf nameserver
+→ Recursive resolver (e.g., 8.8.8.8) → Root NS → TLD NS → Auth NS → Answer</code></pre>
+<h3 id="troubleshooting-dns">Troubleshooting DNS</h3>
+<div class="sourceCode" id="cb8"><pre
+class="sourceCode bash"><code class="sourceCode bash"><span id="cb8-1"><a href="#cb8-1" aria-hidden="true" tabindex="-1"></a><span class="ex">dig</span> example.com A +short</span>
+<span id="cb8-2"><a href="#cb8-2" aria-hidden="true" tabindex="-1"></a><span class="ex">dig</span> @8.8.8.8 example.com ANY         <span class="co"># query specific server</span></span>
+<span id="cb8-3"><a href="#cb8-3" aria-hidden="true" tabindex="-1"></a><span class="ex">dig</span> +trace example.com                <span class="co"># trace full resolution</span></span>
+<span id="cb8-4"><a href="#cb8-4" aria-hidden="true" tabindex="-1"></a><span class="ex">nslookup</span> example.com</span>
+<span id="cb8-5"><a href="#cb8-5" aria-hidden="true" tabindex="-1"></a><span class="ex">host</span> example.com</span>
+<span id="cb8-6"><a href="#cb8-6" aria-hidden="true" tabindex="-1"></a><span class="ex">dig</span> <span class="at">-x</span> 93.184.216.34                  <span class="co"># reverse lookup</span></span>
+<span id="cb8-7"><a href="#cb8-7" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb8-8"><a href="#cb8-8" aria-hidden="true" tabindex="-1"></a><span class="co"># Check local resolution</span></span>
+<span id="cb8-9"><a href="#cb8-9" aria-hidden="true" tabindex="-1"></a><span class="fu">cat</span> /etc/resolv.conf</span>
+<span id="cb8-10"><a href="#cb8-10" aria-hidden="true" tabindex="-1"></a><span class="fu">cat</span> /etc/nsswitch.conf <span class="kw">|</span> <span class="fu">grep</span> hosts   <span class="co"># order: files dns (or dns files)</span></span></code></pre></div>
+<hr />
+<h2 id="load-balancers">5. Load Balancers</h2>
+<h3 id="layer-4-transport-layer-lb">Layer 4 (Transport Layer) LB</h3>
+<ul>
+<li>Routes based on IP + port</li>
+<li>No content inspection</li>
+<li>Faster, less CPU overhead</li>
+<li>Examples: AWS NLB, HAProxy (TCP mode)</li>
+</ul>
+<h3 id="layer-7-application-layer-lb">Layer 7 (Application Layer)
+LB</h3>
+<ul>
+<li>Routes based on HTTP headers, URL paths, cookies</li>
+<li>SSL termination, content rewriting</li>
+<li>Examples: AWS ALB, NGINX, HAProxy (HTTP mode), Envoy</li>
+</ul>
+<h3 id="load-balancing-algorithms">Load Balancing Algorithms</h3>
+<table>
+<colgroup>
+<col style="width: 32%" />
+<col style="width: 38%" />
+<col style="width: 29%" />
+</colgroup>
+<thead>
+<tr class="header">
+<th>Algorithm</th>
+<th>Description</th>
+<th>Use Case</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td>Round Robin</td>
+<td>Rotate through servers</td>
+<td>Simple, equal servers</td>
+</tr>
+<tr class="even">
+<td>Least Connections</td>
+<td>Send to server with fewest connections</td>
+<td>Variable request duration</td>
+</tr>
+<tr class="odd">
+<td>IP Hash</td>
+<td>Hash client IP → consistent server</td>
+<td>Session affinity without cookies</td>
+</tr>
+<tr class="even">
+<td>Random</td>
+<td>Random selection</td>
+<td>Simple, low overhead</td>
+</tr>
+<tr class="odd">
+<td>Weighted Round Robin</td>
+<td>Some servers handle more traffic</td>
+<td>Heterogeneous servers</td>
+</tr>
+<tr class="even">
+<td>Resource Based</td>
+<td>Route by CPU/memory availability</td>
+<td>Dynamic environments</td>
+</tr>
+</tbody>
+</table>
+<h3 id="health-checks">Health Checks</h3>
+<pre><code>Active: LB polls backend (TCP connect, HTTP GET /health)
+Passive: LB monitors real traffic for failures</code></pre>
+<hr />
+<h2 id="nginx-as-reverse-proxy-load-balancer">6. NGINX as Reverse Proxy
+/ Load Balancer</h2>
+<pre class="nginx"><code># /etc/nginx/conf.d/app.conf
+upstream backend {
+    least_conn;
+    server app1:8080 weight=3;
+    server app2:8080 weight=1;
+    server app3:8080 backup;    # only used if others fail
+    keepalive 32;               # keep connections warm
+}
+
+server {
+    listen 443 ssl http2;
+    server_name api.example.com;
+
+    ssl_certificate /etc/ssl/certs/cert.pem;
+    ssl_certificate_key /etc/ssl/private/key.pem;
+
+    location / {
+        proxy_pass http://backend;
+        proxy_set_header Host $host;
+        proxy_set_header X-Real-IP $remote_addr;
+        proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;
+        proxy_set_header X-Forwarded-Proto $scheme;
+        proxy_connect_timeout 5s;
+        proxy_read_timeout 60s;
+        proxy_buffering off;
+    }
+
+    location /static/ {
+        root /var/www;
+        expires 30d;
+        add_header Cache-Control &quot;public, immutable&quot;;
+    }
+}</code></pre>
+<hr />
+<h2 id="tlsssl-certificate-management">7. TLS/SSL &amp; Certificate
+Management</h2>
+<h3 id="tls-handshake-tls-1.3">TLS Handshake (TLS 1.3)</h3>
+<pre><code>Client → Server: ClientHello (supported ciphers, TLS version)
+Server → Client: ServerHello + Certificate + CertificateVerify
+Client verifies cert against CA trust store
+Key exchange (ECDHE) → session keys
+Both parties: Finished</code></pre>
+<h3 id="certificate-types">Certificate Types</h3>
+<ul>
+<li><strong>DV (Domain Validated):</strong> Automated, proves domain
+ownership</li>
+<li><strong>OV (Org Validated):</strong> Proves organization
+identity</li>
+<li><strong>EV (Extended Validation):</strong> Highest trust, shows
+company name</li>
+</ul>
+<h3 id="practical-tls">Practical TLS</h3>
+<div class="sourceCode" id="cb12"><pre
+class="sourceCode bash"><code class="sourceCode bash"><span id="cb12-1"><a href="#cb12-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Check certificate details</span></span>
+<span id="cb12-2"><a href="#cb12-2" aria-hidden="true" tabindex="-1"></a><span class="ex">openssl</span> s_client <span class="at">-connect</span> api.example.com:443 <span class="at">-servername</span> api.example.com</span>
+<span id="cb12-3"><a href="#cb12-3" aria-hidden="true" tabindex="-1"></a><span class="ex">openssl</span> x509 <span class="at">-text</span> <span class="at">-noout</span> <span class="at">-in</span> cert.pem</span>
+<span id="cb12-4"><a href="#cb12-4" aria-hidden="true" tabindex="-1"></a><span class="ex">openssl</span> x509 <span class="at">-enddate</span> <span class="at">-noout</span> <span class="at">-in</span> cert.pem    <span class="co"># expiry</span></span>
+<span id="cb12-5"><a href="#cb12-5" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb12-6"><a href="#cb12-6" aria-hidden="true" tabindex="-1"></a><span class="co"># Generate self-signed cert</span></span>
+<span id="cb12-7"><a href="#cb12-7" aria-hidden="true" tabindex="-1"></a><span class="ex">openssl</span> req <span class="at">-x509</span> <span class="at">-newkey</span> rsa:4096 <span class="at">-keyout</span> key.pem <span class="at">-out</span> cert.pem <span class="dt">\</span></span>
+<span id="cb12-8"><a href="#cb12-8" aria-hidden="true" tabindex="-1"></a>  <span class="at">-days</span> 365 <span class="at">-nodes</span> <span class="at">-subj</span> <span class="st">&#39;/CN=localhost&#39;</span></span>
+<span id="cb12-9"><a href="#cb12-9" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb12-10"><a href="#cb12-10" aria-hidden="true" tabindex="-1"></a><span class="co"># Let&#39;s Encrypt (Certbot)</span></span>
+<span id="cb12-11"><a href="#cb12-11" aria-hidden="true" tabindex="-1"></a><span class="ex">certbot</span> certonly <span class="at">--webroot</span> <span class="at">-w</span> /var/www/html <span class="at">-d</span> example.com <span class="at">-d</span> www.example.com</span>
+<span id="cb12-12"><a href="#cb12-12" aria-hidden="true" tabindex="-1"></a><span class="ex">certbot</span> renew <span class="at">--dry-run</span></span>
+<span id="cb12-13"><a href="#cb12-13" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb12-14"><a href="#cb12-14" aria-hidden="true" tabindex="-1"></a><span class="co"># mTLS — mutual authentication</span></span>
+<span id="cb12-15"><a href="#cb12-15" aria-hidden="true" tabindex="-1"></a><span class="co"># Both client and server present certificates</span></span>
+<span id="cb12-16"><a href="#cb12-16" aria-hidden="true" tabindex="-1"></a><span class="co"># Used in service meshes, internal microservices</span></span></code></pre></div>
+<hr />
+<h2 id="firewalls-security-groups">8. Firewalls &amp; Security
+Groups</h2>
+<h3 id="aws-security-groups">AWS Security Groups</h3>
+<pre><code>Stateful: If inbound rule allows traffic, response is automatically allowed
+Direction: Inbound and outbound separate
+Default: Deny all inbound, allow all outbound
+Groups: Can reference other security groups</code></pre>
+<h3 id="iptables-chains">iptables Chains</h3>
+<pre><code>INPUT → Traffic to this host
+OUTPUT → Traffic from this host
+FORWARD → Traffic passing through (router mode)
+PREROUTING → Before routing decision (NAT DNAT)
+POSTROUTING → After routing decision (NAT SNAT/MASQUERADE)</code></pre>
+<hr />
+<h2 id="vpn-network-tunneling">9. VPN &amp; Network Tunneling</h2>
+<h3 id="vpn-types">VPN Types</h3>
+<ul>
+<li><strong>Site-to-Site:</strong> Connect two networks (e.g., office to
+cloud VPC)</li>
+<li><strong>Client-to-Site:</strong> Individual user connects to network
+(OpenVPN, WireGuard)</li>
+</ul>
+<h3 id="wireguard-quick-setup">WireGuard Quick Setup</h3>
+<div class="sourceCode" id="cb15"><pre
+class="sourceCode bash"><code class="sourceCode bash"><span id="cb15-1"><a href="#cb15-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Generate keys</span></span>
+<span id="cb15-2"><a href="#cb15-2" aria-hidden="true" tabindex="-1"></a><span class="ex">wg</span> genkey <span class="kw">|</span> <span class="fu">tee</span> privatekey <span class="kw">|</span> <span class="ex">wg</span> pubkey <span class="op">&gt;</span> publickey</span>
+<span id="cb15-3"><a href="#cb15-3" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb15-4"><a href="#cb15-4" aria-hidden="true" tabindex="-1"></a><span class="co"># /etc/wireguard/wg0.conf</span></span>
+<span id="cb15-5"><a href="#cb15-5" aria-hidden="true" tabindex="-1"></a><span class="ex">[Interface]</span></span>
+<span id="cb15-6"><a href="#cb15-6" aria-hidden="true" tabindex="-1"></a><span class="ex">Address</span> = 10.100.0.1/24</span>
+<span id="cb15-7"><a href="#cb15-7" aria-hidden="true" tabindex="-1"></a><span class="ex">ListenPort</span> = 51820</span>
+<span id="cb15-8"><a href="#cb15-8" aria-hidden="true" tabindex="-1"></a><span class="ex">PrivateKey</span> = <span class="op">&lt;</span>server_private_key<span class="op">&gt;</span></span>
+<span id="cb15-9"><a href="#cb15-9" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb15-10"><a href="#cb15-10" aria-hidden="true" tabindex="-1"></a><span class="ex">[Peer]</span></span>
+<span id="cb15-11"><a href="#cb15-11" aria-hidden="true" tabindex="-1"></a><span class="ex">PublicKey</span> = <span class="op">&lt;</span>client_public_key<span class="op">&gt;</span></span>
+<span id="cb15-12"><a href="#cb15-12" aria-hidden="true" tabindex="-1"></a><span class="ex">AllowedIPs</span> = 10.100.0.2/32</span>
+<span id="cb15-13"><a href="#cb15-13" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb15-14"><a href="#cb15-14" aria-hidden="true" tabindex="-1"></a><span class="ex">wg-quick</span> up wg0</span></code></pre></div>
+<hr />
+<h2 id="service-mesh-networking-istiolinkerd">10. Service Mesh
+Networking (Istio/Linkerd)</h2>
+<h3 id="concepts">Concepts</h3>
+<ul>
+<li><strong>Sidecar proxy:</strong> Envoy runs alongside each pod,
+intercepts all traffic</li>
+<li><strong>Control plane:</strong> Manages configuration for all
+proxies (Istiod)</li>
+<li><strong>Data plane:</strong> All sidecar proxies handling actual
+traffic</li>
+</ul>
+<h3 id="what-a-service-mesh-provides">What a Service Mesh Provides</h3>
+<ul>
+<li>mTLS between all services automatically</li>
+<li>Traffic management: retries, timeouts, circuit breakers</li>
+<li>Observability: metrics, tracing, logging per-service</li>
+<li>Traffic splitting: canary deployments without code changes</li>
+</ul>
+<div class="sourceCode" id="cb16"><pre
+class="sourceCode yaml"><code class="sourceCode yaml"><span id="cb16-1"><a href="#cb16-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Istio VirtualService — weighted routing</span></span>
+<span id="cb16-2"><a href="#cb16-2" aria-hidden="true" tabindex="-1"></a><span class="fu">apiVersion</span><span class="kw">:</span><span class="at"> networking.istio.io/v1alpha3</span></span>
+<span id="cb16-3"><a href="#cb16-3" aria-hidden="true" tabindex="-1"></a><span class="fu">kind</span><span class="kw">:</span><span class="at"> VirtualService</span></span>
+<span id="cb16-4"><a href="#cb16-4" aria-hidden="true" tabindex="-1"></a><span class="fu">metadata</span><span class="kw">:</span></span>
+<span id="cb16-5"><a href="#cb16-5" aria-hidden="true" tabindex="-1"></a><span class="at">  </span><span class="fu">name</span><span class="kw">:</span><span class="at"> reviews</span></span>
+<span id="cb16-6"><a href="#cb16-6" aria-hidden="true" tabindex="-1"></a><span class="fu">spec</span><span class="kw">:</span></span>
+<span id="cb16-7"><a href="#cb16-7" aria-hidden="true" tabindex="-1"></a><span class="at">  </span><span class="fu">hosts</span><span class="kw">:</span></span>
+<span id="cb16-8"><a href="#cb16-8" aria-hidden="true" tabindex="-1"></a><span class="at">  </span><span class="kw">-</span><span class="at"> reviews</span></span>
+<span id="cb16-9"><a href="#cb16-9" aria-hidden="true" tabindex="-1"></a><span class="at">  </span><span class="fu">http</span><span class="kw">:</span></span>
+<span id="cb16-10"><a href="#cb16-10" aria-hidden="true" tabindex="-1"></a><span class="at">  </span><span class="kw">-</span><span class="at"> </span><span class="fu">route</span><span class="kw">:</span></span>
+<span id="cb16-11"><a href="#cb16-11" aria-hidden="true" tabindex="-1"></a><span class="at">    </span><span class="kw">-</span><span class="at"> </span><span class="fu">destination</span><span class="kw">:</span></span>
+<span id="cb16-12"><a href="#cb16-12" aria-hidden="true" tabindex="-1"></a><span class="at">        </span><span class="fu">host</span><span class="kw">:</span><span class="at"> reviews</span></span>
+<span id="cb16-13"><a href="#cb16-13" aria-hidden="true" tabindex="-1"></a><span class="at">        </span><span class="fu">subset</span><span class="kw">:</span><span class="at"> v1</span></span>
+<span id="cb16-14"><a href="#cb16-14" aria-hidden="true" tabindex="-1"></a><span class="at">      </span><span class="fu">weight</span><span class="kw">:</span><span class="at"> </span><span class="dv">90</span></span>
+<span id="cb16-15"><a href="#cb16-15" aria-hidden="true" tabindex="-1"></a><span class="at">    </span><span class="kw">-</span><span class="at"> </span><span class="fu">destination</span><span class="kw">:</span></span>
+<span id="cb16-16"><a href="#cb16-16" aria-hidden="true" tabindex="-1"></a><span class="at">        </span><span class="fu">host</span><span class="kw">:</span><span class="at"> reviews</span></span>
+<span id="cb16-17"><a href="#cb16-17" aria-hidden="true" tabindex="-1"></a><span class="at">        </span><span class="fu">subset</span><span class="kw">:</span><span class="at"> v2</span></span>
+<span id="cb16-18"><a href="#cb16-18" aria-hidden="true" tabindex="-1"></a><span class="at">      </span><span class="fu">weight</span><span class="kw">:</span><span class="at"> </span><span class="dv">10</span></span></code></pre></div>
+<h2 id="resources">📚 Resources</h2>
+<ul>
+<li>https://beej.us/guide/bgnet/ — Beej’s Network Guide (free)</li>
+<li>https://www.cloudflare.com/learning/ — Excellent networking
+articles</li>
+<li>https://jvns.ca/networking-zine.pdf — Julia Evans networking
+zine</li>
+<li>https://www.nginx.com/resources/wiki/ — NGINX config reference</li>
+<li>https://istio.io/latest/docs/ — Istio documentation</li>
+</ul>
+</body>
+</html>

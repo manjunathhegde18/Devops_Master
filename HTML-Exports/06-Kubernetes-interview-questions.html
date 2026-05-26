@@ -1,0 +1,476 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" lang="" xml:lang="">
+<head>
+  <meta charset="utf-8" />
+  <meta name="generator" content="pandoc" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes" />
+  <title>DevOps Mastery: interview-questions</title>
+  <style>
+    code{white-space: pre-wrap;}
+    span.smallcaps{font-variant: small-caps;}
+    div.columns{display: flex; gap: min(4vw, 1.5em);}
+    div.column{flex: auto; overflow-x: auto;}
+    div.hanging-indent{margin-left: 1.5em; text-indent: -1.5em;}
+    /* The extra [class] is a hack that increases specificity enough to
+       override a similar rule in reveal.js */
+    ul.task-list[class]{list-style: none;}
+    ul.task-list li input[type="checkbox"] {
+      font-size: inherit;
+      width: 0.8em;
+      margin: 0 0.8em 0.2em -1.6em;
+      vertical-align: middle;
+    }
+    .display.math{display: block; text-align: center; margin: 0.5rem auto;}
+    /* CSS for syntax highlighting */
+    pre > code.sourceCode { white-space: pre; position: relative; }
+    pre > code.sourceCode > span { line-height: 1.25; }
+    pre > code.sourceCode > span:empty { height: 1.2em; }
+    .sourceCode { overflow: visible; }
+    code.sourceCode > span { color: inherit; text-decoration: inherit; }
+    div.sourceCode { margin: 1em 0; }
+    pre.sourceCode { margin: 0; }
+    @media screen {
+    div.sourceCode { overflow: auto; }
+    }
+    @media print {
+    pre > code.sourceCode { white-space: pre-wrap; }
+    pre > code.sourceCode > span { text-indent: -5em; padding-left: 5em; }
+    }
+    pre.numberSource code
+      { counter-reset: source-line 0; }
+    pre.numberSource code > span
+      { position: relative; left: -4em; counter-increment: source-line; }
+    pre.numberSource code > span > a:first-child::before
+      { content: counter(source-line);
+        position: relative; left: -1em; text-align: right; vertical-align: baseline;
+        border: none; display: inline-block;
+        -webkit-touch-callout: none; -webkit-user-select: none;
+        -khtml-user-select: none; -moz-user-select: none;
+        -ms-user-select: none; user-select: none;
+        padding: 0 4px; width: 4em;
+        color: #aaaaaa;
+      }
+    pre.numberSource { margin-left: 3em; border-left: 1px solid #aaaaaa;  padding-left: 4px; }
+    div.sourceCode
+      {  background-color: #f8f8f8; }
+    @media screen {
+    pre > code.sourceCode > span > a:first-child::before { text-decoration: underline; }
+    }
+    code span.al { color: #ef2929; } /* Alert */
+    code span.an { color: #8f5902; font-weight: bold; font-style: italic; } /* Annotation */
+    code span.at { color: #204a87; } /* Attribute */
+    code span.bn { color: #0000cf; } /* BaseN */
+    code span.cf { color: #204a87; font-weight: bold; } /* ControlFlow */
+    code span.ch { color: #4e9a06; } /* Char */
+    code span.cn { color: #8f5902; } /* Constant */
+    code span.co { color: #8f5902; font-style: italic; } /* Comment */
+    code span.cv { color: #8f5902; font-weight: bold; font-style: italic; } /* CommentVar */
+    code span.do { color: #8f5902; font-weight: bold; font-style: italic; } /* Documentation */
+    code span.dt { color: #204a87; } /* DataType */
+    code span.dv { color: #0000cf; } /* DecVal */
+    code span.er { color: #a40000; font-weight: bold; } /* Error */
+    code span.ex { } /* Extension */
+    code span.fl { color: #0000cf; } /* Float */
+    code span.fu { color: #204a87; font-weight: bold; } /* Function */
+    code span.im { } /* Import */
+    code span.in { color: #8f5902; font-weight: bold; font-style: italic; } /* Information */
+    code span.kw { color: #204a87; font-weight: bold; } /* Keyword */
+    code span.op { color: #ce5c00; font-weight: bold; } /* Operator */
+    code span.ot { color: #8f5902; } /* Other */
+    code span.pp { color: #8f5902; font-style: italic; } /* Preprocessor */
+    code span.sc { color: #ce5c00; font-weight: bold; } /* SpecialChar */
+    code span.ss { color: #4e9a06; } /* SpecialString */
+    code span.st { color: #4e9a06; } /* String */
+    code span.va { color: #000000; } /* Variable */
+    code span.vs { color: #4e9a06; } /* VerbatimString */
+    code span.wa { color: #8f5902; font-weight: bold; font-style: italic; } /* Warning */
+  </style>
+  <link rel="stylesheet" href="/tmp/devops-style.css" />
+</head>
+<body>
+<header id="title-block-header">
+<h1 class="title">DevOps Mastery: interview-questions</h1>
+</header>
+<nav id="TOC" role="doc-toc">
+<ul>
+<li><a href="#kubernetes-interview-questions-answers-senior-level"
+id="toc-kubernetes-interview-questions-answers-senior-level">Kubernetes
+— Interview Questions &amp; Answers (Senior Level)</a>
+<ul>
+<li><a href="#architecture-internals"
+id="toc-architecture-internals">Architecture &amp; Internals</a></li>
+<li><a href="#networking" id="toc-networking">Networking</a></li>
+<li><a href="#scheduling-resources"
+id="toc-scheduling-resources">Scheduling &amp; Resources</a></li>
+<li><a href="#advanced-topics" id="toc-advanced-topics">Advanced
+Topics</a></li>
+</ul></li>
+</ul>
+</nav>
+<h1 id="kubernetes-interview-questions-answers-senior-level">Kubernetes
+— Interview Questions &amp; Answers (Senior Level)</h1>
+<hr />
+<h2 id="architecture-internals">Architecture &amp; Internals</h2>
+<p><strong>Q1: Walk through what happens when you run
+<code>kubectl apply -f deployment.yaml</code>.</strong></p>
+<p>Step-by-step: 1. kubectl serializes YAML and sends HTTP request to
+kube-apiserver 2. API server authenticates (certificate, bearer token,
+OIDC), authorizes (RBAC check) 3. Mutating admission webhooks run first
+(inject sidecars, set defaults) 4. Object schema validation runs 5.
+Validating admission webhooks run (OPA/Gatekeeper, PSA) 6. Object
+persisted to etcd, response returned 7. Deployment controller watches
+etcd events, detects new/changed Deployment 8. Creates/patches
+ReplicaSet to match desired state 9. ReplicaSet controller creates Pod
+objects (no node assigned yet) 10. Scheduler watches for unscheduled
+Pods, runs filtering + scoring, binds Pod to Node 11. kubelet on
+selected node watches for bound Pods 12. kubelet calls containerd via
+CRI, which calls runc to create container 13. kubelet monitors probes,
+reports status back to API server</p>
+<hr />
+<p><strong>Q2: Explain etcd’s role. What happens if etcd goes
+down?</strong></p>
+<p>etcd is the distributed key-value store — the single source of truth
+for all cluster state. It uses the Raft consensus algorithm, requiring a
+quorum (majority) of members to function.</p>
+<ul>
+<li>If etcd goes down: no new resources can be created or updated;
+existing workloads continue running (kubelet operates independently),
+but cannot be rescheduled on failure</li>
+<li>For HA, run 3 or 5 etcd members (tolerates 1 or 2 failures
+respectively)</li>
+<li>Backup etcd daily: <code>etcdctl snapshot save</code></li>
+<li>Encrypt etcd at rest using <code>EncryptionConfiguration</code></li>
+</ul>
+<hr />
+<p><strong>Q3: What is the difference between liveness, readiness, and
+startup probes?</strong></p>
+<table>
+<colgroup>
+<col style="width: 18%" />
+<col style="width: 27%" />
+<col style="width: 29%" />
+<col style="width: 24%" />
+</colgroup>
+<thead>
+<tr class="header">
+<th>Probe</th>
+<th>Question</th>
+<th>On Failure</th>
+<th>Use Case</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td>Readiness</td>
+<td>Is pod ready for traffic?</td>
+<td>Removed from Service endpoints</td>
+<td>App initializing, DB migrations, circuit breaker open</td>
+</tr>
+<tr class="even">
+<td>Liveness</td>
+<td>Is pod still alive?</td>
+<td>Pod killed + restarted</td>
+<td>Deadlock, hung goroutine, unrecoverable state</td>
+</tr>
+<tr class="odd">
+<td>Startup</td>
+<td>Has app finished starting?</td>
+<td>Pod killed (if failureThreshold exceeded)</td>
+<td>Slow-starting apps, prevents premature liveness kills</td>
+</tr>
+</tbody>
+</table>
+<p><strong>Critical:</strong> Always configure <code>startupProbe</code>
+for apps with variable startup time. Without it, liveness probe kills
+the pod before it finishes initializing.</p>
+<hr />
+<p><strong>Q4: A pod is stuck in Pending. Walk through your
+diagnosis.</strong></p>
+<pre><code>kubectl describe pod &lt;name&gt; -n &lt;ns&gt;</code></pre>
+<p>Events section reveals the root cause:</p>
+<table>
+<colgroup>
+<col style="width: 48%" />
+<col style="width: 35%" />
+<col style="width: 16%" />
+</colgroup>
+<thead>
+<tr class="header">
+<th>Event Message</th>
+<th>Root Cause</th>
+<th>Fix</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td>Insufficient CPU/memory</td>
+<td>Requests exceed node capacity</td>
+<td>Reduce requests, add nodes</td>
+</tr>
+<tr class="even">
+<td>No nodes match nodeSelector</td>
+<td>Label mismatch</td>
+<td>Check node labels</td>
+</tr>
+<tr class="odd">
+<td>Taint effect NoSchedule</td>
+<td>Missing toleration</td>
+<td>Add toleration</td>
+</tr>
+<tr class="even">
+<td>Unbound PersistentVolumeClaim</td>
+<td>StorageClass issue, no provisioner</td>
+<td>Check StorageClass, PVC events</td>
+</tr>
+<tr class="odd">
+<td>Too many pods</td>
+<td>Node at pod limit (110 default)</td>
+<td>Scale cluster</td>
+</tr>
+</tbody>
+</table>
+<hr />
+<p><strong>Q5: What is CrashLoopBackOff? How do you systematically debug
+it?</strong></p>
+<p>Container repeatedly starts and crashes. Kubernetes adds exponential
+backoff delay.</p>
+<p>Debug steps: 1. <code>kubectl logs &lt;pod&gt; --previous</code> —
+get last crash logs 2. <code>kubectl describe pod</code> — check
+<code>Last State</code> exit code 3. Common exit codes: - <code>1</code>
+— application error (check logs) - <code>137</code> — OOMKilled
+(increase memory limit) - <code>139</code> — segfault - <code>143</code>
+— graceful shutdown timed out 4. <code>kubectl exec</code> when running
+briefly — check if config/secrets mounted 5. Override entrypoint to
+debug: <code>command: ["sleep", "infinity"]</code></p>
+<hr />
+<h2 id="networking">Networking</h2>
+<p><strong>Q6: How does pod-to-pod networking work across
+nodes?</strong></p>
+<p>Kubernetes networking contract: every pod has a unique routable IP,
+no NAT between pods.</p>
+<p>CNI plugin implements this: - <strong>Flannel</strong>: VXLAN overlay
+— encapsulates packets in UDP, sends to destination node’s VTEP,
+decapsulates - <strong>Calico</strong>: BGP — advertises pod CIDRs as
+routes between nodes; no encapsulation = lower overhead; also enforces
+NetworkPolicy via iptables - <strong>Cilium</strong>: eBPF-based —
+replaces iptables entirely, kernel-level enforcement, observability via
+Hubble</p>
+<hr />
+<p><strong>Q7: Explain ClusterIP, NodePort, LoadBalancer, and Ingress
+differences.</strong></p>
+<ul>
+<li><strong>ClusterIP</strong>: Virtual IP inside cluster only.
+kube-proxy writes iptables/IPVS rules to DNAT to pod IPs</li>
+<li><strong>NodePort</strong>: Opens same port on every node
+(30000-32767). External traffic → any NodeIP:port → ClusterIP → pod</li>
+<li><strong>LoadBalancer</strong>: Cloud-provisioned external LB (ELB,
+GCP LB). Routes → NodePort internally</li>
+<li><strong>Ingress</strong>: L7 HTTP routing. Single external IP/LB,
+routes by Host header and URL path to different Services. Requires an
+Ingress Controller (NGINX, Traefik, AWS ALB Ingress)</li>
+</ul>
+<hr />
+<p><strong>Q8: How do NetworkPolicies work? What is default
+behavior?</strong></p>
+<p>By default: all pod-to-pod communication is allowed (no
+isolation).</p>
+<p>Once any NetworkPolicy selects a pod, that pod is isolated — only
+explicitly allowed traffic passes.</p>
+<div class="sourceCode" id="cb2"><pre
+class="sourceCode yaml"><code class="sourceCode yaml"><span id="cb2-1"><a href="#cb2-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Deny all ingress to app pods, only allow from frontend on port 8080</span></span>
+<span id="cb2-2"><a href="#cb2-2" aria-hidden="true" tabindex="-1"></a><span class="fu">spec</span><span class="kw">:</span></span>
+<span id="cb2-3"><a href="#cb2-3" aria-hidden="true" tabindex="-1"></a><span class="at">  </span><span class="fu">podSelector</span><span class="kw">:</span></span>
+<span id="cb2-4"><a href="#cb2-4" aria-hidden="true" tabindex="-1"></a><span class="at">    </span><span class="fu">matchLabels</span><span class="kw">:</span></span>
+<span id="cb2-5"><a href="#cb2-5" aria-hidden="true" tabindex="-1"></a><span class="at">      </span><span class="fu">role</span><span class="kw">:</span><span class="at"> backend</span></span>
+<span id="cb2-6"><a href="#cb2-6" aria-hidden="true" tabindex="-1"></a><span class="at">  </span><span class="fu">policyTypes</span><span class="kw">:</span><span class="at"> </span><span class="kw">[</span><span class="at">Ingress</span><span class="kw">]</span></span>
+<span id="cb2-7"><a href="#cb2-7" aria-hidden="true" tabindex="-1"></a><span class="at">  </span><span class="fu">ingress</span><span class="kw">:</span></span>
+<span id="cb2-8"><a href="#cb2-8" aria-hidden="true" tabindex="-1"></a><span class="at">    </span><span class="kw">-</span><span class="at"> </span><span class="fu">from</span><span class="kw">:</span></span>
+<span id="cb2-9"><a href="#cb2-9" aria-hidden="true" tabindex="-1"></a><span class="at">        </span><span class="kw">-</span><span class="at"> </span><span class="fu">podSelector</span><span class="kw">:</span></span>
+<span id="cb2-10"><a href="#cb2-10" aria-hidden="true" tabindex="-1"></a><span class="at">            </span><span class="fu">matchLabels</span><span class="kw">:</span></span>
+<span id="cb2-11"><a href="#cb2-11" aria-hidden="true" tabindex="-1"></a><span class="at">              </span><span class="fu">role</span><span class="kw">:</span><span class="at"> frontend</span></span>
+<span id="cb2-12"><a href="#cb2-12" aria-hidden="true" tabindex="-1"></a><span class="at">      </span><span class="fu">ports</span><span class="kw">:</span></span>
+<span id="cb2-13"><a href="#cb2-13" aria-hidden="true" tabindex="-1"></a><span class="at">        </span><span class="kw">-</span><span class="at"> </span><span class="fu">port</span><span class="kw">:</span><span class="at"> </span><span class="dv">8080</span></span></code></pre></div>
+<p><strong>Important</strong>: NetworkPolicy is enforced by the CNI
+plugin. Flannel does NOT enforce it. Use Calico, Cilium, or Weave.</p>
+<hr />
+<h2 id="scheduling-resources">Scheduling &amp; Resources</h2>
+<p><strong>Q9: Explain Kubernetes QoS classes and their eviction
+order.</strong></p>
+<table>
+<colgroup>
+<col style="width: 21%" />
+<col style="width: 33%" />
+<col style="width: 45%" />
+</colgroup>
+<thead>
+<tr class="header">
+<th>Class</th>
+<th>Condition</th>
+<th>Evicted First?</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td>BestEffort</td>
+<td>No requests or limits set</td>
+<td>Yes — first killed under pressure</td>
+</tr>
+<tr class="even">
+<td>Burstable</td>
+<td>Requests set but not equal to limits</td>
+<td>Middle</td>
+</tr>
+<tr class="odd">
+<td>Guaranteed</td>
+<td>Requests == Limits for every container</td>
+<td>Last (never evicted for other pods)</td>
+</tr>
+</tbody>
+</table>
+<p>For production pods: aim for Guaranteed QoS. At minimum, always set
+resource requests.</p>
+<hr />
+<p><strong>Q10: What are taints and tolerations?</strong></p>
+<p>Taints prevent pods from being scheduled on nodes. Tolerations allow
+pods to schedule on tainted nodes.</p>
+<div class="sourceCode" id="cb3"><pre
+class="sourceCode yaml"><code class="sourceCode yaml"><span id="cb3-1"><a href="#cb3-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Taint a node (dedicated GPU node)</span></span>
+<span id="cb3-2"><a href="#cb3-2" aria-hidden="true" tabindex="-1"></a><span class="at">kubectl taint nodes gpu-node-1 gpu=true:NoSchedule</span></span>
+<span id="cb3-3"><a href="#cb3-3" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb3-4"><a href="#cb3-4" aria-hidden="true" tabindex="-1"></a><span class="co"># Pod must tolerate to be scheduled here</span></span>
+<span id="cb3-5"><a href="#cb3-5" aria-hidden="true" tabindex="-1"></a><span class="fu">tolerations</span><span class="kw">:</span></span>
+<span id="cb3-6"><a href="#cb3-6" aria-hidden="true" tabindex="-1"></a><span class="at">  </span><span class="kw">-</span><span class="at"> </span><span class="fu">key</span><span class="kw">:</span><span class="at"> gpu</span></span>
+<span id="cb3-7"><a href="#cb3-7" aria-hidden="true" tabindex="-1"></a><span class="at">    </span><span class="fu">operator</span><span class="kw">:</span><span class="at"> Equal</span></span>
+<span id="cb3-8"><a href="#cb3-8" aria-hidden="true" tabindex="-1"></a><span class="at">    </span><span class="fu">value</span><span class="kw">:</span><span class="at"> </span><span class="st">&quot;true&quot;</span></span>
+<span id="cb3-9"><a href="#cb3-9" aria-hidden="true" tabindex="-1"></a><span class="at">    </span><span class="fu">effect</span><span class="kw">:</span><span class="at"> NoSchedule</span></span></code></pre></div>
+<p>Effects: - <code>NoSchedule</code> — don’t schedule new pods without
+toleration - <code>PreferNoSchedule</code> — try to avoid, not enforced
+- <code>NoExecute</code> — evict existing pods that don’t tolerate +
+don’t schedule new ones</p>
+<p>Common use: dedicated nodes for monitoring, GPU nodes,
+spot/preemptible nodes.</p>
+<hr />
+<p><strong>Q11: Explain node affinity vs pod affinity vs pod
+anti-affinity.</strong></p>
+<ul>
+<li><strong>nodeAffinity</strong>: Schedule pods on nodes with specific
+labels (replace nodeSelector with expressions)</li>
+<li><strong>podAffinity</strong>: Schedule pod on same node/zone as
+other pods with matching labels (co-location, e.g., cache near app)</li>
+<li><strong>podAntiAffinity</strong>: Schedule pod away from other pods
+(spread replicas across nodes/zones for HA)</li>
+</ul>
+<div class="sourceCode" id="cb4"><pre
+class="sourceCode yaml"><code class="sourceCode yaml"><span id="cb4-1"><a href="#cb4-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Spread replicas — never two on same node</span></span>
+<span id="cb4-2"><a href="#cb4-2" aria-hidden="true" tabindex="-1"></a><span class="fu">affinity</span><span class="kw">:</span></span>
+<span id="cb4-3"><a href="#cb4-3" aria-hidden="true" tabindex="-1"></a><span class="at">  </span><span class="fu">podAntiAffinity</span><span class="kw">:</span></span>
+<span id="cb4-4"><a href="#cb4-4" aria-hidden="true" tabindex="-1"></a><span class="at">    </span><span class="fu">requiredDuringSchedulingIgnoredDuringExecution</span><span class="kw">:</span></span>
+<span id="cb4-5"><a href="#cb4-5" aria-hidden="true" tabindex="-1"></a><span class="at">      </span><span class="kw">-</span><span class="at"> </span><span class="fu">labelSelector</span><span class="kw">:</span></span>
+<span id="cb4-6"><a href="#cb4-6" aria-hidden="true" tabindex="-1"></a><span class="at">          </span><span class="fu">matchLabels</span><span class="kw">:</span></span>
+<span id="cb4-7"><a href="#cb4-7" aria-hidden="true" tabindex="-1"></a><span class="at">            </span><span class="fu">app</span><span class="kw">:</span><span class="at"> myapp</span></span>
+<span id="cb4-8"><a href="#cb4-8" aria-hidden="true" tabindex="-1"></a><span class="at">        </span><span class="fu">topologyKey</span><span class="kw">:</span><span class="at"> kubernetes.io/hostname</span></span></code></pre></div>
+<hr />
+<h2 id="advanced-topics">Advanced Topics</h2>
+<p><strong>Q12: What is a Kubernetes Operator pattern?</strong></p>
+<p>Extends Kubernetes with domain-specific operational knowledge using:
+- CRD (Custom Resource Definition) — defines new API types - Controller
+— watches CRDs + reconciles actual vs desired state</p>
+<p>Example: <code>PostgresCluster</code> CRD → Operator handles:
+provisioning, HA setup, failover, backup scheduling, version upgrades,
+connection pooling config.</p>
+<p>Real operators: Strimzi (Kafka), Zalando Postgres Operator,
+cert-manager, Prometheus Operator, Argo Rollouts.</p>
+<hr />
+<p><strong>Q13: How do you implement zero-downtime deployments in
+Kubernetes?</strong></p>
+<ol type="1">
+<li>Set <code>maxUnavailable: 0</code> and <code>maxSurge: 1</code> in
+rolling update strategy</li>
+<li>Configure proper readiness probes (traffic only sent to ready
+pods)</li>
+<li>Add <code>preStop</code> lifecycle hook with sleep to drain
+in-flight requests</li>
+<li>Set <code>terminationGracePeriodSeconds</code> ≥ your max request
+duration</li>
+<li>Use PodDisruptionBudget to prevent voluntary disruptions from taking
+too many pods</li>
+<li>For canary: use Argo Rollouts or Flagger with weighted traffic
+splitting</li>
+</ol>
+<hr />
+<p><strong>Q14: What is IRSA (IAM Roles for Service Accounts) on
+EKS?</strong></p>
+<p>Allows pods to assume AWS IAM roles without static credentials.</p>
+<p>How it works: 1. EKS cluster has OIDC provider 2. ServiceAccount
+annotated with IAM role ARN 3. Pod’s projected service account token is
+signed by OIDC issuer 4. AWS SDK/CLI exchanges token for temporary
+credentials via STS AssumeRoleWithWebIdentity 5. Credentials auto-rotate
+every hour</p>
+<p>No more passing AWS keys as environment variables or using node
+instance profiles.</p>
+<hr />
+<p><strong>Q15: How do you debug a pod that keeps getting
+OOMKilled?</strong></p>
+<ol type="1">
+<li>Confirm OOMKilled: <code>kubectl describe pod</code> → check
+<code>Last State.Reason: OOMKilled</code></li>
+<li>Check current limits vs usage:
+<code>kubectl top pod &lt;name&gt;</code></li>
+<li>Check if it’s a memory leak or undersized limits</li>
+<li>For JVM apps: ensure <code>-XX:MaxRAMPercentage=75</code> set, not
+fixed heap size</li>
+<li>Temporarily increase limits by 50%, watch if stabilizes</li>
+<li>For leak: take heap dump, analyze with MAT or async-profiler</li>
+<li>Set up memory usage alerts in Prometheus before OOM</li>
+</ol>
+<hr />
+<p><strong>Q16: What is Horizontal Pod Autoscaler and what are KEDA’s
+advantages?</strong></p>
+<p>HPA scales pod count based on CPU/memory metrics (via Metrics
+Server). Runs every 15s.</p>
+<p>KEDA (Kubernetes Event-Driven Autoscaling) extends HPA: - Scale to
+zero (HPA minimum is 1) - Scale based on external event sources: SQS
+queue depth, Kafka lag, Prometheus metrics, Redis list length, cron
+schedules - 50+ built-in scalers</p>
+<div class="sourceCode" id="cb5"><pre
+class="sourceCode yaml"><code class="sourceCode yaml"><span id="cb5-1"><a href="#cb5-1" aria-hidden="true" tabindex="-1"></a><span class="co"># KEDA ScaledObject — scale on SQS queue depth</span></span>
+<span id="cb5-2"><a href="#cb5-2" aria-hidden="true" tabindex="-1"></a><span class="fu">spec</span><span class="kw">:</span></span>
+<span id="cb5-3"><a href="#cb5-3" aria-hidden="true" tabindex="-1"></a><span class="at">  </span><span class="fu">scaleTargetRef</span><span class="kw">:</span></span>
+<span id="cb5-4"><a href="#cb5-4" aria-hidden="true" tabindex="-1"></a><span class="at">    </span><span class="fu">name</span><span class="kw">:</span><span class="at"> worker-deployment</span></span>
+<span id="cb5-5"><a href="#cb5-5" aria-hidden="true" tabindex="-1"></a><span class="at">  </span><span class="fu">minReplicaCount</span><span class="kw">:</span><span class="at"> </span><span class="dv">0</span><span class="co">        # scale to zero when queue empty</span></span>
+<span id="cb5-6"><a href="#cb5-6" aria-hidden="true" tabindex="-1"></a><span class="at">  </span><span class="fu">maxReplicaCount</span><span class="kw">:</span><span class="at"> </span><span class="dv">50</span></span>
+<span id="cb5-7"><a href="#cb5-7" aria-hidden="true" tabindex="-1"></a><span class="at">  </span><span class="fu">triggers</span><span class="kw">:</span></span>
+<span id="cb5-8"><a href="#cb5-8" aria-hidden="true" tabindex="-1"></a><span class="at">    </span><span class="kw">-</span><span class="at"> </span><span class="fu">type</span><span class="kw">:</span><span class="at"> aws-sqs-queue</span></span>
+<span id="cb5-9"><a href="#cb5-9" aria-hidden="true" tabindex="-1"></a><span class="at">      </span><span class="fu">metadata</span><span class="kw">:</span></span>
+<span id="cb5-10"><a href="#cb5-10" aria-hidden="true" tabindex="-1"></a><span class="at">        </span><span class="fu">queueURL</span><span class="kw">:</span><span class="at"> https://sqs.region.amazonaws.com/account/queue</span></span>
+<span id="cb5-11"><a href="#cb5-11" aria-hidden="true" tabindex="-1"></a><span class="at">        </span><span class="fu">queueLength</span><span class="kw">:</span><span class="at"> </span><span class="st">&quot;10&quot;</span><span class="co">   # target: 10 messages per pod</span></span></code></pre></div>
+<hr />
+<p><strong>Q17: How does cert-manager work?</strong></p>
+<p>cert-manager is a Kubernetes operator for TLS certificate
+management.</p>
+<p>Flow: 1. Create <code>Certificate</code> or <code>Ingress</code> with
+<code>cert-manager.io/cluster-issuer</code> annotation 2. cert-manager
+creates <code>CertificateRequest</code> 3. For Let’s Encrypt: starts
+ACME challenge (HTTP-01 or DNS-01) 4. HTTP-01: creates temporary Ingress
+to serve challenge file 5. DNS-01: updates DNS TXT record via provider
+(Route53, Cloudflare) 6. Let’s Encrypt validates, issues cert 7.
+cert-manager stores cert in Kubernetes Secret 8. Automatically renews 30
+days before expiry</p>
+<hr />
+<p><strong>Q18: How do you secure secrets in Kubernetes? (Beyond
+base64)</strong></p>
+<p>Built-in Kubernetes secrets are only base64 encoded — not encrypted
+by default.</p>
+<p>Proper approaches: 1. <strong>etcd encryption at rest</strong>:
+<code>EncryptionConfiguration</code> with AES-GCM or KMS provider 2.
+<strong>External Secrets Operator</strong>: Syncs from AWS Secrets
+Manager, Vault, GCP Secret Manager into K8s Secrets 3. <strong>HashiCorp
+Vault Agent Injector</strong>: Sidecar injects secrets as files at
+runtime; never stored in K8s 4. <strong>Sealed Secrets</strong>
+(Bitnami): Encrypt secrets with cluster public key, safe to store in Git
+5. <strong>CSI Secrets Store driver</strong>: Mount secrets as volumes
+from external stores</p>
+<p>Best practice: use External Secrets Operator + AWS Secrets Manager
+for cloud deployments.</p>
+</body>
+</html>

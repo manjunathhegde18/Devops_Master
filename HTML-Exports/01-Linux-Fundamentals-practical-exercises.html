@@ -1,0 +1,362 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" lang="" xml:lang="">
+<head>
+  <meta charset="utf-8" />
+  <meta name="generator" content="pandoc" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes" />
+  <title>DevOps Mastery: practical-exercises</title>
+  <style>
+    code{white-space: pre-wrap;}
+    span.smallcaps{font-variant: small-caps;}
+    div.columns{display: flex; gap: min(4vw, 1.5em);}
+    div.column{flex: auto; overflow-x: auto;}
+    div.hanging-indent{margin-left: 1.5em; text-indent: -1.5em;}
+    /* The extra [class] is a hack that increases specificity enough to
+       override a similar rule in reveal.js */
+    ul.task-list[class]{list-style: none;}
+    ul.task-list li input[type="checkbox"] {
+      font-size: inherit;
+      width: 0.8em;
+      margin: 0 0.8em 0.2em -1.6em;
+      vertical-align: middle;
+    }
+    .display.math{display: block; text-align: center; margin: 0.5rem auto;}
+    /* CSS for syntax highlighting */
+    pre > code.sourceCode { white-space: pre; position: relative; }
+    pre > code.sourceCode > span { line-height: 1.25; }
+    pre > code.sourceCode > span:empty { height: 1.2em; }
+    .sourceCode { overflow: visible; }
+    code.sourceCode > span { color: inherit; text-decoration: inherit; }
+    div.sourceCode { margin: 1em 0; }
+    pre.sourceCode { margin: 0; }
+    @media screen {
+    div.sourceCode { overflow: auto; }
+    }
+    @media print {
+    pre > code.sourceCode { white-space: pre-wrap; }
+    pre > code.sourceCode > span { text-indent: -5em; padding-left: 5em; }
+    }
+    pre.numberSource code
+      { counter-reset: source-line 0; }
+    pre.numberSource code > span
+      { position: relative; left: -4em; counter-increment: source-line; }
+    pre.numberSource code > span > a:first-child::before
+      { content: counter(source-line);
+        position: relative; left: -1em; text-align: right; vertical-align: baseline;
+        border: none; display: inline-block;
+        -webkit-touch-callout: none; -webkit-user-select: none;
+        -khtml-user-select: none; -moz-user-select: none;
+        -ms-user-select: none; user-select: none;
+        padding: 0 4px; width: 4em;
+        color: #aaaaaa;
+      }
+    pre.numberSource { margin-left: 3em; border-left: 1px solid #aaaaaa;  padding-left: 4px; }
+    div.sourceCode
+      {  background-color: #f8f8f8; }
+    @media screen {
+    pre > code.sourceCode > span > a:first-child::before { text-decoration: underline; }
+    }
+    code span.al { color: #ef2929; } /* Alert */
+    code span.an { color: #8f5902; font-weight: bold; font-style: italic; } /* Annotation */
+    code span.at { color: #204a87; } /* Attribute */
+    code span.bn { color: #0000cf; } /* BaseN */
+    code span.cf { color: #204a87; font-weight: bold; } /* ControlFlow */
+    code span.ch { color: #4e9a06; } /* Char */
+    code span.cn { color: #8f5902; } /* Constant */
+    code span.co { color: #8f5902; font-style: italic; } /* Comment */
+    code span.cv { color: #8f5902; font-weight: bold; font-style: italic; } /* CommentVar */
+    code span.do { color: #8f5902; font-weight: bold; font-style: italic; } /* Documentation */
+    code span.dt { color: #204a87; } /* DataType */
+    code span.dv { color: #0000cf; } /* DecVal */
+    code span.er { color: #a40000; font-weight: bold; } /* Error */
+    code span.ex { } /* Extension */
+    code span.fl { color: #0000cf; } /* Float */
+    code span.fu { color: #204a87; font-weight: bold; } /* Function */
+    code span.im { } /* Import */
+    code span.in { color: #8f5902; font-weight: bold; font-style: italic; } /* Information */
+    code span.kw { color: #204a87; font-weight: bold; } /* Keyword */
+    code span.op { color: #ce5c00; font-weight: bold; } /* Operator */
+    code span.ot { color: #8f5902; } /* Other */
+    code span.pp { color: #8f5902; font-style: italic; } /* Preprocessor */
+    code span.sc { color: #ce5c00; font-weight: bold; } /* SpecialChar */
+    code span.ss { color: #4e9a06; } /* SpecialString */
+    code span.st { color: #4e9a06; } /* String */
+    code span.va { color: #000000; } /* Variable */
+    code span.vs { color: #4e9a06; } /* VerbatimString */
+    code span.wa { color: #8f5902; font-weight: bold; font-style: italic; } /* Warning */
+  </style>
+  <link rel="stylesheet" href="/tmp/devops-style.css" />
+</head>
+<body>
+<header id="title-block-header">
+<h1 class="title">DevOps Mastery: practical-exercises</h1>
+</header>
+<nav id="TOC" role="doc-toc">
+<ul>
+<li><a href="#linux-practical-exercises"
+id="toc-linux-practical-exercises">Linux — Practical Exercises</a>
+<ul>
+<li><a href="#exercise-1-system-performance-baseline-script"
+id="toc-exercise-1-system-performance-baseline-script">Exercise 1:
+System Performance Baseline Script</a></li>
+<li><a href="#exercise-2-log-analyzer"
+id="toc-exercise-2-log-analyzer">Exercise 2: Log Analyzer</a></li>
+<li><a href="#exercise-3-user-permission-audit-script"
+id="toc-exercise-3-user-permission-audit-script">Exercise 3: User &amp;
+Permission Audit Script</a></li>
+<li><a href="#exercise-4-namespace-cgroup-exploration"
+id="toc-exercise-4-namespace-cgroup-exploration">Exercise 4: Namespace
+&amp; Cgroup Exploration</a></li>
+<li><a href="#exercise-5-performance-troubleshooting-simulation"
+id="toc-exercise-5-performance-troubleshooting-simulation">Exercise 5:
+Performance Troubleshooting Simulation</a></li>
+<li><a href="#exercise-6-systemd-service-creation"
+id="toc-exercise-6-systemd-service-creation">Exercise 6: systemd Service
+Creation</a></li>
+<li><a href="#checkpoint-questions"
+id="toc-checkpoint-questions">Checkpoint Questions</a></li>
+</ul></li>
+</ul>
+</nav>
+<h1 id="linux-practical-exercises">Linux — Practical Exercises</h1>
+<h2 id="exercise-1-system-performance-baseline-script">Exercise 1:
+System Performance Baseline Script</h2>
+<p><strong>Goal:</strong> Create a script that collects system
+performance metrics and generates a report.</p>
+<div class="sourceCode" id="cb1"><pre
+class="sourceCode bash"><code class="sourceCode bash"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a><span class="co">#!/usr/bin/env bash</span></span>
+<span id="cb1-2"><a href="#cb1-2" aria-hidden="true" tabindex="-1"></a><span class="co"># system-report.sh — Run and analyze output</span></span>
+<span id="cb1-3"><a href="#cb1-3" aria-hidden="true" tabindex="-1"></a><span class="bu">set</span> <span class="at">-euo</span> pipefail</span>
+<span id="cb1-4"><a href="#cb1-4" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-5"><a href="#cb1-5" aria-hidden="true" tabindex="-1"></a><span class="va">OUTPUT</span><span class="op">=</span><span class="st">&quot;/tmp/sysreport-</span><span class="va">$(</span><span class="fu">date</span> +%Y%m%d-%H%M%S<span class="va">)</span><span class="st">.txt&quot;</span></span>
+<span id="cb1-6"><a href="#cb1-6" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-7"><a href="#cb1-7" aria-hidden="true" tabindex="-1"></a><span class="bu">echo</span> <span class="st">&quot;=== System Performance Report ===&quot;</span> <span class="op">&gt;</span> <span class="st">&quot;</span><span class="va">$OUTPUT</span><span class="st">&quot;</span></span>
+<span id="cb1-8"><a href="#cb1-8" aria-hidden="true" tabindex="-1"></a><span class="bu">echo</span> <span class="st">&quot;Date: </span><span class="va">$(</span><span class="fu">date</span><span class="va">)</span><span class="st">&quot;</span> <span class="op">&gt;&gt;</span> <span class="st">&quot;</span><span class="va">$OUTPUT</span><span class="st">&quot;</span></span>
+<span id="cb1-9"><a href="#cb1-9" aria-hidden="true" tabindex="-1"></a><span class="bu">echo</span> <span class="st">&quot;&quot;</span> <span class="op">&gt;&gt;</span> <span class="st">&quot;</span><span class="va">$OUTPUT</span><span class="st">&quot;</span></span>
+<span id="cb1-10"><a href="#cb1-10" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-11"><a href="#cb1-11" aria-hidden="true" tabindex="-1"></a><span class="bu">echo</span> <span class="st">&quot;--- CPU Info ---&quot;</span> <span class="op">&gt;&gt;</span> <span class="st">&quot;</span><span class="va">$OUTPUT</span><span class="st">&quot;</span></span>
+<span id="cb1-12"><a href="#cb1-12" aria-hidden="true" tabindex="-1"></a><span class="ex">lscpu</span> <span class="kw">|</span> <span class="fu">grep</span> <span class="at">-E</span> <span class="st">&quot;Model name|CPU\(s\)|Thread|Socket&quot;</span> <span class="op">&gt;&gt;</span> <span class="st">&quot;</span><span class="va">$OUTPUT</span><span class="st">&quot;</span></span>
+<span id="cb1-13"><a href="#cb1-13" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-14"><a href="#cb1-14" aria-hidden="true" tabindex="-1"></a><span class="bu">echo</span> <span class="st">&quot;--- Memory ---&quot;</span> <span class="op">&gt;&gt;</span> <span class="st">&quot;</span><span class="va">$OUTPUT</span><span class="st">&quot;</span></span>
+<span id="cb1-15"><a href="#cb1-15" aria-hidden="true" tabindex="-1"></a><span class="fu">free</span> <span class="at">-h</span> <span class="op">&gt;&gt;</span> <span class="st">&quot;</span><span class="va">$OUTPUT</span><span class="st">&quot;</span></span>
+<span id="cb1-16"><a href="#cb1-16" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-17"><a href="#cb1-17" aria-hidden="true" tabindex="-1"></a><span class="bu">echo</span> <span class="st">&quot;--- Disk Usage ---&quot;</span> <span class="op">&gt;&gt;</span> <span class="st">&quot;</span><span class="va">$OUTPUT</span><span class="st">&quot;</span></span>
+<span id="cb1-18"><a href="#cb1-18" aria-hidden="true" tabindex="-1"></a><span class="fu">df</span> <span class="at">-h</span> <span class="op">&gt;&gt;</span> <span class="st">&quot;</span><span class="va">$OUTPUT</span><span class="st">&quot;</span></span>
+<span id="cb1-19"><a href="#cb1-19" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-20"><a href="#cb1-20" aria-hidden="true" tabindex="-1"></a><span class="bu">echo</span> <span class="st">&quot;--- Top 10 CPU Consumers ---&quot;</span> <span class="op">&gt;&gt;</span> <span class="st">&quot;</span><span class="va">$OUTPUT</span><span class="st">&quot;</span></span>
+<span id="cb1-21"><a href="#cb1-21" aria-hidden="true" tabindex="-1"></a><span class="fu">ps</span> aux <span class="at">--sort</span><span class="op">=</span>-%cpu <span class="kw">|</span> <span class="fu">head</span> <span class="at">-11</span> <span class="op">&gt;&gt;</span> <span class="st">&quot;</span><span class="va">$OUTPUT</span><span class="st">&quot;</span></span>
+<span id="cb1-22"><a href="#cb1-22" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-23"><a href="#cb1-23" aria-hidden="true" tabindex="-1"></a><span class="bu">echo</span> <span class="st">&quot;--- Top 10 Memory Consumers ---&quot;</span> <span class="op">&gt;&gt;</span> <span class="st">&quot;</span><span class="va">$OUTPUT</span><span class="st">&quot;</span></span>
+<span id="cb1-24"><a href="#cb1-24" aria-hidden="true" tabindex="-1"></a><span class="fu">ps</span> aux <span class="at">--sort</span><span class="op">=</span>-%mem <span class="kw">|</span> <span class="fu">head</span> <span class="at">-11</span> <span class="op">&gt;&gt;</span> <span class="st">&quot;</span><span class="va">$OUTPUT</span><span class="st">&quot;</span></span>
+<span id="cb1-25"><a href="#cb1-25" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-26"><a href="#cb1-26" aria-hidden="true" tabindex="-1"></a><span class="bu">echo</span> <span class="st">&quot;--- Network Connections ---&quot;</span> <span class="op">&gt;&gt;</span> <span class="st">&quot;</span><span class="va">$OUTPUT</span><span class="st">&quot;</span></span>
+<span id="cb1-27"><a href="#cb1-27" aria-hidden="true" tabindex="-1"></a><span class="ex">ss</span> <span class="at">-s</span> <span class="op">&gt;&gt;</span> <span class="st">&quot;</span><span class="va">$OUTPUT</span><span class="st">&quot;</span></span>
+<span id="cb1-28"><a href="#cb1-28" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-29"><a href="#cb1-29" aria-hidden="true" tabindex="-1"></a><span class="bu">echo</span> <span class="st">&quot;--- Load Average ---&quot;</span> <span class="op">&gt;&gt;</span> <span class="st">&quot;</span><span class="va">$OUTPUT</span><span class="st">&quot;</span></span>
+<span id="cb1-30"><a href="#cb1-30" aria-hidden="true" tabindex="-1"></a><span class="fu">cat</span> /proc/loadavg <span class="op">&gt;&gt;</span> <span class="st">&quot;</span><span class="va">$OUTPUT</span><span class="st">&quot;</span></span>
+<span id="cb1-31"><a href="#cb1-31" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-32"><a href="#cb1-32" aria-hidden="true" tabindex="-1"></a><span class="bu">echo</span> <span class="st">&quot;--- Inode Usage ---&quot;</span> <span class="op">&gt;&gt;</span> <span class="st">&quot;</span><span class="va">$OUTPUT</span><span class="st">&quot;</span></span>
+<span id="cb1-33"><a href="#cb1-33" aria-hidden="true" tabindex="-1"></a><span class="fu">df</span> <span class="at">-i</span> <span class="kw">|</span> <span class="fu">awk</span> <span class="st">&#39;NR==1 || $5+0 &gt; 50&#39;</span> <span class="op">&gt;&gt;</span> <span class="st">&quot;</span><span class="va">$OUTPUT</span><span class="st">&quot;</span></span>
+<span id="cb1-34"><a href="#cb1-34" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-35"><a href="#cb1-35" aria-hidden="true" tabindex="-1"></a><span class="fu">cat</span> <span class="st">&quot;</span><span class="va">$OUTPUT</span><span class="st">&quot;</span></span>
+<span id="cb1-36"><a href="#cb1-36" aria-hidden="true" tabindex="-1"></a><span class="bu">echo</span> <span class="st">&quot;Report saved to </span><span class="va">$OUTPUT</span><span class="st">&quot;</span></span></code></pre></div>
+<p><strong>Tasks:</strong> 1. Run the script and analyze the output 2.
+Add disk I/O stats using <code>iostat</code> 3. Add detection of zombie
+processes 4. Schedule it via cron every hour</p>
+<hr />
+<h2 id="exercise-2-log-analyzer">Exercise 2: Log Analyzer</h2>
+<p><strong>Goal:</strong> Parse nginx access logs and extract top
+endpoints, error rates, and slow requests.</p>
+<div class="sourceCode" id="cb2"><pre
+class="sourceCode bash"><code class="sourceCode bash"><span id="cb2-1"><a href="#cb2-1" aria-hidden="true" tabindex="-1"></a><span class="co">#!/usr/bin/env bash</span></span>
+<span id="cb2-2"><a href="#cb2-2" aria-hidden="true" tabindex="-1"></a><span class="co"># log-analyzer.sh</span></span>
+<span id="cb2-3"><a href="#cb2-3" aria-hidden="true" tabindex="-1"></a><span class="va">LOG_FILE</span><span class="op">=</span><span class="st">&quot;</span><span class="va">${1</span><span class="op">:-</span>/var/log/nginx/access.log<span class="va">}</span><span class="st">&quot;</span></span>
+<span id="cb2-4"><a href="#cb2-4" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb2-5"><a href="#cb2-5" aria-hidden="true" tabindex="-1"></a><span class="cf">if</span> <span class="kw">[[</span> <span class="ot">!</span> <span class="ot">-f</span> <span class="st">&quot;</span><span class="va">$LOG_FILE</span><span class="st">&quot;</span> <span class="kw">]];</span> <span class="cf">then</span></span>
+<span id="cb2-6"><a href="#cb2-6" aria-hidden="true" tabindex="-1"></a>    <span class="bu">echo</span> <span class="st">&quot;Usage: </span><span class="va">$0</span><span class="st"> /path/to/access.log&quot;</span></span>
+<span id="cb2-7"><a href="#cb2-7" aria-hidden="true" tabindex="-1"></a>    <span class="bu">exit</span> 1</span>
+<span id="cb2-8"><a href="#cb2-8" aria-hidden="true" tabindex="-1"></a><span class="cf">fi</span></span>
+<span id="cb2-9"><a href="#cb2-9" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb2-10"><a href="#cb2-10" aria-hidden="true" tabindex="-1"></a><span class="bu">echo</span> <span class="st">&quot;=== Log Analysis: </span><span class="va">$LOG_FILE</span><span class="st"> ===&quot;</span></span>
+<span id="cb2-11"><a href="#cb2-11" aria-hidden="true" tabindex="-1"></a><span class="bu">echo</span> <span class="st">&quot;Total requests: </span><span class="va">$(</span><span class="fu">wc</span> <span class="at">-l</span> <span class="op">&lt;</span> <span class="st">&quot;</span><span class="va">$LOG_FILE</span><span class="st">&quot;</span><span class="va">)</span><span class="st">&quot;</span></span>
+<span id="cb2-12"><a href="#cb2-12" aria-hidden="true" tabindex="-1"></a><span class="bu">echo</span> <span class="st">&quot;&quot;</span></span>
+<span id="cb2-13"><a href="#cb2-13" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb2-14"><a href="#cb2-14" aria-hidden="true" tabindex="-1"></a><span class="bu">echo</span> <span class="st">&quot;--- Top 10 URLs ---&quot;</span></span>
+<span id="cb2-15"><a href="#cb2-15" aria-hidden="true" tabindex="-1"></a><span class="fu">awk</span> <span class="st">&#39;{print $7}&#39;</span> <span class="st">&quot;</span><span class="va">$LOG_FILE</span><span class="st">&quot;</span> <span class="kw">|</span> <span class="fu">sort</span> <span class="kw">|</span> <span class="fu">uniq</span> <span class="at">-c</span> <span class="kw">|</span> <span class="fu">sort</span> <span class="at">-rn</span> <span class="kw">|</span> <span class="fu">head</span> <span class="at">-10</span></span>
+<span id="cb2-16"><a href="#cb2-16" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb2-17"><a href="#cb2-17" aria-hidden="true" tabindex="-1"></a><span class="bu">echo</span> <span class="st">&quot;&quot;</span></span>
+<span id="cb2-18"><a href="#cb2-18" aria-hidden="true" tabindex="-1"></a><span class="bu">echo</span> <span class="st">&quot;--- HTTP Status Code Distribution ---&quot;</span></span>
+<span id="cb2-19"><a href="#cb2-19" aria-hidden="true" tabindex="-1"></a><span class="fu">awk</span> <span class="st">&#39;{print $9}&#39;</span> <span class="st">&quot;</span><span class="va">$LOG_FILE</span><span class="st">&quot;</span> <span class="kw">|</span> <span class="fu">sort</span> <span class="kw">|</span> <span class="fu">uniq</span> <span class="at">-c</span> <span class="kw">|</span> <span class="fu">sort</span> <span class="at">-rn</span></span>
+<span id="cb2-20"><a href="#cb2-20" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb2-21"><a href="#cb2-21" aria-hidden="true" tabindex="-1"></a><span class="bu">echo</span> <span class="st">&quot;&quot;</span></span>
+<span id="cb2-22"><a href="#cb2-22" aria-hidden="true" tabindex="-1"></a><span class="bu">echo</span> <span class="st">&quot;--- Top 10 Client IPs ---&quot;</span></span>
+<span id="cb2-23"><a href="#cb2-23" aria-hidden="true" tabindex="-1"></a><span class="fu">awk</span> <span class="st">&#39;{print $1}&#39;</span> <span class="st">&quot;</span><span class="va">$LOG_FILE</span><span class="st">&quot;</span> <span class="kw">|</span> <span class="fu">sort</span> <span class="kw">|</span> <span class="fu">uniq</span> <span class="at">-c</span> <span class="kw">|</span> <span class="fu">sort</span> <span class="at">-rn</span> <span class="kw">|</span> <span class="fu">head</span> <span class="at">-10</span></span>
+<span id="cb2-24"><a href="#cb2-24" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb2-25"><a href="#cb2-25" aria-hidden="true" tabindex="-1"></a><span class="bu">echo</span> <span class="st">&quot;&quot;</span></span>
+<span id="cb2-26"><a href="#cb2-26" aria-hidden="true" tabindex="-1"></a><span class="bu">echo</span> <span class="st">&quot;--- 5xx Errors ---&quot;</span></span>
+<span id="cb2-27"><a href="#cb2-27" aria-hidden="true" tabindex="-1"></a><span class="fu">awk</span> <span class="st">&#39;$9 &gt;= 500 {print $7, $9}&#39;</span> <span class="st">&quot;</span><span class="va">$LOG_FILE</span><span class="st">&quot;</span> <span class="kw">|</span> <span class="fu">sort</span> <span class="kw">|</span> <span class="fu">uniq</span> <span class="at">-c</span> <span class="kw">|</span> <span class="fu">sort</span> <span class="at">-rn</span> <span class="kw">|</span> <span class="fu">head</span> <span class="at">-10</span></span>
+<span id="cb2-28"><a href="#cb2-28" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb2-29"><a href="#cb2-29" aria-hidden="true" tabindex="-1"></a><span class="bu">echo</span> <span class="st">&quot;&quot;</span></span>
+<span id="cb2-30"><a href="#cb2-30" aria-hidden="true" tabindex="-1"></a><span class="bu">echo</span> <span class="st">&quot;--- Requests &gt; 2 seconds (if response time available) ---&quot;</span></span>
+<span id="cb2-31"><a href="#cb2-31" aria-hidden="true" tabindex="-1"></a><span class="fu">awk</span> <span class="st">&#39;{if ($NF+0 &gt; 2) print $0}&#39;</span> <span class="st">&quot;</span><span class="va">$LOG_FILE</span><span class="st">&quot;</span> <span class="kw">|</span> <span class="fu">wc</span> <span class="at">-l</span></span></code></pre></div>
+<p><strong>Tasks:</strong> 1. Add time-based filtering (last hour only)
+2. Generate CSV output for Excel/Grafana import 3. Add alert if error
+rate &gt; 5%</p>
+<hr />
+<h2 id="exercise-3-user-permission-audit-script">Exercise 3: User &amp;
+Permission Audit Script</h2>
+<p><strong>Goal:</strong> Audit system for security
+misconfigurations.</p>
+<div class="sourceCode" id="cb3"><pre
+class="sourceCode bash"><code class="sourceCode bash"><span id="cb3-1"><a href="#cb3-1" aria-hidden="true" tabindex="-1"></a><span class="co">#!/usr/bin/env bash</span></span>
+<span id="cb3-2"><a href="#cb3-2" aria-hidden="true" tabindex="-1"></a><span class="co"># security-audit.sh</span></span>
+<span id="cb3-3"><a href="#cb3-3" aria-hidden="true" tabindex="-1"></a><span class="bu">set</span> <span class="at">-euo</span> pipefail</span>
+<span id="cb3-4"><a href="#cb3-4" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb3-5"><a href="#cb3-5" aria-hidden="true" tabindex="-1"></a><span class="bu">echo</span> <span class="st">&quot;=== Security Audit Report ===&quot;</span></span>
+<span id="cb3-6"><a href="#cb3-6" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb3-7"><a href="#cb3-7" aria-hidden="true" tabindex="-1"></a><span class="bu">echo</span> <span class="st">&quot;&quot;</span></span>
+<span id="cb3-8"><a href="#cb3-8" aria-hidden="true" tabindex="-1"></a><span class="bu">echo</span> <span class="st">&quot;--- Users with UID 0 (root-equivalent) ---&quot;</span></span>
+<span id="cb3-9"><a href="#cb3-9" aria-hidden="true" tabindex="-1"></a><span class="fu">awk</span> <span class="at">-F:</span> <span class="st">&#39;$3==0 {print $1}&#39;</span> /etc/passwd</span>
+<span id="cb3-10"><a href="#cb3-10" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb3-11"><a href="#cb3-11" aria-hidden="true" tabindex="-1"></a><span class="bu">echo</span> <span class="st">&quot;&quot;</span></span>
+<span id="cb3-12"><a href="#cb3-12" aria-hidden="true" tabindex="-1"></a><span class="bu">echo</span> <span class="st">&quot;--- Users with empty passwords ---&quot;</span></span>
+<span id="cb3-13"><a href="#cb3-13" aria-hidden="true" tabindex="-1"></a><span class="fu">awk</span> <span class="at">-F:</span> <span class="st">&#39;$2==&quot;&quot; {print $1}&#39;</span> /etc/shadow <span class="dv">2</span><span class="op">&gt;</span>/dev/null <span class="kw">||</span> <span class="bu">echo</span> <span class="st">&quot;Need root&quot;</span></span>
+<span id="cb3-14"><a href="#cb3-14" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb3-15"><a href="#cb3-15" aria-hidden="true" tabindex="-1"></a><span class="bu">echo</span> <span class="st">&quot;&quot;</span></span>
+<span id="cb3-16"><a href="#cb3-16" aria-hidden="true" tabindex="-1"></a><span class="bu">echo</span> <span class="st">&quot;--- SUID binaries ---&quot;</span></span>
+<span id="cb3-17"><a href="#cb3-17" aria-hidden="true" tabindex="-1"></a><span class="fu">find</span> / <span class="at">-perm</span> <span class="at">-4000</span> <span class="at">-type</span> f <span class="dv">2</span><span class="op">&gt;</span>/dev/null <span class="kw">|</span> <span class="fu">head</span> <span class="at">-20</span></span>
+<span id="cb3-18"><a href="#cb3-18" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb3-19"><a href="#cb3-19" aria-hidden="true" tabindex="-1"></a><span class="bu">echo</span> <span class="st">&quot;&quot;</span></span>
+<span id="cb3-20"><a href="#cb3-20" aria-hidden="true" tabindex="-1"></a><span class="bu">echo</span> <span class="st">&quot;--- SGID binaries ---&quot;</span></span>
+<span id="cb3-21"><a href="#cb3-21" aria-hidden="true" tabindex="-1"></a><span class="fu">find</span> / <span class="at">-perm</span> <span class="at">-2000</span> <span class="at">-type</span> f <span class="dv">2</span><span class="op">&gt;</span>/dev/null <span class="kw">|</span> <span class="fu">head</span> <span class="at">-20</span></span>
+<span id="cb3-22"><a href="#cb3-22" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb3-23"><a href="#cb3-23" aria-hidden="true" tabindex="-1"></a><span class="bu">echo</span> <span class="st">&quot;&quot;</span></span>
+<span id="cb3-24"><a href="#cb3-24" aria-hidden="true" tabindex="-1"></a><span class="bu">echo</span> <span class="st">&quot;--- World-writable files in /etc ---&quot;</span></span>
+<span id="cb3-25"><a href="#cb3-25" aria-hidden="true" tabindex="-1"></a><span class="fu">find</span> /etc <span class="at">-perm</span> <span class="at">-o+w</span> <span class="at">-type</span> f <span class="dv">2</span><span class="op">&gt;</span>/dev/null</span>
+<span id="cb3-26"><a href="#cb3-26" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb3-27"><a href="#cb3-27" aria-hidden="true" tabindex="-1"></a><span class="bu">echo</span> <span class="st">&quot;&quot;</span></span>
+<span id="cb3-28"><a href="#cb3-28" aria-hidden="true" tabindex="-1"></a><span class="bu">echo</span> <span class="st">&quot;--- Listening services ---&quot;</span></span>
+<span id="cb3-29"><a href="#cb3-29" aria-hidden="true" tabindex="-1"></a><span class="ex">ss</span> <span class="at">-tlnp</span></span>
+<span id="cb3-30"><a href="#cb3-30" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb3-31"><a href="#cb3-31" aria-hidden="true" tabindex="-1"></a><span class="bu">echo</span> <span class="st">&quot;&quot;</span></span>
+<span id="cb3-32"><a href="#cb3-32" aria-hidden="true" tabindex="-1"></a><span class="bu">echo</span> <span class="st">&quot;--- sudo rules ---&quot;</span></span>
+<span id="cb3-33"><a href="#cb3-33" aria-hidden="true" tabindex="-1"></a><span class="fu">cat</span> /etc/sudoers <span class="dv">2</span><span class="op">&gt;</span>/dev/null <span class="kw">|</span> <span class="fu">grep</span> <span class="at">-v</span> <span class="st">&#39;^#&#39;</span> <span class="kw">|</span> <span class="fu">grep</span> <span class="at">-v</span> <span class="st">&#39;^$&#39;</span></span></code></pre></div>
+<hr />
+<h2 id="exercise-4-namespace-cgroup-exploration">Exercise 4: Namespace
+&amp; Cgroup Exploration</h2>
+<p><strong>Goal:</strong> Understand how containers work at the kernel
+level.</p>
+<div class="sourceCode" id="cb4"><pre
+class="sourceCode bash"><code class="sourceCode bash"><span id="cb4-1"><a href="#cb4-1" aria-hidden="true" tabindex="-1"></a><span class="co"># 1. Create an isolated process using unshare</span></span>
+<span id="cb4-2"><a href="#cb4-2" aria-hidden="true" tabindex="-1"></a><span class="fu">sudo</span> unshare <span class="at">--fork</span> <span class="at">--pid</span> <span class="at">--mount-proc</span> bash</span>
+<span id="cb4-3"><a href="#cb4-3" aria-hidden="true" tabindex="-1"></a><span class="co"># Now inside isolated PID namespace</span></span>
+<span id="cb4-4"><a href="#cb4-4" aria-hidden="true" tabindex="-1"></a><span class="fu">ps</span> aux     <span class="co"># Should only show bash and ps</span></span>
+<span id="cb4-5"><a href="#cb4-5" aria-hidden="true" tabindex="-1"></a><span class="bu">exit</span></span>
+<span id="cb4-6"><a href="#cb4-6" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb4-7"><a href="#cb4-7" aria-hidden="true" tabindex="-1"></a><span class="co"># 2. Explore a container&#39;s namespaces</span></span>
+<span id="cb4-8"><a href="#cb4-8" aria-hidden="true" tabindex="-1"></a><span class="ex">docker</span> run <span class="at">-d</span> <span class="at">--name</span> test nginx</span>
+<span id="cb4-9"><a href="#cb4-9" aria-hidden="true" tabindex="-1"></a><span class="va">CONTAINER_PID</span><span class="op">=</span><span class="va">$(</span><span class="ex">docker</span> inspect <span class="at">-f</span> <span class="st">&#39;{{.State.Pid}}&#39;</span> test<span class="va">)</span></span>
+<span id="cb4-10"><a href="#cb4-10" aria-hidden="true" tabindex="-1"></a><span class="fu">ls</span> <span class="at">-la</span> /proc/<span class="va">$CONTAINER_PID</span>/ns/</span>
+<span id="cb4-11"><a href="#cb4-11" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb4-12"><a href="#cb4-12" aria-hidden="true" tabindex="-1"></a><span class="co"># 3. Enter container network namespace from host</span></span>
+<span id="cb4-13"><a href="#cb4-13" aria-hidden="true" tabindex="-1"></a><span class="fu">sudo</span> nsenter <span class="at">-t</span> <span class="va">$CONTAINER_PID</span> <span class="at">--net</span> ip addr</span>
+<span id="cb4-14"><a href="#cb4-14" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb4-15"><a href="#cb4-15" aria-hidden="true" tabindex="-1"></a><span class="co"># 4. Check cgroup limits</span></span>
+<span id="cb4-16"><a href="#cb4-16" aria-hidden="true" tabindex="-1"></a><span class="fu">cat</span> /sys/fs/cgroup/memory/docker/<span class="va">$(</span><span class="ex">docker</span> inspect <span class="at">-f</span> <span class="st">&#39;{{.Id}}&#39;</span> test<span class="va">)</span>/memory.limit_in_bytes</span>
+<span id="cb4-17"><a href="#cb4-17" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb4-18"><a href="#cb4-18" aria-hidden="true" tabindex="-1"></a><span class="co"># 5. Create your own cgroup</span></span>
+<span id="cb4-19"><a href="#cb4-19" aria-hidden="true" tabindex="-1"></a><span class="fu">sudo</span> mkdir /sys/fs/cgroup/cpu/demo</span>
+<span id="cb4-20"><a href="#cb4-20" aria-hidden="true" tabindex="-1"></a><span class="bu">echo</span> 25000 <span class="kw">|</span> <span class="fu">sudo</span> tee /sys/fs/cgroup/cpu/demo/cpu.cfs_quota_us   <span class="co"># 25% CPU</span></span>
+<span id="cb4-21"><a href="#cb4-21" aria-hidden="true" tabindex="-1"></a><span class="bu">echo</span> 100000 <span class="kw">|</span> <span class="fu">sudo</span> tee /sys/fs/cgroup/cpu/demo/cpu.cfs_period_us  <span class="co"># period</span></span>
+<span id="cb4-22"><a href="#cb4-22" aria-hidden="true" tabindex="-1"></a><span class="co"># Add PID to cgroup</span></span>
+<span id="cb4-23"><a href="#cb4-23" aria-hidden="true" tabindex="-1"></a><span class="bu">echo</span> <span class="va">$$</span> <span class="kw">|</span> <span class="fu">sudo</span> tee /sys/fs/cgroup/cpu/demo/cgroup.procs</span></code></pre></div>
+<hr />
+<h2 id="exercise-5-performance-troubleshooting-simulation">Exercise 5:
+Performance Troubleshooting Simulation</h2>
+<p><strong>Goal:</strong> Diagnose simulated performance issues.</p>
+<div class="sourceCode" id="cb5"><pre
+class="sourceCode bash"><code class="sourceCode bash"><span id="cb5-1"><a href="#cb5-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Simulate CPU stress</span></span>
+<span id="cb5-2"><a href="#cb5-2" aria-hidden="true" tabindex="-1"></a><span class="ex">stress-ng</span> <span class="at">--cpu</span> 2 <span class="at">--timeout</span> 60 <span class="kw">&amp;</span></span>
+<span id="cb5-3"><a href="#cb5-3" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb5-4"><a href="#cb5-4" aria-hidden="true" tabindex="-1"></a><span class="co"># Observe with these tools simultaneously:</span></span>
+<span id="cb5-5"><a href="#cb5-5" aria-hidden="true" tabindex="-1"></a><span class="co"># Terminal 1: top -H -p $(pgrep stress-ng | head -1)</span></span>
+<span id="cb5-6"><a href="#cb5-6" aria-hidden="true" tabindex="-1"></a><span class="co"># Terminal 2: mpstat -P ALL 1</span></span>
+<span id="cb5-7"><a href="#cb5-7" aria-hidden="true" tabindex="-1"></a><span class="co"># Terminal 3: vmstat 1</span></span>
+<span id="cb5-8"><a href="#cb5-8" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb5-9"><a href="#cb5-9" aria-hidden="true" tabindex="-1"></a><span class="co"># Simulate memory leak</span></span>
+<span id="cb5-10"><a href="#cb5-10" aria-hidden="true" tabindex="-1"></a><span class="fu">cat</span> /dev/urandom <span class="kw">|</span> <span class="fu">head</span> <span class="at">-c</span> 500M <span class="op">&gt;</span> /tmp/bigfile <span class="kw">&amp;</span></span>
+<span id="cb5-11"><a href="#cb5-11" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb5-12"><a href="#cb5-12" aria-hidden="true" tabindex="-1"></a><span class="co"># Observe:</span></span>
+<span id="cb5-13"><a href="#cb5-13" aria-hidden="true" tabindex="-1"></a><span class="co"># free -h  (watch changes)</span></span>
+<span id="cb5-14"><a href="#cb5-14" aria-hidden="true" tabindex="-1"></a><span class="co"># cat /proc/meminfo | grep -E &quot;MemFree|Cached|Buffers&quot;</span></span>
+<span id="cb5-15"><a href="#cb5-15" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb5-16"><a href="#cb5-16" aria-hidden="true" tabindex="-1"></a><span class="co"># Simulate disk I/O</span></span>
+<span id="cb5-17"><a href="#cb5-17" aria-hidden="true" tabindex="-1"></a><span class="fu">dd</span> if=/dev/zero of=/tmp/testfile bs=1M count=1024 oflag=dsync <span class="kw">&amp;</span></span>
+<span id="cb5-18"><a href="#cb5-18" aria-hidden="true" tabindex="-1"></a><span class="co"># iostat -xz 1</span></span>
+<span id="cb5-19"><a href="#cb5-19" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb5-20"><a href="#cb5-20" aria-hidden="true" tabindex="-1"></a><span class="co"># Clean up</span></span>
+<span id="cb5-21"><a href="#cb5-21" aria-hidden="true" tabindex="-1"></a><span class="fu">rm</span> /tmp/bigfile /tmp/testfile</span>
+<span id="cb5-22"><a href="#cb5-22" aria-hidden="true" tabindex="-1"></a><span class="fu">killall</span> stress-ng <span class="dv">2</span><span class="op">&gt;</span>/dev/null</span></code></pre></div>
+<hr />
+<h2 id="exercise-6-systemd-service-creation">Exercise 6: systemd Service
+Creation</h2>
+<p><strong>Goal:</strong> Create and manage a custom systemd
+service.</p>
+<div class="sourceCode" id="cb6"><pre
+class="sourceCode bash"><code class="sourceCode bash"><span id="cb6-1"><a href="#cb6-1" aria-hidden="true" tabindex="-1"></a><span class="co"># 1. Create a simple Python HTTP server script</span></span>
+<span id="cb6-2"><a href="#cb6-2" aria-hidden="true" tabindex="-1"></a><span class="fu">cat</span> <span class="op">&gt;</span> /usr/local/bin/myapp.sh <span class="op">&lt;&lt; &#39;EOF&#39;</span></span>
+<span id="cb6-3"><a href="#cb6-3" aria-hidden="true" tabindex="-1"></a><span class="st">#!/bin/bash</span></span>
+<span id="cb6-4"><a href="#cb6-4" aria-hidden="true" tabindex="-1"></a><span class="st">python3 -m http.server 8888 --directory /tmp</span></span>
+<span id="cb6-5"><a href="#cb6-5" aria-hidden="true" tabindex="-1"></a><span class="op">EOF</span></span>
+<span id="cb6-6"><a href="#cb6-6" aria-hidden="true" tabindex="-1"></a><span class="fu">chmod</span> +x /usr/local/bin/myapp.sh</span>
+<span id="cb6-7"><a href="#cb6-7" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb6-8"><a href="#cb6-8" aria-hidden="true" tabindex="-1"></a><span class="co"># 2. Create systemd unit file</span></span>
+<span id="cb6-9"><a href="#cb6-9" aria-hidden="true" tabindex="-1"></a><span class="fu">cat</span> <span class="op">&gt;</span> /etc/systemd/system/myapp.service <span class="op">&lt;&lt; &#39;EOF&#39;</span></span>
+<span id="cb6-10"><a href="#cb6-10" aria-hidden="true" tabindex="-1"></a><span class="st">[Unit]</span></span>
+<span id="cb6-11"><a href="#cb6-11" aria-hidden="true" tabindex="-1"></a><span class="st">Description=My Test HTTP Server</span></span>
+<span id="cb6-12"><a href="#cb6-12" aria-hidden="true" tabindex="-1"></a><span class="st">After=network.target</span></span>
+<span id="cb6-13"><a href="#cb6-13" aria-hidden="true" tabindex="-1"></a><span class="st">Wants=network-online.target</span></span>
+<span id="cb6-14"><a href="#cb6-14" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb6-15"><a href="#cb6-15" aria-hidden="true" tabindex="-1"></a><span class="st">[Service]</span></span>
+<span id="cb6-16"><a href="#cb6-16" aria-hidden="true" tabindex="-1"></a><span class="st">Type=simple</span></span>
+<span id="cb6-17"><a href="#cb6-17" aria-hidden="true" tabindex="-1"></a><span class="st">User=nobody</span></span>
+<span id="cb6-18"><a href="#cb6-18" aria-hidden="true" tabindex="-1"></a><span class="st">ExecStart=/usr/local/bin/myapp.sh</span></span>
+<span id="cb6-19"><a href="#cb6-19" aria-hidden="true" tabindex="-1"></a><span class="st">Restart=on-failure</span></span>
+<span id="cb6-20"><a href="#cb6-20" aria-hidden="true" tabindex="-1"></a><span class="st">RestartSec=5s</span></span>
+<span id="cb6-21"><a href="#cb6-21" aria-hidden="true" tabindex="-1"></a><span class="st">StandardOutput=journal</span></span>
+<span id="cb6-22"><a href="#cb6-22" aria-hidden="true" tabindex="-1"></a><span class="st">StandardError=journal</span></span>
+<span id="cb6-23"><a href="#cb6-23" aria-hidden="true" tabindex="-1"></a><span class="st">Environment=&quot;PORT=8888&quot;</span></span>
+<span id="cb6-24"><a href="#cb6-24" aria-hidden="true" tabindex="-1"></a><span class="st">LimitNOFILE=65535</span></span>
+<span id="cb6-25"><a href="#cb6-25" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb6-26"><a href="#cb6-26" aria-hidden="true" tabindex="-1"></a><span class="st">[Install]</span></span>
+<span id="cb6-27"><a href="#cb6-27" aria-hidden="true" tabindex="-1"></a><span class="st">WantedBy=multi-user.target</span></span>
+<span id="cb6-28"><a href="#cb6-28" aria-hidden="true" tabindex="-1"></a><span class="op">EOF</span></span>
+<span id="cb6-29"><a href="#cb6-29" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb6-30"><a href="#cb6-30" aria-hidden="true" tabindex="-1"></a><span class="co"># 3. Enable and start</span></span>
+<span id="cb6-31"><a href="#cb6-31" aria-hidden="true" tabindex="-1"></a><span class="ex">systemctl</span> daemon-reload</span>
+<span id="cb6-32"><a href="#cb6-32" aria-hidden="true" tabindex="-1"></a><span class="ex">systemctl</span> enable myapp</span>
+<span id="cb6-33"><a href="#cb6-33" aria-hidden="true" tabindex="-1"></a><span class="ex">systemctl</span> start myapp</span>
+<span id="cb6-34"><a href="#cb6-34" aria-hidden="true" tabindex="-1"></a><span class="ex">systemctl</span> status myapp</span>
+<span id="cb6-35"><a href="#cb6-35" aria-hidden="true" tabindex="-1"></a><span class="ex">curl</span> localhost:8888</span>
+<span id="cb6-36"><a href="#cb6-36" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb6-37"><a href="#cb6-37" aria-hidden="true" tabindex="-1"></a><span class="co"># 4. Test restart behavior</span></span>
+<span id="cb6-38"><a href="#cb6-38" aria-hidden="true" tabindex="-1"></a><span class="bu">kill</span> <span class="va">$(</span><span class="ex">pgrep</span> <span class="at">-f</span> <span class="st">&quot;http.server 8888&quot;</span><span class="va">)</span></span>
+<span id="cb6-39"><a href="#cb6-39" aria-hidden="true" tabindex="-1"></a><span class="fu">sleep</span> 6</span>
+<span id="cb6-40"><a href="#cb6-40" aria-hidden="true" tabindex="-1"></a><span class="ex">systemctl</span> status myapp  <span class="co"># Should have restarted</span></span>
+<span id="cb6-41"><a href="#cb6-41" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb6-42"><a href="#cb6-42" aria-hidden="true" tabindex="-1"></a><span class="co"># 5. View logs</span></span>
+<span id="cb6-43"><a href="#cb6-43" aria-hidden="true" tabindex="-1"></a><span class="ex">journalctl</span> <span class="at">-u</span> myapp <span class="at">-n</span> 50 <span class="at">--no-pager</span></span></code></pre></div>
+<hr />
+<h2 id="checkpoint-questions">Checkpoint Questions</h2>
+<p>After completing exercises, answer these:</p>
+<ol type="1">
+<li>What happened to the cgroup limits when you ran stress-ng?</li>
+<li>Which files were open in the nginx container’s PID namespace?</li>
+<li>How did systemd behave when you killed the process?</li>
+<li>What was the most memory-consuming process during the memory
+simulation?</li>
+<li>What SUID binaries did the security audit find, and are they
+expected?</li>
+</ol>
+</body>
+</html>

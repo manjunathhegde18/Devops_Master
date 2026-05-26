@@ -1,0 +1,498 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" lang="" xml:lang="">
+<head>
+  <meta charset="utf-8" />
+  <meta name="generator" content="pandoc" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes" />
+  <title>DevOps Mastery: notes</title>
+  <style>
+    code{white-space: pre-wrap;}
+    span.smallcaps{font-variant: small-caps;}
+    div.columns{display: flex; gap: min(4vw, 1.5em);}
+    div.column{flex: auto; overflow-x: auto;}
+    div.hanging-indent{margin-left: 1.5em; text-indent: -1.5em;}
+    /* The extra [class] is a hack that increases specificity enough to
+       override a similar rule in reveal.js */
+    ul.task-list[class]{list-style: none;}
+    ul.task-list li input[type="checkbox"] {
+      font-size: inherit;
+      width: 0.8em;
+      margin: 0 0.8em 0.2em -1.6em;
+      vertical-align: middle;
+    }
+    .display.math{display: block; text-align: center; margin: 0.5rem auto;}
+  </style>
+  <link rel="stylesheet" href="/tmp/devops-style.css" />
+</head>
+<body>
+<header id="title-block-header">
+<h1 class="title">DevOps Mastery: notes</h1>
+</header>
+<nav id="TOC" role="doc-toc">
+<ul>
+<li><a href="#cloud-platforms-aws-deep-dive-gcpazure-overview"
+id="toc-cloud-platforms-aws-deep-dive-gcpazure-overview">Cloud Platforms
+— AWS Deep Dive + GCP/Azure Overview</a>
+<ul>
+<li><a href="#aws-core-services-for-devops"
+id="toc-aws-core-services-for-devops">1. AWS Core Services for
+DevOps</a>
+<ul>
+<li><a href="#compute" id="toc-compute">Compute</a></li>
+<li><a href="#networking" id="toc-networking">Networking</a></li>
+<li><a href="#storage" id="toc-storage">Storage</a></li>
+<li><a href="#databases" id="toc-databases">Databases</a></li>
+<li><a href="#iam-identity-and-access-management"
+id="toc-iam-identity-and-access-management">IAM — Identity and Access
+Management</a></li>
+<li><a href="#security-services" id="toc-security-services">Security
+Services</a></li>
+<li><a href="#monitoring-observability"
+id="toc-monitoring-observability">Monitoring &amp;
+Observability</a></li>
+<li><a href="#cost-optimization-framework"
+id="toc-cost-optimization-framework">Cost Optimization
+Framework</a></li>
+</ul></li>
+<li><a href="#gcp-key-services-for-devops"
+id="toc-gcp-key-services-for-devops">2. GCP Key Services for
+DevOps</a></li>
+<li><a href="#azure-key-services-for-devops"
+id="toc-azure-key-services-for-devops">3. Azure Key Services for
+DevOps</a></li>
+<li><a href="#resources" id="toc-resources">📚 Resources</a></li>
+</ul></li>
+</ul>
+</nav>
+<h1 id="cloud-platforms-aws-deep-dive-gcpazure-overview">Cloud Platforms
+— AWS Deep Dive + GCP/Azure Overview</h1>
+<h2 id="aws-core-services-for-devops">1. AWS Core Services for
+DevOps</h2>
+<h3 id="compute">Compute</h3>
+<h4 id="ec2">EC2</h4>
+<pre><code>Instance types:
+  t3/t4g    — Burstable (dev, low-traffic)
+  m6i/m7i   — General purpose (production apps)
+  c6i/c7i   — Compute-optimized (CI agents, encoding)
+  r6i/r7i   — Memory-optimized (databases, caching)
+  p3/g4     — GPU (ML training/inference)
+  x2idn     — High memory (SAP, large DBs)
+
+Purchasing:
+  On-Demand    — pay per hour, no commitment
+  Reserved (1/3yr) — 40-72% savings
+  Savings Plans  — flexible, apply to any instance family
+  Spot          — up to 90% off, can be interrupted (2-min notice)
+  Dedicated Host — for licensing compliance</code></pre>
+<h4 id="ecs-vs-eks-vs-lambda-vs-fargate">ECS vs EKS vs Lambda vs
+Fargate</h4>
+<table>
+<thead>
+<tr class="header">
+<th>Service</th>
+<th>Best For</th>
+<th>Management Overhead</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td>ECS (Fargate)</td>
+<td>Simple containerized apps, no K8s expertise</td>
+<td>Low</td>
+</tr>
+<tr class="even">
+<td>EKS</td>
+<td>Production K8s, complex workloads</td>
+<td>High</td>
+</tr>
+<tr class="odd">
+<td>EKS Fargate</td>
+<td>K8s workloads, no node management</td>
+<td>Medium</td>
+</tr>
+<tr class="even">
+<td>Lambda</td>
+<td>Event-driven, short tasks (&lt;15min)</td>
+<td>Very Low</td>
+</tr>
+<tr class="odd">
+<td>App Runner</td>
+<td>Simple web apps from container/code</td>
+<td>Very Low</td>
+</tr>
+</tbody>
+</table>
+<hr />
+<h3 id="networking">Networking</h3>
+<h4 id="vpc-architecture-production-best-practice">VPC Architecture
+(Production Best Practice)</h4>
+<pre><code>VPC: 10.0.0.0/16
+
+Public Subnets (one per AZ):
+  us-east-1a: 10.0.0.0/24   → Internet GW, NAT GW, ALB
+  us-east-1b: 10.0.1.0/24
+  us-east-1c: 10.0.2.0/24
+
+Private Subnets (application tier):
+  us-east-1a: 10.0.10.0/24  → EKS nodes, ECS tasks
+  us-east-1b: 10.0.11.0/24
+  us-east-1c: 10.0.12.0/24
+
+Database Subnets (isolated):
+  us-east-1a: 10.0.20.0/24  → RDS, ElastiCache
+  us-east-1b: 10.0.21.0/24
+  us-east-1c: 10.0.22.0/24
+
+Key resources:
+  Internet Gateway    → public subnet internet access
+  NAT Gateway (per AZ) → private subnet outbound internet
+  Route Tables        → separate per tier
+  VPC Endpoints       → private access to S3, ECR, SSM (no internet needed)</code></pre>
+<h4 id="load-balancers">Load Balancers</h4>
+<table>
+<colgroup>
+<col style="width: 27%" />
+<col style="width: 31%" />
+<col style="width: 40%" />
+</colgroup>
+<thead>
+<tr class="header">
+<th>Type</th>
+<th>Layer</th>
+<th>Use Case</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td>ALB (Application LB)</td>
+<td>L7 (HTTP/HTTPS)</td>
+<td>Microservices, path/host routing, WebSockets, gRPC</td>
+</tr>
+<tr class="even">
+<td>NLB (Network LB)</td>
+<td>L4 (TCP/UDP/TLS)</td>
+<td>High performance, static IPs, TCP passthrough, low latency</td>
+</tr>
+<tr class="odd">
+<td>CLB (Classic LB)</td>
+<td>L4+L7</td>
+<td>Legacy only — don’t use for new deployments</td>
+</tr>
+<tr class="even">
+<td>Gateway LB</td>
+<td>L3+L4</td>
+<td>Network appliances (firewalls, IDS/IPS)</td>
+</tr>
+</tbody>
+</table>
+<h4 id="route53">Route53</h4>
+<pre><code>Record Types: A, AAAA, CNAME, ALIAS (AWS-specific, works at zone apex)
+Routing Policies:
+  Simple          → single value
+  Weighted        → percentage split (A/B testing, canary)
+  Latency         → route to lowest-latency region
+  Failover        → primary + standby with health check
+  Geolocation     → by user location (compliance, localization)
+  Geoproximity    → location + bias adjustment
+  Multi-value     → multiple IPs, health-checked (not a replacement for LB)</code></pre>
+<hr />
+<h3 id="storage">Storage</h3>
+<h4 id="s3">S3</h4>
+<pre><code>Storage Classes (cost/performance tradeoff):
+  Standard            → frequent access
+  Intelligent-Tiering → automatic tier selection (monitoring fee)
+  Standard-IA         → infrequent access (retrieval fee, lower storage cost)
+  One Zone-IA         → non-critical, single AZ
+  Glacier Instant     → archives retrieved in ms
+  Glacier Flexible    → 1-12hr retrieval, cheapest storage
+  Glacier Deep Archive → 12-48hr, lowest cost
+
+Key Features:
+  Versioning          → keep all versions, recover from deletes
+  Replication (CRR/SRR) → cross/same region replication
+  Lifecycle policies  → auto-transition/expire objects
+  Object Lock (WORM)  → compliance: prevent modification/deletion
+  Event notifications → trigger Lambda, SQS, SNS on object events
+  Pre-signed URLs     → time-limited access for clients
+  Transfer Acceleration → CloudFront edge for uploads</code></pre>
+<h4 id="ebs-vs-efs-vs-fsx">EBS vs EFS vs FSx</h4>
+<table>
+<thead>
+<tr class="header">
+<th>Service</th>
+<th>Type</th>
+<th>Use Case</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td>EBS gp3</td>
+<td>Block, single-AZ</td>
+<td>Boot volumes, databases</td>
+</tr>
+<tr class="even">
+<td>EBS io2</td>
+<td>Block, high IOPS</td>
+<td>High-performance databases</td>
+</tr>
+<tr class="odd">
+<td>EFS</td>
+<td>Managed NFS, multi-AZ</td>
+<td>Shared storage, Lambda, ECS</td>
+</tr>
+<tr class="even">
+<td>FSx for Lustre</td>
+<td>High-performance parallel FS</td>
+<td>ML training, HPC</td>
+</tr>
+<tr class="odd">
+<td>FSx for Windows</td>
+<td>SMB, Windows-native</td>
+<td>.NET apps, AD integration</td>
+</tr>
+</tbody>
+</table>
+<hr />
+<h3 id="databases">Databases</h3>
+<h4 id="rds-aurora">RDS / Aurora</h4>
+<pre><code>RDS Multi-AZ:
+  Synchronous replication to standby
+  Automatic failover in 60-120 seconds
+  Standby not readable (not for read scaling — use read replicas)
+
+Aurora:
+  6 copies of data across 3 AZs (2 per AZ)
+  Failover &lt; 30 seconds (Aurora Replicas promote instantly)
+  Aurora Serverless v2 — auto-scale capacity units
+  Global Database — multi-region with &lt; 1s replication lag
+  Up to 15 read replicas with load balancing endpoint
+
+Connection best practices:
+  Use RDS Proxy for Lambda (manages connection pooling)
+  Use cluster endpoint for writes, reader endpoint for reads
+  Use IAM database authentication (no passwords)</code></pre>
+<h4 id="dynamodb">DynamoDB</h4>
+<pre><code>Key concepts:
+  Partition key + Sort key → primary key
+  Capacity modes: On-Demand vs Provisioned (with Auto Scaling)
+  GSI (Global Secondary Index) → alternate query patterns
+  LSI (Local Secondary Index) → same partition, different sort key
+  DynamoDB Streams → change data capture → Lambda triggers
+  TTL → auto-expire items
+  DAX → in-memory cache (microsecond latency)
+  
+On-Demand Capacity: pay per request, no planning needed
+Provisioned: set RCU/WCU, cheaper at predictable load
+
+Table design principle:
+  Single-table design — multiple entity types in one table
+  Access patterns first, schema second (opposite of relational)</code></pre>
+<hr />
+<h3 id="iam-identity-and-access-management">IAM — Identity and Access
+Management</h3>
+<h4 id="key-concepts">Key Concepts</h4>
+<pre><code>Identities: Users, Groups, Roles
+Resources: S3 buckets, EC2, RDS, etc.
+Policies: JSON documents defining permissions
+
+Policy evaluation:
+  1. Explicit Deny → always wins
+  2. Explicit Allow → grants access
+  3. Implicit Deny → default (deny if no allow)
+
+Policy types:
+  Identity-based    → attached to user/role/group
+  Resource-based    → attached to resource (S3 bucket policy, SQS)
+  SCP (Service Control Policy) → AWS Organizations, sets max boundary
+  Permission Boundaries → max permissions a role can have
+  Session Policies  → temporary, passed during AssumeRole</code></pre>
+<h4 id="iam-best-practices">IAM Best Practices</h4>
+<pre><code>✓ Root account: only for billing, enable MFA, no access keys
+✓ Use IAM roles for EC2/Lambda/ECS (never access keys on instances)
+✓ Least privilege: start with read-only, add permissions as needed
+✓ Enable MFA for all human users
+✓ Use AWS SSO/Identity Center for human access (federate with IdP)
+✓ Audit with IAM Access Analyzer
+✓ Use condition keys: aws:SourceIp, aws:MultiFactorAuthPresent, aws:RequestedRegion
+✓ Rotate access keys regularly (better: eliminate them entirely)</code></pre>
+<h4 id="irsa-pattern-eks">IRSA Pattern (EKS)</h4>
+<pre><code>1. OIDC provider on EKS cluster
+2. ServiceAccount annotated: eks.amazonaws.com/role-arn: arn:aws:iam::ACCT:role/ROLE
+3. Trust policy on IAM role:
+   {
+     &quot;Condition&quot;: {
+       &quot;StringEquals&quot;: {
+         &quot;oidc.eks.region.amazonaws.com/id/OIDC_ID:sub&quot;: &quot;system:serviceaccount:NAMESPACE:SA_NAME&quot;
+       }
+     }
+   }
+4. Pod token projected → AWS SDK exchanges for STS credentials</code></pre>
+<hr />
+<h3 id="security-services">Security Services</h3>
+<table>
+<colgroup>
+<col style="width: 50%" />
+<col style="width: 50%" />
+</colgroup>
+<thead>
+<tr class="header">
+<th>Service</th>
+<th>Purpose</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td>GuardDuty</td>
+<td>Threat detection — analyzes CloudTrail, VPC Flow Logs, DNS logs</td>
+</tr>
+<tr class="even">
+<td>Security Hub</td>
+<td>Aggregates findings from GuardDuty, Inspector, Macie, etc.</td>
+</tr>
+<tr class="odd">
+<td>AWS Config</td>
+<td>Compliance — tracks resource config changes, evaluates rules</td>
+</tr>
+<tr class="even">
+<td>Inspector</td>
+<td>Vulnerability scanning for EC2, ECR images, Lambda</td>
+</tr>
+<tr class="odd">
+<td>Macie</td>
+<td>S3 data classification — finds PII, sensitive data</td>
+</tr>
+<tr class="even">
+<td>KMS</td>
+<td>Key management — envelope encryption for all AWS services</td>
+</tr>
+<tr class="odd">
+<td>Secrets Manager</td>
+<td>Managed secrets with auto-rotation</td>
+</tr>
+<tr class="even">
+<td>WAF</td>
+<td>Layer 7 firewall — protects ALB, CloudFront, API Gateway</td>
+</tr>
+<tr class="odd">
+<td>Shield</td>
+<td>DDoS protection (Standard = free, Advanced = $3000/mo)</td>
+</tr>
+<tr class="even">
+<td>CloudTrail</td>
+<td>API audit log — who did what, when, from where</td>
+</tr>
+</tbody>
+</table>
+<hr />
+<h3 id="monitoring-observability">Monitoring &amp; Observability</h3>
+<pre><code>CloudWatch Metrics:
+  Built-in metrics for all AWS services
+  Custom metrics via PutMetricData API or CloudWatch Agent
+  High-resolution: 1-second granularity (extra cost)
+  
+CloudWatch Logs:
+  Log groups + log streams
+  Metric filters → create metrics from log patterns
+  Log Insights → SQL-like query language
+  Subscription filters → stream to Lambda, Kinesis, OpenSearch
+
+CloudWatch Alarms:
+  Threshold (static) or Anomaly Detection (ML-based)
+  Actions: SNS, Auto Scaling, EC2 recover, Systems Manager
+  
+X-Ray:
+  Distributed tracing
+  Service map visualization
+  Sampling rules to control cost
+
+CloudTrail:
+  API activity logging
+  Management events (free), Data events (S3 object ops — paid)
+  Insight events — unusual API call rate detection</code></pre>
+<hr />
+<h3 id="cost-optimization-framework">Cost Optimization Framework</h3>
+<pre><code>1. Right-sizing:
+   AWS Compute Optimizer — ML-based recommendations
+   Remove idle resources (unattached EBS, unused EIPs, idle LBs)
+   
+2. Pricing models:
+   Savings Plans (Compute or EC2) — 1 or 3 year, up to 72% savings
+   Reserved Instances — for stable workloads
+   Spot Instances — stateless/fault-tolerant workloads
+
+3. Architectural:
+   S3 Intelligent-Tiering for variable access patterns
+   Lambda for infrequent workloads vs always-on EC2
+   CloudFront to reduce data transfer costs
+   VPC Endpoints to avoid NAT Gateway data processing charges
+
+4. Monitoring:
+   Cost Anomaly Detection — ML-based alerts
+   AWS Budgets — alerts on spend thresholds
+   Cost Explorer — usage patterns, RI recommendations
+   Resource tagging for chargeback/showback</code></pre>
+<hr />
+<h2 id="gcp-key-services-for-devops">2. GCP Key Services for DevOps</h2>
+<pre><code>Compute:
+  GCE (VMs) — equivalent to EC2
+  GKE (Google Kubernetes Engine) — best managed K8s (Google invented K8s)
+  Cloud Run — serverless containers (pay per request)
+  Cloud Functions — FaaS
+
+Networking:
+  Global VPC (single VPC spans all regions — unique to GCP)
+  Cloud Load Balancing — global anycast, single IP worldwide
+  Cloud CDN
+  Cloud DNS
+
+Storage:
+  GCS (Google Cloud Storage) — equivalent to S3
+  Filestore — managed NFS
+  Persistent Disk — block storage
+
+DevOps:
+  Artifact Registry — container/package registry
+  Cloud Build — serverless CI/CD
+  Cloud Deploy — managed CD to GKE
+  Anthos — multi-cloud K8s management
+
+GKE Autopilot:
+  Google manages node pools, autoscaling, security
+  Pay per pod resources, not nodes
+  Built-in security hardening</code></pre>
+<hr />
+<h2 id="azure-key-services-for-devops">3. Azure Key Services for
+DevOps</h2>
+<pre><code>Compute:
+  VMs, AKS (Azure K8s Service), Azure Container Apps, Functions
+
+Networking:
+  VNet, Azure Load Balancer, Application Gateway, Azure Front Door
+
+Storage:
+  Blob Storage, Azure Files, Managed Disks
+
+DevOps:
+  Azure DevOps (Pipelines, Repos, Boards, Artifacts) — full DevOps platform
+  Azure Container Registry (ACR)
+  
+Identity:
+  Azure AD / Entra ID — enterprise identity, MFA, Conditional Access
+  Managed Identity — equivalent to AWS IAM roles for instances
+
+Key Differentiators:
+  Best Microsoft/Windows integration
+  Azure DevOps widely used in enterprises
+  Hybrid cloud with Azure Arc</code></pre>
+<h2 id="resources">📚 Resources</h2>
+<ul>
+<li>https://aws.amazon.com/architecture/ — AWS Architecture Center</li>
+<li>https://docs.aws.amazon.com/ — AWS Official Docs</li>
+<li>https://www.wellarchitectedlabs.com/ — Hands-on WAF labs</li>
+<li>https://cloud.google.com/docs — GCP docs</li>
+<li>https://learn.microsoft.com/en-us/azure/ — Azure docs</li>
+<li>https://www.awsgeek.com/ — Visual AWS cheatsheets</li>
+<li>https://github.com/open-guides/og-aws — Community AWS guide</li>
+</ul>
+</body>
+</html>

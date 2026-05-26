@@ -1,0 +1,395 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" lang="" xml:lang="">
+<head>
+  <meta charset="utf-8" />
+  <meta name="generator" content="pandoc" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes" />
+  <title>DevOps Mastery: system-design</title>
+  <style>
+    code{white-space: pre-wrap;}
+    span.smallcaps{font-variant: small-caps;}
+    div.columns{display: flex; gap: min(4vw, 1.5em);}
+    div.column{flex: auto; overflow-x: auto;}
+    div.hanging-indent{margin-left: 1.5em; text-indent: -1.5em;}
+    /* The extra [class] is a hack that increases specificity enough to
+       override a similar rule in reveal.js */
+    ul.task-list[class]{list-style: none;}
+    ul.task-list li input[type="checkbox"] {
+      font-size: inherit;
+      width: 0.8em;
+      margin: 0 0.8em 0.2em -1.6em;
+      vertical-align: middle;
+    }
+    .display.math{display: block; text-align: center; margin: 0.5rem auto;}
+  </style>
+  <link rel="stylesheet" href="/tmp/devops-style.css" />
+</head>
+<body>
+<header id="title-block-header">
+<h1 class="title">DevOps Mastery: system-design</h1>
+</header>
+<nav id="TOC" role="doc-toc">
+<ul>
+<li><a href="#system-design-for-devopsinfrastructure-interviews"
+id="toc-system-design-for-devopsinfrastructure-interviews">System Design
+for DevOps/Infrastructure Interviews</a>
+<ul>
+<li><a href="#how-to-approach-any-system-design-question"
+id="toc-how-to-approach-any-system-design-question">How to Approach Any
+System Design Question</a>
+<ul>
+<li><a href="#the-4-phase-framework" id="toc-the-4-phase-framework">The
+4-Phase Framework</a></li>
+</ul></li>
+<li><a href="#design-1-production-cicd-platform-for-200-engineers"
+id="toc-design-1-production-cicd-platform-for-200-engineers">Design 1:
+Production CI/CD Platform for 200 Engineers</a>
+<ul>
+<li><a href="#clarify" id="toc-clarify">Clarify</a></li>
+<li><a href="#high-level-architecture"
+id="toc-high-level-architecture">High-Level Architecture</a></li>
+<li><a href="#key-design-decisions" id="toc-key-design-decisions">Key
+Design Decisions</a></li>
+</ul></li>
+<li><a href="#design-2-multi-region-kubernetes-platform"
+id="toc-design-2-multi-region-kubernetes-platform">Design 2:
+Multi-Region Kubernetes Platform</a>
+<ul>
+<li><a href="#clarify-1" id="toc-clarify-1">Clarify</a></li>
+<li><a href="#architecture" id="toc-architecture">Architecture</a></li>
+<li><a href="#single-region-vs-multi-region-decision-tree"
+id="toc-single-region-vs-multi-region-decision-tree">Single-Region vs
+Multi-Region Decision Tree</a></li>
+<li><a href="#key-tradeoffs" id="toc-key-tradeoffs">Key
+Tradeoffs</a></li>
+</ul></li>
+<li><a href="#design-3-observability-platform-for-100-services"
+id="toc-design-3-observability-platform-for-100-services">Design 3:
+Observability Platform for 100+ Services</a>
+<ul>
+<li><a href="#scale-requirements" id="toc-scale-requirements">Scale
+Requirements</a></li>
+<li><a href="#architecture-1"
+id="toc-architecture-1">Architecture</a></li>
+<li><a href="#key-decisions" id="toc-key-decisions">Key
+Decisions</a></li>
+</ul></li>
+<li><a href="#design-4-zero-downtime-deployment-strategy"
+id="toc-design-4-zero-downtime-deployment-strategy">Design 4:
+Zero-Downtime Deployment Strategy</a>
+<ul>
+<li><a href="#question" id="toc-question">Question</a></li>
+<li><a href="#strategy-matrix" id="toc-strategy-matrix">Strategy
+Matrix</a></li>
+<li><a href="#canary-deployment-flow"
+id="toc-canary-deployment-flow">Canary Deployment Flow</a></li>
+<li><a href="#database-migration-pattern-expand-contract"
+id="toc-database-migration-pattern-expand-contract">Database Migration
+Pattern (Expand-Contract)</a></li>
+</ul></li>
+<li><a href="#design-5-secrets-management-at-scale"
+id="toc-design-5-secrets-management-at-scale">Design 5: Secrets
+Management at Scale</a>
+<ul>
+<li><a href="#question-1" id="toc-question-1">Question</a></li>
+<li><a href="#architecture-2"
+id="toc-architecture-2">Architecture</a></li>
+<li><a href="#key-principles" id="toc-key-principles">Key
+Principles</a></li>
+</ul></li>
+<li><a href="#common-design-anti-patterns-to-avoid"
+id="toc-common-design-anti-patterns-to-avoid">Common Design
+Anti-Patterns to Avoid</a></li>
+</ul></li>
+</ul>
+</nav>
+<h1 id="system-design-for-devopsinfrastructure-interviews">System Design
+for DevOps/Infrastructure Interviews</h1>
+<h2 id="how-to-approach-any-system-design-question">How to Approach Any
+System Design Question</h2>
+<h3 id="the-4-phase-framework">The 4-Phase Framework</h3>
+<pre><code>Phase 1 — Clarify (5 min)
+  Ask scope questions before drawing anything:
+  - Scale: How many users? RPS? Data size? Regions?
+  - Availability: SLO target? 99.9% or 99.99%?
+  - Team: How big? Skill set? On-call model?
+  - Constraints: Budget? Existing stack? Migration vs greenfield?
+  
+Phase 2 — High-Level Design (10 min)
+  Whiteboard top-down architecture:
+  DNS → CDN → Load Balancer → Services → Data → Monitoring
+  
+Phase 3 — Deep Dive (20 min)
+  Interviewer will focus on 1-2 areas — go deep there
+  Show tradeoffs: why X over Y?
+  
+Phase 4 — Evolution (5 min)
+  What would you change at 10x, 100x scale?
+  Where would you invest first?</code></pre>
+<hr />
+<h2 id="design-1-production-cicd-platform-for-200-engineers">Design 1:
+Production CI/CD Platform for 200 Engineers</h2>
+<h3 id="clarify">Clarify</h3>
+<ul>
+<li>Team size: 200 engineers, 50+ microservices</li>
+<li>Deployment frequency target: 50+ deploys/day</li>
+<li>Current state: manual, Jenkins on-prem</li>
+<li>Requirements: self-service, secure, fast feedback</li>
+</ul>
+<h3 id="high-level-architecture">High-Level Architecture</h3>
+<pre><code>Developer pushes to Git
+        ↓
+GitHub / GitLab (source control)
+        ↓
+CI Platform (GitHub Actions or GitLab CI)
+  ├── Lint + Test (parallel, per-service)
+  ├── Security scanning (SAST, SCA, container scan)
+  ├── Build + Push to registry
+  └── Trigger CD
+        ↓
+ArgoCD (GitOps CD layer)
+  ├── Staging sync (automatic, on merge to develop)
+  ├── Production sync (manual approval or scheduled)
+  └── Drift detection + auto-remediation
+        ↓
+Kubernetes clusters (staging + production, multi-AZ)
+        ↓
+Monitoring + Alerting → Slack + PagerDuty</code></pre>
+<h3 id="key-design-decisions">Key Design Decisions</h3>
+<p><strong>Why ArgoCD over push-based CD?</strong> - Pull model: cluster
+pulls from Git, no need to grant CI outbound access to K8s - Git is the
+single source of truth — every cluster state is auditable - Drift
+detection: if someone <code>kubectl apply</code> directly, ArgoCD
+detects and corrects - Multi-cluster support: one ArgoCD instance
+managing many clusters</p>
+<p><strong>Scaling CI runners</strong> - GitHub Actions self-hosted
+runners on K8s (ARC — Actions Runner Controller) - Runners auto-scale
+based on queue depth - Spot instances for cost (stateless, OK to be
+interrupted) - Caching strategy: Docker layer cache in ECR, pip/npm
+cache in S3</p>
+<p><strong>Deployment strategies per risk level</strong> - Internal
+tools: Direct rolling update - Customer-facing: Canary → 5% → 25% → 100%
+with automated rollback on error rate - DB migrations: Feature flags +
+backwards-compatible migrations first, code second</p>
+<p><strong>Security gates</strong> - Every build: SAST, SCA, container
+scan — fail on CRITICAL - Image signing: Cosign with OIDC, Kyverno
+enforces at admission - Secrets: Never in CI env vars — pull from
+Vault/Secrets Manager</p>
+<hr />
+<h2 id="design-2-multi-region-kubernetes-platform">Design 2:
+Multi-Region Kubernetes Platform</h2>
+<h3 id="clarify-1">Clarify</h3>
+<ul>
+<li>Active-active or active-passive across regions?</li>
+<li>RTO/RPO requirements?</li>
+<li>Stateful workloads?</li>
+<li>Data residency requirements (GDPR)?</li>
+</ul>
+<h3 id="architecture">Architecture</h3>
+<pre><code>                   Route53 (Latency-based routing)
+                       /              \
+              us-east-1               eu-west-1
+            EKS Cluster             EKS Cluster
+           (primary region)       (secondary region)
+                  │                       │
+        RDS Aurora              RDS Aurora
+        (write endpoint)   ←── (read replica, promoted if needed)
+                  │
+          Global shared: 
+            S3 + CRR (cross-region replication)
+            ECR (replicated)
+            Route53 health checks</code></pre>
+<h3 id="single-region-vs-multi-region-decision-tree">Single-Region vs
+Multi-Region Decision Tree</h3>
+<pre><code>Traffic regional distribution matters?  → Multi-region latency-routing
+Compliance (GDPR, data sovereignty)?    → Multi-region required
+99.99%+ SLO required?                  → Multi-region or multi-AZ + fast failover
+Team &lt; 20 engineers?                   → Multi-AZ is enough, multi-region is operationally complex
+Cost budget limited?                   → Multi-AZ with DR plan</code></pre>
+<h3 id="key-tradeoffs">Key Tradeoffs</h3>
+<ul>
+<li><strong>Active-Active</strong>: Higher complexity, data consistency
+challenges (distributed writes), higher cost, true zero-downtime
+failover</li>
+<li><strong>Active-Passive (warm standby)</strong>: Simpler, some
+downtime during failover (minutes), RDS Aurora failover &lt; 30s</li>
+</ul>
+<hr />
+<h2 id="design-3-observability-platform-for-100-services">Design 3:
+Observability Platform for 100+ Services</h2>
+<h3 id="scale-requirements">Scale Requirements</h3>
+<ul>
+<li>100 services, each emitting metrics, logs, traces</li>
+<li>~50,000 metrics/min ingestion rate</li>
+<li>Log volume: 50GB/day</li>
+<li>Trace sampling: 1% of requests with 100% of errors</li>
+</ul>
+<h3 id="architecture-1">Architecture</h3>
+<pre><code>Applications (OTel SDK)
+        ↓
+OTel Collector (DaemonSet) — receives, filters, batches
+    ├── Metrics → Prometheus → Thanos (long-term, S3-backed)
+    ├── Logs → Fluent Bit → Loki (index-free, S3-backed)
+    └── Traces → Tempo (S3-backed)
+        ↓
+Grafana (single pane of glass)
+  - Unified dashboards
+  - Log ↔ Trace ↔ Metric correlation
+  - SLO dashboards with burn rate
+
+Alerting:
+Prometheus rules → Alertmanager → PagerDuty + Slack
+Grafana alerts for business metrics</code></pre>
+<h3 id="key-decisions">Key Decisions</h3>
+<p><strong>Why Thanos over just Prometheus?</strong> - Prometheus stores
+data locally — limited retention, no HA - Thanos: S3 object storage →
+unlimited retention at low cost - Query federation across multiple
+Prometheus instances - Global view across clusters from single query
+endpoint</p>
+<p><strong>Why Loki over Elasticsearch?</strong> - Loki indexes only
+labels, not full text → 10-30x cheaper storage - At 50GB/day:
+Elasticsearch ~$500/mo vs Loki ~$50/mo - Tradeoff: Full-text regex
+search slower vs indexed Elasticsearch - Acceptable when logs are
+well-structured JSON with good labels</p>
+<p><strong>Cardinality control</strong> - High-cardinality labels
+(user_id, request_id) belong in traces/logs, NOT metrics - Recording
+rules for frequently-queried heavy expressions - Drop irrelevant metrics
+at collector level (reduce by 40-60%)</p>
+<hr />
+<h2 id="design-4-zero-downtime-deployment-strategy">Design 4:
+Zero-Downtime Deployment Strategy</h2>
+<h3 id="question">Question</h3>
+<p>“How would you design deployment pipelines for an e-commerce site
+that cannot tolerate downtime?”</p>
+<h3 id="strategy-matrix">Strategy Matrix</h3>
+<pre><code>Risk Level | Strategy           | Rollback Time | Notes
+──────────────────────────────────────────────────────────────
+Low risk   | Rolling Update     | 5-10 min      | maxUnavailable: 0
+Medium     | Blue-Green         | &lt; 1 min       | Switch LB target group
+High       | Canary             | &lt; 1 min       | Automated on error rate spike
+DB changes | Expand-Contract    | N/A           | Multi-step: add → migrate → remove
+Hotfix     | Feature Flag off   | Seconds       | Kill switch without deploy</code></pre>
+<h3 id="canary-deployment-flow">Canary Deployment Flow</h3>
+<pre><code>v1 (100%) running in production
+      ↓ Deploy v2 to canary (5% traffic via weighted routing)
+      ↓ Monitor for 10 minutes:
+        - Error rate &lt; baseline + 0.5%
+        - P99 latency &lt; baseline + 50ms
+      ↓ Pass → promote to 25% → 50% → 100%
+      ↓ Fail → automatic rollback to 100% v1 (&lt; 60 seconds)</code></pre>
+<h3 id="database-migration-pattern-expand-contract">Database Migration
+Pattern (Expand-Contract)</h3>
+<pre><code>Problem: ALTER TABLE on 100M row table = 30min lock = unacceptable downtime
+
+Solution — 3 phases:
+  Phase 1 (Expand):
+    - Add new column (nullable, no constraint)
+    - Deploy code that writes to BOTH old and new column
+    - Backfill old rows in batches (pt-online-schema-change or gh-ost)
+    
+  Phase 2 (Migrate):
+    - Deploy code that reads from new column, writes to both
+    - Add NOT NULL constraint after backfill complete
+    
+  Phase 3 (Contract):
+    - Deploy code that only uses new column
+    - Drop old column
+    
+Each phase: separate deployment, verified working before next</code></pre>
+<hr />
+<h2 id="design-5-secrets-management-at-scale">Design 5: Secrets
+Management at Scale</h2>
+<h3 id="question-1">Question</h3>
+<p>“Design a secrets management system for 50 services across 3
+environments.”</p>
+<h3 id="architecture-2">Architecture</h3>
+<pre><code>HashiCorp Vault (HA — 3 nodes + Raft storage)
+    │
+    ├── Auth: Kubernetes OIDC per cluster
+    ├── Auth: AWS IAM for EC2/Lambda
+    ├── Auth: AppRole for CI systems
+    │
+    ├── KV v2: Static secrets (API keys, certs)
+    ├── Database: Dynamic credentials for each service
+    │       └── Postgres short-lived creds (TTL: 1hr)
+    └── PKI: Internal TLS certificates
+    
+Access pattern (K8s):
+  ServiceAccount → OIDC token → Vault token → read secret
+  Vault Agent sidecar → file injection into pod
+  OR: External Secrets Operator → K8s Secret (encrypted etcd)
+  
+Access pattern (CI/CD):
+  GitHub Actions → OIDC → Vault AppRole → secret at runtime
+  Never stored in GitHub env vars</code></pre>
+<h3 id="key-principles">Key Principles</h3>
+<ol type="1">
+<li><strong>Never store secrets in Git, CI config, or container
+images</strong></li>
+<li><strong>Use dynamic secrets over static</strong> — auto-expiring DB
+creds eliminate revocation problem</li>
+<li><strong>Least privilege per service</strong> — each service gets its
+own Vault policy</li>
+<li><strong>Audit everything</strong> — every secret read logged with
+service identity</li>
+<li><strong>Auto-rotation</strong> — static secrets rotate automatically
+via Vault leases</li>
+<li><strong>Break-glass</strong> — emergency access procedure: logged,
+time-limited, requires two approvals</li>
+</ol>
+<hr />
+<h2 id="common-design-anti-patterns-to-avoid">Common Design
+Anti-Patterns to Avoid</h2>
+<table>
+<colgroup>
+<col style="width: 30%" />
+<col style="width: 30%" />
+<col style="width: 38%" />
+</colgroup>
+<thead>
+<tr class="header">
+<th>Anti-Pattern</th>
+<th>Why it’s Bad</th>
+<th>Better Approach</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td>Single region, single AZ</td>
+<td>SPOF</td>
+<td>Multi-AZ minimum</td>
+</tr>
+<tr class="even">
+<td>Static long-lived credentials</td>
+<td>Can’t be rotated if leaked</td>
+<td>Dynamic secrets / IRSA</td>
+</tr>
+<tr class="odd">
+<td>All-in-one monolith CI/CD</td>
+<td>Blast radius too large</td>
+<td>Per-team or per-service pipelines</td>
+</tr>
+<tr class="even">
+<td>No deployment strategy</td>
+<td>Downtime on every deploy</td>
+<td>Rolling/Canary/Blue-Green</td>
+</tr>
+<tr class="odd">
+<td>Manual on-call, no runbooks</td>
+<td>Slow MTTR, burnout</td>
+<td>Automated + runbooks for every alert</td>
+</tr>
+<tr class="even">
+<td>Monitoring as afterthought</td>
+<td>Flying blind</td>
+<td>Instrument before ship</td>
+</tr>
+<tr class="odd">
+<td>Push-only deployments to K8s</td>
+<td>No drift detection</td>
+<td>GitOps with ArgoCD/Flux</td>
+</tr>
+</tbody>
+</table>
+</body>
+</html>

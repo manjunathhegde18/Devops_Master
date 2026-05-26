@@ -1,0 +1,452 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" lang="" xml:lang="">
+<head>
+  <meta charset="utf-8" />
+  <meta name="generator" content="pandoc" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes" />
+  <title>DevOps Mastery: notes</title>
+  <style>
+    code{white-space: pre-wrap;}
+    span.smallcaps{font-variant: small-caps;}
+    div.columns{display: flex; gap: min(4vw, 1.5em);}
+    div.column{flex: auto; overflow-x: auto;}
+    div.hanging-indent{margin-left: 1.5em; text-indent: -1.5em;}
+    /* The extra [class] is a hack that increases specificity enough to
+       override a similar rule in reveal.js */
+    ul.task-list[class]{list-style: none;}
+    ul.task-list li input[type="checkbox"] {
+      font-size: inherit;
+      width: 0.8em;
+      margin: 0 0.8em 0.2em -1.6em;
+      vertical-align: middle;
+    }
+    .display.math{display: block; text-align: center; margin: 0.5rem auto;}
+  </style>
+  <link rel="stylesheet" href="/tmp/devops-style.css" />
+</head>
+<body>
+<header id="title-block-header">
+<h1 class="title">DevOps Mastery: notes</h1>
+</header>
+<nav id="TOC" role="doc-toc">
+<ul>
+<li><a href="#sre-practices-deep-dive-notes"
+id="toc-sre-practices-deep-dive-notes">SRE Practices — Deep Dive
+Notes</a>
+<ul>
+<li><a href="#what-is-sre" id="toc-what-is-sre">1. What is SRE?</a></li>
+<li><a href="#service-level-terminology"
+id="toc-service-level-terminology">2. Service Level Terminology</a>
+<ul>
+<li><a href="#sli-service-level-indicator"
+id="toc-sli-service-level-indicator">SLI — Service Level
+Indicator</a></li>
+<li><a href="#slo-service-level-objective"
+id="toc-slo-service-level-objective">SLO — Service Level
+Objective</a></li>
+<li><a href="#sla-service-level-agreement"
+id="toc-sla-service-level-agreement">SLA — Service Level
+Agreement</a></li>
+<li><a href="#error-budget" id="toc-error-budget">Error Budget</a></li>
+</ul></li>
+<li><a href="#toil-identification-and-elimination"
+id="toc-toil-identification-and-elimination">3. Toil — Identification
+and Elimination</a>
+<ul>
+<li><a href="#what-is-toil" id="toc-what-is-toil">What is Toil?</a></li>
+<li><a href="#toil-examples" id="toc-toil-examples">Toil
+Examples</a></li>
+<li><a href="#toil-reduction-strategy"
+id="toc-toil-reduction-strategy">Toil Reduction Strategy</a></li>
+</ul></li>
+<li><a href="#incident-management" id="toc-incident-management">4.
+Incident Management</a>
+<ul>
+<li><a href="#incident-severity-classification"
+id="toc-incident-severity-classification">Incident Severity
+Classification</a></li>
+<li><a href="#incident-response-roles"
+id="toc-incident-response-roles">Incident Response Roles</a></li>
+<li><a href="#incident-communication-template"
+id="toc-incident-communication-template">Incident Communication
+Template</a></li>
+</ul></li>
+<li><a href="#blameless-post-mortems" id="toc-blameless-post-mortems">5.
+Blameless Post-Mortems</a>
+<ul>
+<li><a href="#why-blameless" id="toc-why-blameless">Why
+Blameless?</a></li>
+<li><a href="#post-mortem-structure"
+id="toc-post-mortem-structure">Post-Mortem Structure</a></li>
+<li><a href="#whys-example" id="toc-whys-example">5 Whys
+Example</a></li>
+</ul></li>
+<li><a href="#chaos-engineering" id="toc-chaos-engineering">6. Chaos
+Engineering</a>
+<ul>
+<li><a href="#principles-of-chaos-netflix-chaos-monkey-origin"
+id="toc-principles-of-chaos-netflix-chaos-monkey-origin">Principles of
+Chaos (Netflix Chaos Monkey origin)</a></li>
+<li><a href="#tools" id="toc-tools">Tools</a></li>
+<li><a href="#resilience-patterns"
+id="toc-resilience-patterns">Resilience Patterns</a></li>
+</ul></li>
+<li><a href="#capacity-planning" id="toc-capacity-planning">7. Capacity
+Planning</a>
+<ul>
+<li><a href="#capacity-planning-process"
+id="toc-capacity-planning-process">Capacity Planning Process</a></li>
+</ul></li>
+<li><a href="#on-call-best-practices" id="toc-on-call-best-practices">8.
+On-Call Best Practices</a>
+<ul>
+<li><a href="#healthy-on-call-culture"
+id="toc-healthy-on-call-culture">Healthy On-Call Culture</a></li>
+<li><a href="#runbooks" id="toc-runbooks">Runbooks</a></li>
+</ul></li>
+<li><a href="#resources" id="toc-resources">📚 Resources</a></li>
+</ul></li>
+</ul>
+</nav>
+<h1 id="sre-practices-deep-dive-notes">SRE Practices — Deep Dive
+Notes</h1>
+<h2 id="what-is-sre">1. What is SRE?</h2>
+<p>Site Reliability Engineering applies software engineering principles
+to infrastructure and operations. Coined at Google (2003). Key book:
+<em>Site Reliability Engineering</em> (free at sre.google).</p>
+<p><strong>Core philosophy:</strong> - Toil (manual repetitive work)
+should be &lt; 50% of SRE time - Error budgets balance velocity with
+reliability - Everything that can be automated should be automated -
+Post-mortems are blameless — systems, not people, are at fault</p>
+<p><strong>SRE vs DevOps:</strong> - DevOps: a culture and set of
+practices - SRE: an implementation of DevOps principles with specific
+tools (SLOs, error budgets, on-call) - “SRE is what you get when you
+hire a software engineer to do operations” — Google</p>
+<hr />
+<h2 id="service-level-terminology">2. Service Level Terminology</h2>
+<h3 id="sli-service-level-indicator">SLI — Service Level Indicator</h3>
+<p>A <em>quantitative measure</em> of some aspect of service
+behavior.</p>
+<p>Good SLIs directly measure user experience:</p>
+<table>
+<colgroup>
+<col style="width: 52%" />
+<col style="width: 48%" />
+</colgroup>
+<thead>
+<tr class="header">
+<th>Service Type</th>
+<th>Example SLI</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td>Request-based</td>
+<td>% of requests completing successfully in &lt; 500ms</td>
+</tr>
+<tr class="even">
+<td>Data pipeline</td>
+<td>% of records processed without error within SLA window</td>
+</tr>
+<tr class="odd">
+<td>Storage</td>
+<td>Proportion of reads returning correct data</td>
+</tr>
+<tr class="even">
+<td>Batch job</td>
+<td>% of jobs completing within scheduled window</td>
+</tr>
+</tbody>
+</table>
+<p>Bad SLIs: CPU %, memory usage (these are causes, not symptoms of user
+pain)</p>
+<h3 id="slo-service-level-objective">SLO — Service Level Objective</h3>
+<p>The <em>target value</em> for an SLI.</p>
+<pre><code>SLI:  ratio of successful requests (status &lt; 500, latency &lt; 500ms)
+SLO:  99.5% over a rolling 28-day window
+
+SLO should reflect user happiness threshold:
+  - Below 99% → users notice and are angry
+  - 99.5% → acceptable with occasional complaints
+  - 99.99% → imperceptible to most users</code></pre>
+<p><strong>Setting the right SLO:</strong> 1. Start with what users
+actually experience (measure first) 2. Talk to product/business about
+acceptable impact 3. Start slightly below measured baseline 4. Tighten
+only after you can reliably hit the target 5. Avoid over-engineering:
+99.999% is almost never necessary</p>
+<h3 id="sla-service-level-agreement">SLA — Service Level Agreement</h3>
+<p>A <em>contractual commitment</em> to the customer, usually with
+financial penalties for breach. SLA should be more lenient than SLO
+(internal buffer).</p>
+<pre><code>Internal:  SLO = 99.9%  (what you aim for)
+External:  SLA = 99.5%  (what you promise customers)
+Buffer:    0.4%         (wiggle room for investigations)</code></pre>
+<h3 id="error-budget">Error Budget</h3>
+<pre><code>Error Budget = 1 - SLO (as percentage of time)
+
+99.9% SLO:
+  Error budget = 0.1% = 43.8 minutes/month downtime
+
+99.5% SLO:
+  Error budget = 0.5% = 3.65 hours/month
+
+99.99% SLO:
+  Error budget = 0.01% = 4.38 minutes/month</code></pre>
+<p><strong>Error budget policy:</strong> - Budget &gt; 50% remaining →
+deploy freely, run experiments, accept risk - Budget 25-50% → slow down
+risky deployments, investigate reliability issues - Budget &lt; 25% →
+freeze non-critical deployments, focus on reliability - Budget exhausted
+→ full freeze until next window; SRE team gets priority</p>
+<hr />
+<h2 id="toil-identification-and-elimination">3. Toil — Identification
+and Elimination</h2>
+<h3 id="what-is-toil">What is Toil?</h3>
+<p>Manual, repetitive, automatable, tactical work that scales linearly
+with service growth. Not the same as overhead (meetings, reviews) or
+project work.</p>
+<p><strong>Toil characteristics:</strong> - Manual (human required) -
+Repetitive (done over and over) - Automatable (machine could do it) -
+Reactive (triggered by external event) - No lasting value (same work
+tomorrow) - Scales with service size</p>
+<h3 id="toil-examples">Toil Examples</h3>
+<pre><code>High Toil:
+  - Manually restarting pods when out-of-memory
+  - Manual certificate renewals
+  - Copying configuration values between environments
+  - Manually approving every deployment
+  - Manually answering &quot;what&#39;s the status of X?&quot; questions
+  - Resizing disks when they fill up
+
+Low/No Toil (projects):
+  - Building auto-remediation for OOM restarts
+  - Implementing cert-manager for automated renewals
+  - Building a self-service deployment platform
+  - Writing runbooks that prevent manual interventions</code></pre>
+<h3 id="toil-reduction-strategy">Toil Reduction Strategy</h3>
+<pre><code>1. Measure: Track time spent on each repetitive task
+2. Prioritize: Highest frequency × time per instance = biggest ROI
+3. Automate first attempt: Script → cron → event-driven
+4. Eliminate root cause: Why does the disk keep filling up?
+5. Track reduction: Monthly toil hours metric</code></pre>
+<hr />
+<h2 id="incident-management">4. Incident Management</h2>
+<h3 id="incident-severity-classification">Incident Severity
+Classification</h3>
+<pre><code>SEV-1: Complete outage, all users affected, revenue impact
+  Example: Payment service down, all transactions failing
+  Response: Immediate, full team, external communication
+
+SEV-2: Major feature broken, significant user impact
+  Example: Login failures for 40% of users
+  Response: &lt; 15 minutes, dedicated IC + responders
+
+SEV-3: Degraded performance, some users affected
+  Example: API latency 3x normal, no errors
+  Response: &lt; 1 hour, 1-2 engineers
+
+SEV-4: Minor issue, minimal user impact, workaround exists
+  Example: Non-critical report generation slow
+  Response: Business hours, create ticket</code></pre>
+<h3 id="incident-response-roles">Incident Response Roles</h3>
+<pre><code>IC (Incident Commander):
+  - Coordinates response, not necessarily the one fixing it
+  - Manages communications, time-boxes investigation steps
+  - Makes escalation decisions
+  
+Technical Lead:
+  - Drives technical investigation and mitigation
+  - Reports status to IC every 15 min
+  
+Communications Lead:
+  - Updates status page, internal stakeholders
+  - Drafts customer communications
+  - Manages exec escalation
+
+Scribe:
+  - Documents timeline, decisions, commands run
+  - Creates post-mortem skeleton during incident</code></pre>
+<h3 id="incident-communication-template">Incident Communication
+Template</h3>
+<pre><code>IMPACT:   [What users are experiencing]
+STATUS:   [Investigating / Identified / Monitoring / Resolved]
+SCOPE:    [% users affected, which regions/features]
+TIMELINE: HH:MM - [what happened / what we did]
+NEXT:     [what we&#39;re doing in next 30 minutes]
+ETA:      [estimated resolution, if known]</code></pre>
+<hr />
+<h2 id="blameless-post-mortems">5. Blameless Post-Mortems</h2>
+<h3 id="why-blameless">Why Blameless?</h3>
+<p>When people fear blame, they hide information, minimize their
+involvement, and don’t tell the full story. This prevents learning.
+Systems fail, not people.</p>
+<p><strong>“If we fire the person who caused the outage, we fire the
+person who knows most about that failure mode.” — Google
+SRE</strong></p>
+<h3 id="post-mortem-structure">Post-Mortem Structure</h3>
+<pre><code>1. Incident Summary
+   - What happened, impact, duration, severity
+
+2. Timeline (chronological)
+   - Detection, key actions, resolution
+   - What helped, what slowed us down
+
+3. Root Cause Analysis
+   - Use 5 Whys technique
+   - Go 5 levels deep: Why did service fail? → Why was DB slow? → Why was query slow? → Why was there no index? → Why wasn&#39;t it reviewed?
+
+4. Contributing Factors (not blame)
+   - &quot;The runbook didn&#39;t mention this failure mode&quot;
+   - &quot;Alert fired 10 minutes after user reports began&quot;
+   - &quot;No staging equivalent existed for this component&quot;
+
+5. Action Items (specific, assigned, dated)
+   - [Owner] [Due Date] Add index on orders.user_id
+   - [Owner] [Due Date] Create alert for query &gt; 5s
+   - [Owner] [Due Date] Update runbook with new failure mode
+
+6. Lessons Learned
+   - What worked well
+   - What we&#39;d do differently</code></pre>
+<h3 id="whys-example">5 Whys Example</h3>
+<pre><code>Problem: Payment service was down for 22 minutes
+
+Why 1: Payment service was unreachable
+  → Database connection pool exhausted
+
+Why 2: Connection pool exhausted
+  → Slow queries holding connections
+
+Why 3: Slow queries due to full table scan
+  → Missing index on transactions.created_at column
+
+Why 4: Index was missing
+  → New query added without index in last deployment
+
+Why 5: New query added without index review
+  → No automated EXPLAIN ANALYZE in CI for query changes
+
+Root cause: Lack of query performance gate in CI pipeline
+Action: Add automated slow query detection to deployment pipeline</code></pre>
+<hr />
+<h2 id="chaos-engineering">6. Chaos Engineering</h2>
+<h3 id="principles-of-chaos-netflix-chaos-monkey-origin">Principles of
+Chaos (Netflix Chaos Monkey origin)</h3>
+<pre><code>1. Define &quot;steady state&quot; (what does healthy look like)
+2. Hypothesize that steady state continues in experimental group
+3. Introduce variables: kill pods, inject latency, drain nodes
+4. Disprove hypothesis (find weaknesses)
+5. Fix weaknesses, repeat</code></pre>
+<h3 id="tools">Tools</h3>
+<pre><code>LitmusChaos:    Kubernetes-native, ChaosHub library of experiments
+  - Pod kill, pod CPU stress, pod memory hog
+  - Node drain, network partition, disk fill
+  
+Chaos Monkey:   Netflix original, kills random EC2 instances
+Gremlin:        SaaS platform, safe chaos engineering
+k6:             Load testing + chaos combination
+
+Chaos GameDay:
+  - Scheduled controlled chaos experiment
+  - Team assembled, monitoring ready
+  - Progressively escalate: 1 pod → all pods in AZ → full region
+  - Document findings, improve resilience</code></pre>
+<h3 id="resilience-patterns">Resilience Patterns</h3>
+<pre><code>Circuit Breaker:
+  CLOSED (normal) → too many failures → OPEN (reject all requests) →
+  HALF-OPEN (test one request) → success → CLOSED
+
+Retry with Exponential Backoff:
+  Retry after 1s, 2s, 4s, 8s, 16s (max)
+  Always add jitter to prevent thundering herd
+
+Bulkhead:
+  Isolate failures: separate thread pools or connection pools per dependency
+  One slow external API doesn&#39;t exhaust all connections
+
+Timeout:
+  Always set timeouts on every external call
+  Default: 1-5s for synchronous calls; longer for async/batch
+
+Fallback:
+  Return cached result, default value, or degraded response when dependency fails
+  Example: recommendation service down → return top-selling items</code></pre>
+<hr />
+<h2 id="capacity-planning">7. Capacity Planning</h2>
+<h3 id="capacity-planning-process">Capacity Planning Process</h3>
+<pre><code>1. Measure current utilization
+   - CPU, memory, disk, network per service
+   - Peak vs average load profiles
+
+2. Forecast growth
+   - Historical traffic trends (YoY, QoQ)
+   - Business projections (new customer growth, product launches)
+   - Seasonal patterns (Black Friday, end-of-quarter)
+
+3. Identify bottlenecks
+   - Which resource will hit capacity first?
+   - What is the scaling path? (vertical vs horizontal)
+
+4. Plan headroom
+   - Run at ~60-70% average capacity (30-40% headroom for spikes)
+   - 2x current capacity for HA and rollouts without degradation
+
+5. Automate scaling
+   - HPA for pods (CPU/memory/custom metrics)
+   - Cluster Autoscaler for nodes
+   - KEDA for event-driven scaling
+
+6. Load test
+   - Simulate projected peak traffic
+   - Find failure modes before users do
+   - Validate autoscaling behavior</code></pre>
+<hr />
+<h2 id="on-call-best-practices">8. On-Call Best Practices</h2>
+<h3 id="healthy-on-call-culture">Healthy On-Call Culture</h3>
+<pre><code>Rotation: Maximum 2 weeks per quarter per person (Google standard)
+Compensation: On-call pay for nights/weekends
+Response time: SEV-1 = 5 min, SEV-2 = 15 min
+Handoff: Synchronous handoff with active incidents
+Toil target: On-call should spend &lt; 25% time on incidents
+
+Alert quality metrics:
+  - What % of pages required human action? (target: 100%)
+  - What % were self-resolved? (target: 0%)
+  - Mean time between pages? (target: &gt; 2 hours)</code></pre>
+<h3 id="runbooks">Runbooks</h3>
+<p>Every alert must have a runbook. A good runbook:</p>
+<pre><code>Title: [Alert Name]
+Severity: [Critical/Warning]
+Impact: [What users experience]
+
+Symptoms:
+  - [What the alert fires on]
+  - [Other things you might observe]
+
+Likely Causes:
+  1. [Most common cause] → [check this command]
+  2. [Second cause] → [check this command]
+
+Diagnosis Steps:
+  1. Check dashboard: [link]
+  2. Run: kubectl top pods -n production
+  3. Check recent deployments: [link]
+
+Remediation:
+  - [Fix for cause 1]
+  - [Fix for cause 2]
+  - Escalate to: [team] if unresolved after 30 min
+
+Post-Incident: File post-mortem if SEV-1/2</code></pre>
+<h2 id="resources">📚 Resources</h2>
+<ul>
+<li>https://sre.google/sre-book/table-of-contents/ — Google SRE Book
+(FREE)</li>
+<li>https://sre.google/workbook/table-of-contents/ — Google SRE Workbook
+(FREE)</li>
+<li>https://litmuschaos.io/ — LitmusChaos docs</li>
+<li>https://principlesofchaos.org/ — Chaos Engineering principles</li>
+<li>https://www.pagerduty.com/resources/ — PagerDuty incident response
+guides</li>
+</ul>
+</body>
+</html>

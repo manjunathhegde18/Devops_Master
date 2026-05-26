@@ -1,0 +1,176 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" lang="" xml:lang="">
+<head>
+  <meta charset="utf-8" />
+  <meta name="generator" content="pandoc" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes" />
+  <title>DevOps Mastery: 01-linux-brain-map</title>
+  <style>
+    code{white-space: pre-wrap;}
+    span.smallcaps{font-variant: small-caps;}
+    div.columns{display: flex; gap: min(4vw, 1.5em);}
+    div.column{flex: auto; overflow-x: auto;}
+    div.hanging-indent{margin-left: 1.5em; text-indent: -1.5em;}
+    /* The extra [class] is a hack that increases specificity enough to
+       override a similar rule in reveal.js */
+    ul.task-list[class]{list-style: none;}
+    ul.task-list li input[type="checkbox"] {
+      font-size: inherit;
+      width: 0.8em;
+      margin: 0 0.8em 0.2em -1.6em;
+      vertical-align: middle;
+    }
+    .display.math{display: block; text-align: center; margin: 0.5rem auto;}
+  </style>
+  <link rel="stylesheet" href="/tmp/devops-style.css" />
+</head>
+<body>
+<header id="title-block-header">
+<h1 class="title">DevOps Mastery: 01-linux-brain-map</h1>
+</header>
+<nav id="TOC" role="doc-toc">
+<ul>
+<li><a href="#linux-fundamentals-brain-map"
+id="toc-linux-fundamentals-brain-map">Linux Fundamentals — Brain Map</a>
+<ul>
+<li><a href="#memory-map-key-commands"
+id="toc-memory-map-key-commands">Memory Map — Key Commands</a></li>
+<li><a href="#concept-connection-map"
+id="toc-concept-connection-map">Concept Connection Map</a></li>
+<li><a href="#interview-trigger-words-concepts"
+id="toc-interview-trigger-words-concepts">Interview Trigger Words →
+Concepts</a></li>
+</ul></li>
+</ul>
+</nav>
+<h1 id="linux-fundamentals-brain-map">Linux Fundamentals — Brain
+Map</h1>
+<pre><code>                            ┌─────────────┐
+                            │    LINUX    │
+                            └──────┬──────┘
+           ┌──────────────┬────────┼─────────────┬──────────────┐
+           ▼              ▼        ▼              ▼              ▼
+      ┌─────────┐   ┌──────────┐ ┌────────┐ ┌─────────┐  ┌──────────┐
+      │ Kernel  │   │ Process  │ │  File  │ │ Network │  │Scripting │
+      │ Concepts│   │ Mgmt     │ │ System │ │  Stack  │  │  &amp; Tools │
+      └────┬────┘   └────┬─────┘ └───┬────┘ └────┬────┘  └────┬─────┘
+           │              │           │            │             │
+    ┌──────┴──────┐  ┌────┴────┐ ┌───┴────┐ ┌────┴────┐  ┌────┴────┐
+    │ Namespaces  │  │fork()   │ │ext4    │ │iptables │  │bash     │
+    │ - PID       │  │exec()   │ │xfs     │ │ss/netstat│ │python   │
+    │ - NET       │  │wait()   │ │ /proc  │ │tcpdump  │  │awk/sed  │
+    │ - MNT       │  │signals  │ │ /sys   │ │curl/wget│  │grep     │
+    │ - UTS       │  │daemons  │ │inodes  │ │dig/nslookup│ │find   │
+    │ - IPC       │  │zombie   │ │fstab   │ │route    │  │xargs    │
+    │ - USER      │  │threads  │ │lsof    │ │            │ │jq      │
+    └─────────────┘  └─────────┘ └────────┘ └────────────┘ └────────┘
+           │
+    ┌──────┴──────┐
+    │  cgroups    │
+    │ - cpu       │
+    │ - memory    │
+    │ - blkio     │
+    │ - devices   │
+    │ - pids      │
+    │(base of     │
+    │ Docker/K8s) │
+    └─────────────┘</code></pre>
+<h2 id="memory-map-key-commands">Memory Map — Key Commands</h2>
+<pre><code>PROCESS MANAGEMENT                    FILE SYSTEM
+───────────────────                   ───────────
+ps aux                → all procs     df -h              → disk free
+ps -ef --forest       → tree view     du -sh *           → dir sizes
+pstree -p             → visual tree   lsof -p PID        → files by proc
+kill -SIGTERM PID     → graceful      lsof -i :8080      → port users
+kill -SIGKILL PID     → force         stat file          → inode info
+nice -n 10 cmd        → lower prio    find / -name &quot;*.log&quot; → search
+renice -n 5 -p PID    → change prio   find / -mtime -1d  → recent mods
+top / htop            → live view     ln -s target link  → symlink
+strace -p PID         → syscall trace dd if=/dev/zero ... → disk test
+
+PERFORMANCE                           NETWORK
+───────────                           ───────
+vmstat 1              → memory/cpu    ss -tlnp           → open ports
+iostat -xz 1          → disk I/O      tcpdump -i eth0    → capture
+sar -r 1 10           → memory hist   netstat -s         → stats
+perf top              → CPU hotspots  ip addr show       → interfaces
+mpstat -P ALL 1       → per-core CPU  ip route show      → routing
+free -m               → memory        traceroute host    → path
+uptime                → load average  curl -v URL        → HTTP debug
+dmesg | tail          → kernel log    dig +trace domain  → DNS trace
+
+SYSTEMD                               SECURITY
+───────                               ────────
+systemctl status svc  → service state chmod 755 file     → permissions
+systemctl start svc   → start         chown user:grp f   → ownership
+systemctl enable svc  → boot start    sudo -l            → user perms
+journalctl -u svc -f  → follow logs   id username        → user info
+systemd-analyze blame → slow boots    auditd             → audit trail</code></pre>
+<h2 id="concept-connection-map">Concept Connection Map</h2>
+<pre><code>  Docker uses ──► NAMESPACES (isolate process view)
+  Docker uses ──► CGROUPS (limit resources)
+  
+  Container = Process(es) + Namespace set + Cgroup limits + Filesystem overlay
+  
+  K8s Pod    = 1+ Containers sharing PID/NET/IPC namespaces (pause container)
+  
+  SystemD    = Init process (PID 1) → manages services as cgroups
+  
+  inode      = File metadata (permissions, size, timestamps, data block pointers)
+  hardlink   = Two names → same inode     (no new inode created)
+  symlink    = Pointer to another path    (new inode, can span filesystems)
+  
+  TCP connection lifecycle:
+  SYN → SYN-ACK → ACK (established)
+  FIN → FIN-ACK → ACK → ACK (close)
+  TIME_WAIT: wait 2*MSL before final close</code></pre>
+<h2 id="interview-trigger-words-concepts">Interview Trigger Words →
+Concepts</h2>
+<table>
+<colgroup>
+<col style="width: 54%" />
+<col style="width: 45%" />
+</colgroup>
+<thead>
+<tr class="header">
+<th>If asked about…</th>
+<th>Think about…</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td>“Container isolation”</td>
+<td>namespaces + cgroups</td>
+</tr>
+<tr class="even">
+<td>“Process is stuck”</td>
+<td>strace, lsof, kill signals, zombie vs orphan</td>
+</tr>
+<tr class="odd">
+<td>“Disk full”</td>
+<td>df, du, lsof deleted files, inode exhaustion</td>
+</tr>
+<tr class="even">
+<td>“High CPU”</td>
+<td>top, mpstat, perf, CPU-bound vs I/O-bound</td>
+</tr>
+<tr class="odd">
+<td>“Memory leak”</td>
+<td>free, /proc/PID/smaps, valgrind, OOM killer</td>
+</tr>
+<tr class="even">
+<td>“Network slow”</td>
+<td>tcpdump, ss, MTU, retransmits, TIME_WAIT</td>
+</tr>
+<tr class="odd">
+<td>“Service won’t start”</td>
+<td>journalctl -xe, systemctl status, port conflicts</td>
+</tr>
+<tr class="even">
+<td>“File permissions”</td>
+<td>rwxrwxrwx, SUID, SGID, sticky bit, ACLs</td>
+</tr>
+</tbody>
+</table>
+</body>
+</html>

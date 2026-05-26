@@ -1,0 +1,198 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" lang="" xml:lang="">
+<head>
+  <meta charset="utf-8" />
+  <meta name="generator" content="pandoc" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes" />
+  <title>DevOps Mastery: interview-questions</title>
+  <style>
+    code{white-space: pre-wrap;}
+    span.smallcaps{font-variant: small-caps;}
+    div.columns{display: flex; gap: min(4vw, 1.5em);}
+    div.column{flex: auto; overflow-x: auto;}
+    div.hanging-indent{margin-left: 1.5em; text-indent: -1.5em;}
+    /* The extra [class] is a hack that increases specificity enough to
+       override a similar rule in reveal.js */
+    ul.task-list[class]{list-style: none;}
+    ul.task-list li input[type="checkbox"] {
+      font-size: inherit;
+      width: 0.8em;
+      margin: 0 0.8em 0.2em -1.6em;
+      vertical-align: middle;
+    }
+    .display.math{display: block; text-align: center; margin: 0.5rem auto;}
+  </style>
+  <link rel="stylesheet" href="/tmp/devops-style.css" />
+</head>
+<body>
+<header id="title-block-header">
+<h1 class="title">DevOps Mastery: interview-questions</h1>
+</header>
+<nav id="TOC" role="doc-toc">
+<ul>
+<li><a href="#cloud-platforms-interview-questions-answers"
+id="toc-cloud-platforms-interview-questions-answers">Cloud Platforms —
+Interview Questions &amp; Answers</a></li>
+</ul>
+</nav>
+<h1 id="cloud-platforms-interview-questions-answers">Cloud Platforms —
+Interview Questions &amp; Answers</h1>
+<p><strong>Q1: Explain the difference between an IAM Role and an IAM
+User. When should you use each?</strong> &gt; <strong>IAM User</strong>:
+A permanent identity with long-lived credentials (username/password or
+access keys). For humans that can’t use SSO, or legacy systems that
+require static keys. Avoid wherever possible — keys must be rotated, can
+be leaked, hard to audit at scale. &gt; &gt; <strong>IAM Role</strong>:
+A temporary identity assumed by humans, AWS services, or external
+systems. Credentials are short-lived (15 min to 12 hours), automatically
+rotated by STS, and scoped to the session. Always use roles for EC2
+instances, Lambda, ECS tasks, EKS pods (via IRSA), CI/CD pipelines (via
+OIDC). &gt; &gt; <strong>Rule of thumb</strong>: Every non-human
+identity should use a role. Every human should use SSO/Identity Center
+federating to roles — never IAM users with long-lived keys.</p>
+<hr />
+<p><strong>Q2: What is the difference between a Security Group and a
+Network ACL in AWS?</strong> &gt; <strong>Security Groups</strong>: &gt;
+- Stateful — if inbound traffic is allowed, return traffic is
+automatically allowed &gt; - Attached to ENIs (network interfaces), not
+subnets &gt; - Allow rules only (no explicit deny possible) &gt; -
+Evaluated as a single set (all rules checked, most permissive wins) &gt;
+- Source/destination can be another Security Group (great for
+service-to-service rules) &gt; &gt; <strong>Network ACLs</strong>: &gt;
+- Stateless — must explicitly allow inbound AND outbound for the same
+connection &gt; - Attached to subnets — affects all resources in the
+subnet &gt; - Allow and Deny rules — can block a specific IP (Security
+Groups cannot) &gt; - Rules evaluated in number order, first match wins
+&gt; &gt; <strong>When to use NACLs</strong>: Additional perimeter
+defense, blocking specific IPs/CIDRs, compliance requirements for
+subnet-level controls. Most teams use only Security Groups for
+day-to-day; NACLs as a “defense in depth” second layer.</p>
+<hr />
+<p><strong>Q3: How does AWS VPC peering work, and what are its
+limitations?</strong> &gt; VPC Peering creates a private network route
+between two VPCs (same or different accounts/regions). Traffic stays on
+the AWS backbone — no internet gateway needed. &gt; &gt;
+<strong>Limitations:</strong> &gt; - Non-transitive: if VPC A peers with
+B and B peers with C, A cannot reach C through B. Must create A-C peer
+separately. &gt; - No overlapping CIDR blocks — peer VPCs cannot have
+overlapping IP ranges (plan CIDRs centrally) &gt; - No edge-to-edge
+routing (can’t use a VPC peer as a gateway to the internet or VPN) &gt;
+&gt; <strong>Alternatives for hub-and-spoke at scale:</strong> &gt; -
+AWS Transit Gateway: connects hundreds of VPCs and on-prem networks,
+supports transitive routing, centralized routing tables, bandwidth up to
+50 Gbps per attachment &gt; - AWS PrivateLink: for exposing specific
+services privately without full VPC peering</p>
+<hr />
+<p><strong>Q4: Explain S3 consistency model. What changed in
+2020?</strong> &gt; Before December 2020: S3 provided <em>eventual
+consistency</em> for overwrite PUTs and DELETEs. If you wrote to an
+object and immediately read it, you might get the old version. &gt; &gt;
+Since December 2020: S3 provides <strong>strong read-after-write
+consistency</strong> for all operations — PUTs, DELETEs, LIST. A write
+followed immediately by a read returns the new data. LIST operations
+after a PUT show the new object. &gt; &gt; This eliminated many
+workarounds that applications had to implement. Relevant for: state file
+storage, data pipelines, distributed coordination patterns built on
+S3.</p>
+<hr />
+<p><strong>Q5: What is an EC2 Instance Profile and how does it differ
+from directly assigning an IAM role?</strong> &gt; An <strong>Instance
+Profile</strong> is a container for a single IAM role that can be
+attached to an EC2 instance. The terms are often used interchangeably,
+but they are technically distinct: &gt; - IAM Role: the identity with
+policies attached &gt; - Instance Profile: the mechanism that associates
+a role with an EC2 instance &gt; &gt; When you create a role for EC2 in
+the console, AWS automatically creates an Instance Profile with the same
+name. Via CLI/Terraform, you must create them separately. &gt; &gt; The
+Instance Metadata Service (IMDS) at <code>169.254.169.254</code> serves
+the temporary credentials to code running on the instance. Applications
+using the AWS SDK automatically call this endpoint — no credentials
+configuration needed in the application.</p>
+<hr />
+<p><strong>Q6: Compare RDS Multi-AZ vs Read Replicas. When do you need
+each?</strong> &gt; <strong>Multi-AZ (High Availability):</strong> &gt;
+- Synchronous replication to a standby in a different AZ &gt; - Standby
+is NOT accessible for reads — purely for failover &gt; - Automatic
+failover in 60-120 seconds if primary fails (Aurora: &lt; 30s) &gt; -
+Use for: production databases where downtime is unacceptable &gt; &gt;
+<strong>Read Replicas (Performance/Scale):</strong> &gt; - Asynchronous
+replication — slight lag (seconds to minutes) &gt; - Replicas are
+readable — scale out read traffic &gt; - Can be promoted to primary
+manually (not automatic) &gt; - Up to 15 read replicas for Aurora, 5 for
+RDS &gt; - Use for: reporting, analytics, read-heavy workloads &gt; &gt;
+<strong>Use both</strong>: Multi-AZ for HA, read replicas for scaling
+reads. Aurora Global Database gives you read replicas across regions
+with &lt; 1 second replication lag.</p>
+<hr />
+<p><strong>Q7: What is AWS Savings Plans and how does it differ from
+Reserved Instances?</strong> &gt; <strong>Reserved Instances
+(RI):</strong> &gt; - Commit to a specific instance type, size, region
+for 1 or 3 years &gt; - Up to 72% savings &gt; - Zonal RI also reserves
+capacity (important for large instances) &gt; - Scope is specific:
+<code>m5.xlarge</code> in <code>us-east-1a</code> — changes require
+Marketplace sale &gt; &gt; <strong>Savings Plans:</strong> &gt; - Commit
+to a dollar amount of spend per hour for 1 or 3 years &gt; -
+<strong>Compute Savings Plans</strong>: apply to any EC2 family, size,
+region, OS — even Lambda and Fargate. Most flexible. &gt; - <strong>EC2
+Savings Plans</strong>: specific instance family in a region — deeper
+discount (~66% max) vs Compute Plans (~66%) &gt; - Cannot sell on
+Marketplace but automatically apply to matching usage &gt; &gt;
+<strong>When to use</strong>: Savings Plans are simpler and more
+flexible. Use Compute Savings Plans for mixed fleets. Only use RIs if
+you need capacity reservation guarantees.</p>
+<hr />
+<p><strong>Q8: Explain the AWS Shared Responsibility Model in the
+context of EKS.</strong> &gt; AWS manages: the Kubernetes control plane
+(API server, etcd, scheduler), the underlying EC2 infrastructure for
+control plane nodes, OS patching of control plane, availability of the
+K8s API. &gt; &gt; You manage: &gt; - EKS worker node OS updates and AMI
+patches (use managed node groups with auto-upgrade) &gt; - Kubernetes
+add-on versions (CoreDNS, kube-proxy, VPC CNI) &gt; - Pod security
+(SecurityContext, PSA, network policies) &gt; - IAM/RBAC configuration
+for cluster access &gt; - Container images and their vulnerability
+patches &gt; - Application-level security, secrets management, data
+encryption &gt; &gt; With Fargate for EKS: AWS also manages the worker
+node infrastructure — you only manage pods and their configs.</p>
+<hr />
+<p><strong>Q9: How does CloudFront caching work? How do you invalidate
+cache?</strong> &gt; CloudFront caches content at <strong>edge
+locations</strong> close to users. When a request arrives: &gt; 1. Edge
+checks cache: cache <strong>hit</strong> → serve from edge (fast, no
+origin cost) &gt; 2. Cache <strong>miss</strong> → forward to origin
+(S3, ALB, etc.), cache the response, serve to user &gt; &gt;
+<strong>Cache control is determined by:</strong> &gt; -
+<code>Cache-Control: max-age=3600</code> header from origin &gt; -
+CloudFront cache behavior settings (min/max/default TTL) &gt; -
+<code>Vary</code> header (cache per Accept-Encoding, Accept-Language)
+&gt; &gt; <strong>Invalidation:</strong> &gt; -
+<code>aws cloudfront create-invalidation --distribution-id ID --paths "/index.html" "/static/*"</code>
+&gt; - Wildcards supported: <code>/*</code> invalidates everything
+(costs $0.005 per 1000 paths beyond first 1000/month free) &gt; - Better
+strategy: use versioned filenames (<code>app.v2.js</code>) — old file
+naturally expires, no invalidation needed &gt; &gt; <strong>Cache key
+customization</strong>: Include/exclude query strings, headers, cookies
+from cache key to control granularity.</p>
+<hr />
+<p><strong>Q10: Your EKS pods are failing to pull images from ECR with
+an auth error at 2am. What’s happening and how do you fix it?</strong>
+&gt; <strong>Most likely cause</strong>: ECR credentials expired. The
+<code>ecr get-login-password</code> token is valid for <strong>12
+hours</strong>. If you’re using a static credential (wrong approach), it
+expires. &gt; &gt; <strong>Correct solution</strong>: Use the
+<strong>Amazon ECR credential helper</strong> or the <strong>VPC ECR
+endpoint</strong>: &gt; - EKS nodes have an instance profile with
+<code>ecr:GetAuthorizationToken</code> and
+<code>ecr:BatchGetImage</code> permissions &gt; - The
+<code>credential-provider</code> plugin in the kubelet config handles
+token refresh automatically &gt; - Verify with:
+<code>aws ecr get-authorization-token --region us-east-1</code> &gt;
+&gt; <strong>Diagnose:</strong> &gt; 1.
+<code>kubectl describe pod FAILING_POD</code> — look at Events section
+for <code>ErrImagePull</code> / <code>ImagePullBackOff</code> &gt; 2.
+Check node IAM role has ECR read permissions &gt; 3. Check if ECR is in
+the same region as the cluster &gt; 4. Verify VPC endpoint for ECR
+exists (if cluster is in private VPC with no internet) &gt; 5. For
+cross-account ECR: check ECR repository policy allows the source
+account’s node role</p>
+</body>
+</html>
