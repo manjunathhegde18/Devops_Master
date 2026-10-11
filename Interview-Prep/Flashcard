@@ -1,0 +1,309 @@
+Kubernetes
+Flashcard 1: How does Kubernetes schedule a Pod?
+
+Answer:
+ The kube-scheduler:
+
+Watches for unscheduled Pods.
+Filters nodes based on resource requests, affinity, taints, ports, volumes and topology.
+Scores eligible nodes.
+Selects the highest-scoring node.
+Binds the Pod to that node.
+The kubelet starts the containers.
+
+Key point: Scheduling uses resource requests, not real-time CPU or memory usage.
+
+Flashcard 2: What happens during kubectl apply?
+
+Answer:
+
+Plain Text
+Manifest → kubectl → API server → AuthN → AuthZ
+→ Admission → Validation → etcd → Controllers
+`
+
+The API server creates or patches the object. Controllers then reconcile the actual state with the desired state.
+
+Key point: kubectl apply declares desired state. It does not directly start containers.
+
+Flashcard 3: How does Kubernetes service discovery work?
+
+Answer:
+
+A Service selects Pods using labels.
+EndpointSlices store ready backend Pod IPs.
+CoreDNS creates a DNS record such as:
+Plain Text
+service.namespace.svc.cluster.local
+Normal Services resolve to a ClusterIP.
+kube-proxy, IPVS, iptables or eBPF forwards traffic to a ready Pod.
+
+Key point: DNS discovers the Service; EndpointSlices track backends.
+
+Flashcard 4: Readiness vs liveness probe?
+
+Answer:
+
+Readiness failure: Pod is removed from Service endpoints but continues running.
+Liveness failure: Kubelet restarts the container.
+Startup probe: Protects slow-starting applications from premature liveness failures.
+
+Key point: Readiness controls traffic; liveness controls restart.
+
+Flashcard 5: How does HPA scale Pods?
+
+Answer:
+
+HPA periodically reads resource, custom or external metrics and calculates:
+
+Plain Text
+Desired replicas =
+ceil(Current replicas × Current metric / Target metric)
+
+Example:
+
+Plain Text
+ceil(4 × 80% / 50%) = 7 Pods
+
+It updates the workload's replica count.
+
+Key point: CPU-based HPA needs appropriate CPU requests.
+
+Flashcard 6: How does Kubernetes self-heal?
+
+Answer:
+
+Kubelet restarts failed containers.
+ReplicaSet replaces failed Pods.
+Scheduler places replacement Pods on healthy nodes.
+Failed or unready Pods are removed from Service endpoints.
+Persistent volumes may be reattached to replacement Pods.
+
+Key point: Kubernetes restores the desired state, but it cannot fix application bugs.
+
+Flashcard 7: What happens during a rolling deployment?
+
+Answer:
+
+Deployment template changes.
+Kubernetes creates a new ReplicaSet.
+New Pods are gradually started.
+Readiness checks control when they receive traffic.
+Old Pods are gradually terminated.
+maxSurge and maxUnavailable control availability.
+
+Key point: A rollout succeeds only when new Pods become ready.
+
+Docker
+Flashcard 8: What happens during docker run?
+
+Answer:
+
+Docker CLI calls dockerd.
+Docker pulls the image if needed.
+A writable layer is added.
+Namespaces provide isolation.
+Cgroups enforce resource limits.
+Volumes and networking are configured.
+Container runtime starts the main process.
+
+Key point: A container is an isolated process sharing the host kernel, not a VM.
+
+Flashcard 9: How does Docker layer caching work?
+
+Answer:
+
+Each Dockerfile instruction produces a cached build result. Docker reuses it when the instruction and inputs have not changed.
+
+If one layer changes, dependent layers after it are rebuilt.
+
+Best order:
+
+Dockerfile
+COPY requirements.txt .
+RUN pip install -r requirements.txt
+COPY . .
+
+Key point: Put stable, expensive steps first and frequently changing files later.
+
+Terraform
+Flashcard 10: How does Terraform DAG work?
+
+Answer:
+
+Terraform builds a dependency graph using:
+
+Resource references
+Provider dependencies
+depends_on
+Module relationships
+Current state
+
+Independent resources run in parallel. Dependent resources run in order.
+
+Plain Text
+VPC → Subnet → EC2
+
+Key point: Prefer implicit references over unnecessary depends_on.
+
+Flashcard 11: How does Terraform state locking work?
+
+Answer:
+
+Before writing state, Terraform:
+
+Acquires a backend lock.
+Reads and refreshes state.
+Applies changes.
+Writes updated state.
+Releases the lock.
+
+The lock prevents simultaneous writers from corrupting state.
+
+Key point: Use remote state, locking, versioning and restricted access. Avoid -lock=false.
+
+CI/CD
+Flashcard 12: What happens from commit to deployment?
+
+Answer:
+
+Plain Text
+Commit → Webhook → Checkout → Build → Test
+→ Scan → Publish artifact → Deploy → Verify
+→ Promote or Roll back
+
+The pipeline should produce an immutable artifact linked to the commit SHA.
+
+Key point: Build once and promote the same tested image digest across environments.
+
+Flashcard 13: How do pipelines handle parallel jobs?
+
+Answer:
+
+The pipeline creates a DAG:
+
+Plain Text
+Build
+├── Unit tests
+├── Security scan
+└── Lint
+↓
+Deploy
+
+Independent jobs run concurrently. Dependent jobs wait for required predecessors and artifacts.
+
+Key point: Artifacts are required outputs; caches are only performance optimizations.
+
+AWS and Networking
+Flashcard 14: How does an AWS Load Balancer route traffic?
+
+Answer:
+ For an Application Load Balancer:
+
+DNS resolves the ALB address.
+A listener accepts HTTP or HTTPS traffic.
+TLS may terminate at the ALB.
+Listener rules evaluate host, path, headers or other conditions.
+A target group is selected.
+Traffic goes to a healthy target.
+
+Key point: Listeners receive traffic; rules select target groups; health checks select usable targets.
+
+Flashcard 15: What happens when you access a CloudFront URL?
+
+Answer:
+
+DNS routes the client to a CloudFront edge.
+TLS is established.
+AWS WAF or edge functions may process the request.
+CloudFront calculates the cache key.
+Cache hit: return from edge.
+Cache miss: retrieve from origin.
+Response may be cached according to policy and TTL.
+
+Key point: Cache behavior depends on path, headers, cookies, query strings and cache policy.
+
+Flashcard 16: How does DNS resolution work?
+
+Answer:
+
+Plain Text
+Application cache → OS cache → Recursive resolver
+→ Root server → TLD server → Authoritative server
+→ IP address returned
+
+The result is cached according to its TTL. If the response is a CNAME, the target name must also be resolved.
+
+Key point: DNS resolves the address; TCP, TLS and HTTP happen afterward.
+
+Git
+Flashcard 17: Merge vs rebase internally?
+
+Answer:
+
+Merge:
+
+Combines two histories.
+May create a two-parent merge commit.
+Preserves existing commit IDs.
+
+Rebase:
+
+Replays commits on a new base.
+Creates new commit IDs.
+Produces linear history.
+
+Key point: Avoid rebasing a shared public branch because it rewrites history.
+
+Observability and Operations
+Flashcard 18: How do logs, metrics and traces work together?
+
+Answer:
+
+Metrics: What is happening?
+Logs: What exactly happened?
+Traces: Where did the request fail or slow down?
+
+Typical investigation:
+
+Plain Text
+Metric alert → Identify service → Inspect trace
+→ Use trace ID to find logs → Determine root cause
+
+Key point: Correlate signals using trace_id, request ID, service version, Pod and deployment details.
+
+Flashcard 19: What do you do when production goes down?
+
+Answer:
+
+Confirm the incident and customer impact.
+Stabilize through rollback, failover, traffic shift or scaling.
+Check recent deployments and configuration changes.
+Analyze metrics, logs, traces and infrastructure events.
+Communicate verified facts.
+Validate recovery.
+Complete a blameless post-incident review.
+
+Key point: Restore service first, preserve evidence and investigate systematically.
+
+Flashcard 20: Common DevOps production mistakes?
+
+Answer:
+
+Missing resource requests and limits
+Using mutable image tags
+Incorrect or missing health probes
+Secrets stored in Git or pipeline logs
+Manual production changes
+No rollback strategy
+Rebuilding artifacts per environment
+Weak Terraform state controls
+Overprivileged CI/CD access
+No observability correlation
+Alert fatigue
+No capacity or disaster-recovery testing
+Unbounded retries
+Untested backups
+Poor certificate and token-expiry monitoring
+
+Key point: Reliable DevOps requires repeatability, least privilege, immutable artifacts, observability and tested recovery.
