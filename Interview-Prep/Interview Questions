@@ -1,0 +1,1284 @@
+Kubernetes
+1. How does Kubernetes decide which node to schedule a Pod on?
+
+The kube-scheduler watches the API server for Pods that do not have spec.nodeName assigned.
+
+Internal flow
+
+Pod enters the scheduling queue
+
+The Pod is created and stored in etcd through the API server.
+Since no node is assigned, the Pod remains Pending.
+The scheduler adds it to its internal queue.
+Priority classes influence which Pod is considered first.
+
+Pre-filtering
+
+The scheduler calculates information needed by later plugins, such as resource requirements, topology constraints and volume requirements.
+
+Filtering The scheduler eliminates nodes that cannot run the Pod. Common checks include:
+
+CPU, memory, ephemeral storage and extended resources
+nodeSelector
+Node affinity and anti-affinity
+Pod affinity and anti-affinity
+Taints and tolerations
+Unschedulable or not-ready nodes
+Volume topology and attachment limitations
+Host port conflicts
+Topology spread constraints
+
+Scoring Every feasible node receives a score. Depending on configured plugins, Kubernetes may prefer:
+
+Nodes with balanced CPU and memory utilization
+Nodes that satisfy preferred affinity rules
+Nodes that reduce image pulling
+Nodes that improve topology spreading
+Nodes with requested resources already efficiently packed
+
+Reserve and permit
+
+Scheduler plugins can reserve resources temporarily.
+A permit plugin can approve, reject or delay scheduling.
+
+Binding
+
+The scheduler sends a binding request to the API server.
+The API server updates the Pod with the selected spec.nodeName.
+
+Execution
+
+The kubelet on that node notices the assigned Pod.
+It mounts volumes, pulls images, creates the sandbox and starts containers through the container runtime.
+
+The scheduling framework separates this into a scheduling cycle, which selects a node, and a binding cycle, which applies the decision. Unschedulable Pods return to the queue and are retried.
+
+Interview example
+
+If a Pod requests 4 CPU, tolerates dedicated=telecom:NoSchedule, and requires zone=blr-1, only nodes satisfying all three requirements pass filtering. Scoring then selects the best of those feasible nodes.
+
+Important point
+
+The scheduler considers resource requests, not current CPU or memory consumption. A node may look idle in monitoring but still reject a Pod because its allocatable resources are already reserved by existing requests.
+
+2. What happens internally when you run kubectl apply?
+
+At a high level:
+
+Plain Text
+Manifest → kubectl → API server → authentication → authorization
+→ admission → validation → etcd → controllers → desired state convergence
+Internal flow
+
+Manifest processing
+
+kubectl reads YAML, JSON, stdin or a Kustomize directory.
+It determines the resource's API group, version, kind, name and namespace.
+It uses API discovery to find the corresponding REST endpoint.
+
+Authentication
+
+kubectl obtains credentials from kubeconfig, such as a certificate, bearer token or exec-based credential plugin.
+The request is sent over TLS to the API server.
+
+Authorization
+
+The API server checks whether the identity can create or patch the target object.
+This is commonly determined by RBAC.
+
+Apply calculation
+
+If the object does not exist, it is created.
+If it exists, an apply patch is generated.
+Traditional client-side apply compares:
+The manifest you are applying
+The live object
+The previous configuration stored in kubectl.kubernetes.io/last-applied-configuration
+Server-side apply sends the desired fields to the API server, which tracks field ownership in metadata.managedFields.
+
+Admission processing
+
+Mutating admission webhooks may modify the object.
+Built-in admission controllers apply policies and defaults.
+Validating admission policies or webhooks can reject it.
+
+Persistence
+
+After schema validation and admission, the API server persists the new object state in etcd.
+
+Controller reconciliation
+
+If it is a Deployment, the Deployment controller creates or updates a ReplicaSet.
+The ReplicaSet controller creates Pods.
+The scheduler assigns nodes.
+Kubelets start the containers.
+
+Server-side apply tracks which field manager owns each field. Changing a field owned by another manager can generate a conflict unless ownership is explicitly forced.
+
+Useful interview distinction
+
+kubectl apply changes the desired state. It does not directly start a container. Controllers asynchronously reconcile the actual state toward that desired state.
+
+3. How does Kubernetes service discovery work?
+
+Kubernetes primarily provides service discovery through Services and cluster DNS.
+
+DNS-based discovery
+
+Assume you have:
+
+YAML
+kind: Service
+metadata:
+name: psx-service
+namespace: telecom
+
+Kubernetes creates a DNS name such as:
+
+Plain Text
+psx-service.telecom.svc.cluster.local
+
+A Pod in the same namespace can generally use:
+
+Plain Text
+psx-service
+
+A Pod in another namespace can use:
+
+Plain Text
+psx-service.telecom
+Internal flow
+A Service is created with a label selector.
+The EndpointSlice controller identifies matching, ready Pods.
+It creates or updates EndpointSlice objects containing Pod IPs.
+The cluster DNS service, commonly CoreDNS, watches Services and EndpointSlices through the Kubernetes API.
+The kubelet configures each Pod's /etc/resolv.conf.
+An application resolves the Service name through cluster DNS.
+For a normal Service, DNS returns its stable ClusterIP.
+kube-proxy, or an eBPF-based implementation such as Cilium, directs the connection to one of the Service endpoints.
+
+For a normal Service, the DNS record resolves to the ClusterIP. For a headless Service with clusterIP: None, it resolves to the selected Pod IPs instead.
+
+Important distinction
+DNS discovers the Service address.
+EndpointSlice tracks healthy backends.
+kube-proxy, IPVS, iptables or eBPF performs data-plane forwarding.
+4. What is the difference between readiness and liveness probes internally?
+
+Both are run by the kubelet, but they cause different actions.
+
+Liveness probe
+
+It answers:
+
+Is this container still functioning, or is it stuck?
+
+When the liveness probe repeatedly fails:
+
+The kubelet considers the container unhealthy.
+The kubelet asks the runtime to terminate it.
+The container is restarted according to the Pod's restartPolicy.
+The Pod normally remains on the same node.
+
+Use it for deadlocks or permanently stuck processes.
+
+Readiness probe
+
+It answers:
+
+Is this container ready to receive traffic?
+
+When readiness fails:
+
+The container continues running.
+The Pod's Ready condition becomes false.
+EndpointSlice information is updated.
+Services stop sending new traffic to that Pod.
+When the probe succeeds again, the endpoint becomes ready and traffic resumes.
+Startup probe
+
+A startup probe protects slow-starting applications. Until it succeeds, liveness and readiness processing does not incorrectly kill a container that is still initializing.
+
+Example
+YAML
+livenessProbe:
+httpGet:
+path: /health/live
+port: 8080
+periodSeconds: 10
+failureThreshold: 3
+ 
+readinessProbe:
+httpGet:
+path: /health/ready
+port: 8080
+periodSeconds: 5
+failureThreshold: 2
+Common mistake
+
+Do not make liveness depend on an external database. If the database goes down, all application containers may restart simultaneously even though restarting them cannot repair the database problem.
+
+A better separation is:
+
+Liveness: local process is alive.
+Readiness: application can safely handle traffic.
+Startup: application initialization completed.
+5. How does HPA make scaling decisions?
+
+The Horizontal Pod Autoscaler is a controller in the control plane. It runs a periodic control loop rather than reacting continuously. It can use resource, custom or external metrics.
+
+Metric flow
+
+For CPU or memory:
+
+Plain Text
+kubelet/cAdvisor → Metrics Server → metrics.k8s.io API → HPA controller
+
+For application metrics:
+
+Plain Text
+Prometheus or monitoring system → metrics adapter
+→ custom.metrics.k8s.io or external.metrics.k8s.io → HPA
+Core formula
+Plain Text
+desiredReplicas =
+ceil(currentReplicas × currentMetricValue / desiredMetricValue)
+
+Example:
+
+Plain Text
+Current replicas = 4
+Current average CPU utilization = 80%
+Target CPU utilization = 50%
+ 
+Desired replicas = ceil(4 × 80 / 50)
+= ceil(6.4)
+= 7
+What happens next?
+HPA retrieves metric values.
+It excludes certain unready or missing-metric Pods from normal calculation.
+It calculates the desired replica count.
+It applies configured tolerance, stabilization and scaling policies.
+It updates the target's scale subresource.
+The Deployment or StatefulSet controller creates or deletes replicas.
+Multiple metrics
+
+If HPA uses CPU and request rate, it calculates a replica count for each metric and normally selects the highest recommendation.
+
+Important production points
+CPU utilization is calculated relative to the Pod's CPU request.
+Without CPU requests, CPU-utilization-based scaling may not work as expected.
+HPA creates Pods, but it does not create nodes. If no node has capacity, Pods remain Pending.
+Use HPA with Cluster Autoscaler or node autoscaling when node capacity must also grow.
+Stabilization windows help prevent replica count flapping.
+Docker
+6. What happens internally when you run docker run?
+
+Consider:
+
+Shell
+docker run -d --name web -p 8080:80 nginx:1.27
+Internal flow
+
+CLI parses the command
+
+docker is the client.
+It sends an API request to the Docker daemon, dockerd.
+
+Image resolution
+
+The daemon checks whether the image is available locally.
+If it is missing, the daemon authenticates with a registry and pulls the manifest and missing layers.
+Images may be referenced by a tag or immutable digest.
+
+Container metadata creation
+
+Docker creates a writable container layer above read-only image layers.
+It records the image, command, environment, mounts, ports, restart policy and resource constraints.
+
+Filesystem preparation
+
+The storage driver creates the layered filesystem, usually using OverlayFS on modern Linux installations.
+Volumes and bind mounts are attached.
+
+Isolation setup
+
+Linux namespaces provide process, network, mount, IPC, hostname and user isolation.
+cgroups apply CPU, memory, PID and I/O controls.
+Linux capabilities, seccomp and other security settings are applied.
+
+Networking
+
+Docker creates or joins a network namespace.
+A virtual Ethernet pair is connected to a Docker bridge or another network driver.
+An IP address is assigned.
+Port publishing rules are configured for -p 8080:80.
+
+Runtime execution
+
+Docker uses its runtime stack, commonly containerd and an OCI runtime such as runc.
+The OCI runtime creates the container process.
+The image's ENTRYPOINT and CMD, or command supplied in docker run, become the container's main process.
+
+Lifecycle monitoring
+
+Docker tracks the process exit status.
+Logging drivers receive stdout and stderr.
+Restart policies may restart the container.
+
+Docker describes a container as an isolated process with its own filesystem, networking and process tree, while the Docker Engine uses a CLI, API and daemon architecture.
+
+Key interview point
+
+A container is not a lightweight virtual machine. It is a group of isolated processes sharing the host kernel.
+
+7. How does Docker layer caching work?
+
+Every relevant Dockerfile instruction creates or contributes to a cached build result.
+
+Example:
+
+Dockerfile
+FROM python:3.13-slim
+WORKDIR /app
+ 
+COPY requirements.txt .
+RUN pip install --no-cache-dir -r requirements.txt
+ 
+COPY . .
+CMD ["python", "app.py"]
+Internal logic
+
+For each build step, BuildKit determines whether it can reuse an existing result based on inputs such as:
+
+Parent layer or previous stage
+Dockerfile instruction
+Build arguments and environment affecting the step
+Checksums of files used by COPY or ADD
+Mounted inputs and cache configuration
+
+If the inputs match, the cached result is reused. If one layer changes, dependent layers after it normally need to be rebuilt.
+
+Why Dockerfile order matters
+
+Bad:
+
+Dockerfile
+COPY . .
+RUN pip install -r requirements.txt
+
+Any source change invalidates the broad COPY, causing dependency installation to run again.
+
+Better:
+
+Dockerfile
+COPY requirements.txt .
+RUN pip install -r requirements.txt
+COPY . .
+
+Application code can now change without invalidating the dependency layer.
+
+Production techniques
+Put stable, expensive operations earlier.
+Put frequently changing content later.
+Use .dockerignore.
+Use multi-stage builds.
+Pin base images by digest where reproducibility matters.
+Use BuildKit cache mounts for package managers.
+Export build cache to a registry for ephemeral CI runners.
+Do not copy credentials into build layers.
+Use BuildKit secrets instead of ARG for sensitive values.
+Terraform
+8. How does Terraform dependency graph, or DAG, work internally?
+
+Terraform converts configuration into a directed graph.
+
+Nodes can represent
+Resource instances
+Data sources
+Provider configuration
+Module-related operations
+Destroy operations
+Orphaned resources present in state but removed from configuration
+How dependencies are discovered
+Implicit dependency
+Terraform
+resource "aws_subnet" "app" {
+vpc_id = aws_vpc.main.id
+}
+
+The reference to aws_vpc.main.id creates an edge:
+
+Plain Text
+aws_vpc.main → aws_subnet.app
+Explicit dependency
+Terraform
+resource "aws_instance" "app" {
+depends_on = [aws_iam_role_policy.app]
+}
+
+Use depends_on when the dependency exists behaviorally but cannot be inferred from an attribute reference.
+
+Internal process
+Parse configuration.
+Expand modules and resource instances such as count and for_each.
+Add resource and provider nodes.
+Attach state and planned differences.
+Add explicit depends_on edges.
+Parse expressions to discover implicit dependencies.
+Add orphaned resources found only in state.
+Validate that the graph has no invalid cycles.
+Traverse the graph in dependency order.
+Run independent nodes concurrently up to the configured parallelism.
+
+Terraform's documented graph construction includes resource nodes, provider nodes, explicit dependencies, state-only orphan nodes and edges derived from configuration references.
+
+Example
+Plain Text
+VPC
+├── public subnet ── route table association
+└── private subnet ── EC2 application instance
+
+The two subnets may be created in parallel after the VPC exists. The EC2 instance waits for the private subnet.
+
+Common problem
+
+Overusing depends_on makes the graph unnecessarily serial and can cause conservative plans with more unknown values.
+
+9. How does Terraform handle state locking and consistency?
+
+Terraform state maps Terraform resource addresses to real infrastructure objects.
+
+State locking
+
+Before an operation that can write state:
+
+Terraform asks the configured backend to acquire a lock.
+If another operation owns the lock, acquisition waits or fails based on the command and timeout configuration.
+Terraform performs refresh, planning or apply work.
+Updated state is written.
+The lock is released.
+
+If locking is supported and lock acquisition fails, Terraform does not continue. Not all backends support locking.
+
+What locking prevents
+
+Without locking, two pipelines could:
+
+Read the same original state.
+Apply different infrastructure changes.
+Both write state.
+The second write overwrites information from the first.
+
+The real infrastructure and state may then diverge.
+
+Consistency controls
+
+Use:
+
+A remote backend rather than local state for teams
+Backend-supported locking
+State versioning or backup
+Encryption at rest
+Restricted IAM or RBAC access
+Separate state for independent environments or failure domains
+One controlled apply pipeline per state
+-lock-timeout rather than disabling locking
+
+Example:
+
+Shell
+terraform apply -lock-timeout=10m
+force-unlock
+Shell
+terraform force-unlock LOCK_ID
+
+Use it only when you have verified that no Terraform operation still owns the lock. The unique lock ID helps target the correct stale lock.
+
+Important point
+
+State locking protects against concurrent Terraform writers. It does not prevent someone from changing infrastructure manually in the cloud console. Terraform detects that type of drift during refresh or planning.
+
+CI/CD
+10. What happens internally in a CI/CD pipeline from commit to deploy?
+
+A typical secure flow is:
+
+Plain Text
+Commit → webhook → checkout → build → test → scan
+→ package → publish → deploy → verify → promote or rollback
+Detailed internal sequence
+
+Developer pushes a commit
+
+Git stores new commit objects.
+The remote repository updates the branch reference.
+
+Pipeline trigger
+
+GitHub, GitLab, Bitbucket or another source system sends a webhook.
+Jenkins, GitHub Actions, GitLab CI or Azure Pipelines creates a pipeline run.
+
+Agent allocation
+
+A VM, Kubernetes Pod, container runner or static agent is assigned.
+Credentials should be short-lived and scoped to the job.
+
+Checkout
+
+Source code is fetched at an exact commit SHA.
+Dependencies and submodules are resolved.
+
+Build
+
+Code is compiled or packaged.
+A container image may be built.
+The build should generate immutable, traceable artifacts.
+
+Testing
+
+Linting and static checks
+Unit tests
+Integration tests
+Contract or API tests
+Security tests
+Telecom environments may additionally run SIPp call flows or protocol regression suites.
+
+Security and quality gates
+
+SAST
+Dependency or software-composition analysis
+Secret scanning
+Container image scanning
+Infrastructure-as-code scanning
+Test coverage and policy checks
+
+Artifact publication
+
+Publish the same validated artifact to Nexus, Artifactory, GitHub Container Registry, Amazon ECR or another registry.
+Tag it with commit SHA, version and build metadata.
+Prefer deployment by image digest.
+
+Deployment
+
+The pipeline authenticates to the target environment.
+It may run Helm, Argo CD, Flux, Terraform or cloud deployment APIs.
+Configuration and secrets are obtained from controlled systems.
+
+Verification
+
+Kubernetes rollout status
+Health and readiness checks
+Smoke tests
+Error-rate, latency and saturation checks
+Log and trace validation
+Promotion or rollback
+Promote the same artifact to the next environment.
+If verification fails, stop promotion or roll back.
+Strong interview answer
+
+A good CI/CD pipeline creates one immutable artifact, records provenance, tests and scans it, publishes it once, then promotes the same artifact across environments. It should not rebuild separately for test and production.
+
+11. How does a pipeline handle parallel jobs and dependencies?
+
+Pipeline systems create their own DAG from stage and job dependencies.
+
+Example:
+
+Plain Text
+Build
+├── Unit tests
+├── Security scan
+└── Lint
+↓
+Integration tests
+↓
+Deploy staging
+Internal handling
+The orchestrator parses pipeline configuration.
+It creates job nodes and dependency edges.
+Jobs without unmet dependencies enter the runnable queue.
+Available runners claim runnable jobs.
+Independent jobs execute concurrently.
+Dependent jobs wait for required predecessors.
+Artifacts, outputs or caches are transferred between jobs.
+Failure rules determine whether downstream jobs are skipped, retried or executed conditionally.
+Important distinctions
+Artifacts are outputs needed by later jobs, such as a binary or test report.
+Caches speed up later work, such as Maven, npm or Go dependencies. They should not be treated as guaranteed deployment inputs.
+Dependencies enforce order.
+Concurrency limits protect shared environments.
+Resource groups or locks prevent two jobs from deploying to the same environment simultaneously.
+Failure strategy
+
+For a fan-out of unit tests, lint and image scan:
+
+Fail fast if a mandatory security scan fails.
+Allow optional reporting jobs to complete.
+Use retries only for known transient failures.
+Do not blindly retry deterministic test failures.
+Use finally, post or equivalent steps to publish logs and test reports.
+AWS and networking
+12. How does an AWS Load Balancer route traffic?
+
+The answer depends on the type:
+
+Application Load Balancer: Layer 7, HTTP/HTTPS
+Network Load Balancer: Layer 4, TCP/UDP/TLS
+Gateway Load Balancer: Network virtual appliances
+
+For an Application Load Balancer:
+
+DNS resolves the ALB name to load balancer addresses.
+The client connects to an ALB node in an enabled Availability Zone.
+A listener accepts the request on a configured protocol and port.
+For HTTPS, the ALB performs TLS negotiation using the configured certificate and policy.
+Listener rules are evaluated in priority order.
+Conditions may inspect the host, path, headers, method, source IP or query string.
+The rule forwards, redirects or returns a fixed response.
+A forward action selects a target group.
+The ALB chooses a healthy registered target.
+It opens or reuses a backend connection to the target.
+
+Listeners receive connections, while listener rules decide how traffic is routed to target groups. Rules are evaluated by priority, and the default rule runs last.
+
+Target groups can contain instances, IP addresses or Lambda functions. Health checks are configured per target group, and requests are directed to healthy targets.
+
+Example
+Plain Text
+api.example.com/orders/* → orders target group
+api.example.com/users/* → users target group
+all other requests → default target group
+Common production checks
+Target health
+Listener and security-group configuration
+Subnet and Availability Zone enablement
+Deregistration delay
+Cross-zone behavior
+TLS certificate and policy
+Idle timeout
+Sticky-session configuration
+X-Forwarded-For handling
+Access logs and ALB metrics
+13. What happens internally when you hit a CloudFront URL?
+
+Example:
+
+Plain Text
+https://cdn.example.com/images/logo.png
+Request flow
+
+DNS resolution
+
+The custom hostname resolves to the CloudFront distribution through a Route 53 alias or CNAME arrangement.
+
+Edge selection
+
+DNS and CloudFront routing direct the client toward an appropriate edge location.
+
+Connection establishment
+
+The client establishes TCP and TLS, or another supported transport, with CloudFront.
+CloudFront presents the distribution's certificate for HTTPS.
+
+Viewer request processing
+
+AWS WAF may inspect the request.
+CloudFront Functions or Lambda@Edge may modify or authorize it.
+Distribution behavior matching determines the origin, protocol policy, cache policy and origin request policy.
+
+Cache key creation
+
+CloudFront creates a cache key based on policy, potentially using the path, query strings, headers or cookies.
+
+Cache lookup
+
+On a cache hit, content is served from the edge.
+On a miss, CloudFront forwards an origin request.
+The origin may be Amazon S3, an ALB, EC2, API Gateway or a custom HTTP server.
+
+Origin response
+
+CloudFront receives the response.
+Cache-control directives and distribution policies determine cacheability and TTL.
+The object may be cached and returned to the viewer.
+
+Subsequent requests
+
+Future requests with the same cache key may be served from cache until expiration, invalidation or revalidation.
+
+CloudFront supports origins including S3, EC2, Elastic Load Balancing and custom HTTP origins, and integrates with Route 53, AWS WAF and AWS Shield.
+
+Important troubleshooting headers
+Plain Text
+Age
+Cache-Control
+ETag
+Last-Modified
+Via
+X-Cache
+
+If users receive stale data, check the cache key and TTL before immediately invalidating the entire distribution.
+
+14. How does DNS resolution work step by step?
+
+Assume a user requests:
+
+Plain Text
+www.example.com
+Resolution flow
+The application checks its own DNS cache.
+The operating system checks its resolver cache.
+The hosts file may be checked.
+The stub resolver sends the query to a recursive resolver.
+The recursive resolver checks its cache.
+If no valid cached answer exists, it queries a root name server.
+The root responds with a referral to the relevant top-level domain name servers, such as .com.
+The resolver queries a .com TLD server.
+The TLD server returns the authoritative name servers for example.com.
+The resolver queries an authoritative server.
+The authoritative server returns an A, AAAA, CNAME or other response.
+If a CNAME is returned, the resolver continues resolving the target name.
+The answer is cached according to its TTL.
+The resolver returns the IP address to the client.
+The client connects to that IP.
+DNS record examples
+A: IPv4 address
+AAAA: IPv6 address
+CNAME: alias to another hostname
+MX: mail server
+TXT: verification or policy data
+NS: authoritative name server
+SRV: service location and port
+PTR: reverse lookup
+Commands to demonstrate in an interview
+Shell
+dig www.example.com
+dig +trace www.example.com
+dig @8.8.8.8 www.example.com
+nslookup www.example.com
+getent hosts www.example.com
+Important nuance
+
+DNS provides name resolution. It does not establish the HTTP or TLS connection. After resolution, the client still performs routing, TCP or QUIC setup, TLS negotiation and application-protocol exchange.
+
+Git
+15. How do Git merge and rebase differ internally?
+
+Assume:
+
+Plain Text
+A---B---C main
+\
+D---E feature
+Merge
+Shell
+git switch feature
+git merge main
+
+Git identifies the merge base, performs a three-way merge and, when necessary, creates a merge commit with two parents:
+
+Plain Text
+A---B---C main
+\ \
+D---E---M feature
+
+Existing commit IDs remain unchanged.
+
+A fast-forward merge is possible if the target branch has not diverged. In that case, Git only moves the branch reference.
+
+Rebase
+Shell
+git switch feature
+git rebase main
+
+Git:
+
+Finds commits unique to feature.
+Temporarily saves those changes.
+moves the branch base to main.
+Replays each commit one by one.
+Creates new commits with new parent relationships and therefore new commit IDs.
+
+Result:
+
+Plain Text
+A---B---C main
+\
+D'---E' feature
+
+Git documentation describes rebase as listing commits after divergence, checking out the new base, replaying commits and updating the branch reference.
+
+Comparison
+Merge preserves branch topology and existing commits.
+Rebase produces a linear history but rewrites commit identity.
+Merge conflicts are usually resolved once for the combined merge.
+Rebase may require resolving conflicts separately while each commit is replayed.
+Golden rule
+
+Do not rebase a shared public branch unless the team explicitly permits history rewriting. Rewriting commits that others already use forces them to reconcile different histories.
+
+Kubernetes reliability
+16. How does Kubernetes handle Pod failures and self-healing?
+
+Kubernetes self-healing comes from multiple reconciliation loops.
+
+Container failure
+The kubelet detects that the container's main process exited.
+It applies the Pod's restartPolicy.
+For Always, the container is restarted.
+Repeated failures produce increasing restart delays and may be reported as CrashLoopBackOff.
+Liveness failure
+Kubelet terminates and restarts the unhealthy container.
+The Pod generally remains on the same node.
+Pod deletion or failure
+
+For a Deployment:
+
+The Pod disappears or enters a terminal state.
+The ReplicaSet controller sees fewer active replicas than desired.
+It creates a replacement Pod.
+The scheduler selects a node.
+The kubelet starts the new Pod.
+Node failure
+Node heartbeats or leases stop.
+The control plane marks the node unhealthy after configured detection behavior.
+Pods may be evicted after applicable tolerations and controller decisions.
+Workload controllers create replacements.
+Replacement Pods are scheduled on healthy nodes.
+Persistent volumes may be detached and reattached when supported.
+Service protection
+
+When a Pod is not ready or fails, it is removed from Service endpoint eligibility so new traffic is directed to ready backends.
+
+Kubernetes documents container restarts, replica replacement, workload rescheduling, persistent-volume recovery and endpoint removal as parts of self-healing.
+
+Limitation
+
+Kubernetes can restart an application, but it cannot repair incorrect application logic, bad configuration, corrupted data or an unavailable external dependency.
+
+17. What happens during a rolling deployment in Kubernetes?
+
+Suppose a Deployment changes from image v1 to v2.
+
+Internal flow
+The Deployment's Pod template changes.
+The Deployment controller detects a new template hash.
+It creates a new ReplicaSet for v2.
+It gradually scales up the new ReplicaSet.
+It gradually scales down the old ReplicaSet.
+New Pods are scheduled and started.
+Readiness probes determine when new Pods can receive traffic.
+Services begin routing to ready v2 Pods.
+Old Pods receive termination signals and are removed.
+The rollout completes when the new ReplicaSet reaches the desired available count.
+Key controls
+YAML
+strategy:
+type: RollingUpdate
+rollingUpdate:
+maxSurge: 1
+maxUnavailable: 0
+
+For 4 replicas:
+
+maxSurge: 1 permits up to 5 Pods during rollout.
+maxUnavailable: 0 requires all 4 desired replicas to remain available.
+Pod termination path
+Endpoint readiness is updated.
+A preStop hook may execute.
+PID 1 receives SIGTERM.
+Kubernetes waits for terminationGracePeriodSeconds.
+If the process remains, it receives SIGKILL.
+Monitoring commands
+Shell
+kubectl rollout status deployment/my-app
+kubectl get rs
+kubectl get pods -w
+kubectl describe deployment my-app
+kubectl rollout history deployment/my-app
+kubectl rollout undo deployment/my-app
+Common rollout failures
+New image cannot be pulled
+Readiness probe never succeeds
+Insufficient node capacity for maxSurge
+Missing ConfigMap or Secret
+Incorrect port or command
+Resource quota exceeded
+PodDisruptionBudget or scheduling constraints prevent progress
+Observability and incident response
+18. How do logs, metrics and traces work together?
+
+These signals answer different questions.
+
+Metrics: What is happening?
+
+Metrics are numeric time-series measurements.
+
+Examples:
+
+Request rate
+Error rate
+P95/P99 latency
+CPU and memory
+Queue depth
+Pod restart count
+SIP response-code rate
+
+Metrics are efficient for dashboards, alerting and trend analysis.
+
+Logs: What exactly happened?
+
+Logs record discrete events with context.
+
+Example:
+
+JSON
+{
+"timestamp": "2026-10-11T10:30:00Z",
+"level": "ERROR",
+"service": "sbc-signaling",
+"trace_id": "4bf92f...",
+"call_id": "abc123",
+"message": "Received 481 for in-dialog UPDATE"
+}
+
+Logs provide error text, object identifiers, request parameters and application decisions.
+
+Traces: Where did time or failure occur?
+
+A distributed trace follows one request across services.
+
+Plain Text
+API gateway: 20 ms
+└── application service: 120 ms
+├── PSX lookup: 25 ms
+└── database query: 80 ms
+
+A trace contains spans, parent-child relationships, timing, status and attributes.
+
+OpenTelemetry is a vendor-neutral framework for producing, collecting and exporting traces, metrics and logs. It also supports correlating logs with active trace and span identifiers.
+
+How they work together during an incident
+A metric alert shows error rate increased.
+A dashboard narrows the issue to one service, region or release.
+A trace identifies the slow or failing dependency.
+trace_id connects the trace to relevant logs.
+Logs reveal the exact exception, Call-ID, GUID or configuration value.
+Deployment and infrastructure events show what changed.
+Best practice
+
+Include common correlation fields across all signals:
+
+Plain Text
+service.name
+service.version
+environment
+cluster
+namespace
+pod
+node
+trace_id
+span_id
+request_id or call_id
+deployment version
+19. What happens when your system goes down, and how do you approach it?
+
+A strong interview response should be structured and calm.
+
+Phase 1: Confirm and assess
+
+Determine:
+
+Is the alert real?
+What customer journey is affected?
+Is the failure global or limited to one service, tenant, region or protocol?
+What is the error rate, latency and availability?
+When did it start?
+Is there a safe workaround?
+
+Avoid restarting everything before collecting evidence.
+
+Phase 2: Stabilize
+
+Possible containment actions:
+
+Roll back the latest deployment
+Stop a damaging pipeline
+Shift traffic to healthy instances or a secondary region
+Scale a saturated stateless service
+Disable a problematic feature flag
+Remove an unhealthy target
+Throttle incoming requests
+Fail over to a tested standby
+Extend timeouts only when the downstream system can handle the additional queued work
+Phase 3: Investigate systematically
+
+Use the following order:
+
+Recent changes
+
+Deployments
+Configuration
+Secrets and certificates
+Network policy
+DNS
+Infrastructure changes
+Dependency releases
+
+Traffic
+
+Request volume
+Error codes
+Latency
+Retries
+Connection count
+Queue depth
+
+Application
+
+Logs
+Traces
+Thread or connection pools
+Memory and CPU
+Deadlocks
+Dependency timeouts
+
+Platform
+
+Pod status and restarts
+Node health
+Events
+Scheduling failures
+Storage
+Ingress or load balancer
+CoreDNS
+Certificate and token expiry
+
+Dependencies
+
+Database
+Cache
+External APIs
+Message broker
+DNS provider
+Identity provider
+
+Useful Kubernetes checks:
+
+Shell
+kubectl get pods -A -o wide
+kubectl get events -A --sort-by=.lastTimestamp
+kubectl top nodes
+kubectl top pods -A
+kubectl describe pod <pod>
+kubectl logs <pod> --previous
+kubectl rollout history deployment/<name>
+kubectl get endpointslice -A
+Phase 4: Communicate
+
+Provide regular factual updates:
+
+Plain Text
+Impact:
+Start time:
+Affected services:
+Current mitigation:
+Observed evidence:
+Next technical action:
+
+Avoid announcing an unverified root cause.
+
+Phase 5: Recover and verify
+
+Validate:
+
+Error rate returned to baseline
+Latency recovered
+Backlog is draining
+Dependency health is stable
+New traffic succeeds
+No hidden data inconsistency remains
+Alerts remain clear during observation
+Phase 6: Post-incident improvement
+
+A blameless review should record:
+
+Timeline
+Trigger
+Root cause
+Contributing conditions
+Why detection or protection failed
+What reduced the impact
+Corrective actions with owners and due dates
+Runbook, test, alert and architecture improvements
+Strong interview summary
+
+I first establish impact and stabilize the service, then investigate using recent changes and evidence from metrics, logs, traces and infrastructure events. I communicate verified facts throughout, validate recovery from the user perspective and finish with preventive actions rather than stopping at the immediate fix.
+
+Production engineering
+20. What are the most common production mistakes in DevOps setups?
+1. No resource requests or limits
+
+Consequences:
+
+Unreliable Kubernetes scheduling
+HPA calculation problems
+Node resource contention
+OOM kills or CPU throttling
+
+Action: establish requests from measured usage and load testing, then monitor throttling, working set and OOM events.
+
+2. Using latest or mutable tags
+
+Consequence: deployments cannot be reproduced reliably.
+
+Better:
+
+YAML
+image: registry.example.com/app@sha256:<digest>
+3. No readiness, liveness or startup probes
+
+Consequence: dead or unready Pods continue receiving traffic, or slow-starting applications are restarted repeatedly.
+
+4. Storing secrets in Git, images or pipeline logs
+
+Use a controlled secret manager such as AWS Secrets Manager, Azure Key Vault, HashiCorp Vault or an appropriate Kubernetes secrets integration. Prefer short-lived workload identities over long-lived access keys.
+
+5. Direct production changes
+
+Manual kubectl edit, cloud-console changes and unreviewed hot fixes create drift and weak auditability.
+
+Prefer:
+
+Git review
+Protected branches
+Infrastructure as code
+GitOps
+Break-glass procedures for emergencies
+6. No rollback strategy
+
+A deployment should define:
+
+Rollout verification
+Automatic stopping conditions
+Previous known-good artifact
+Database compatibility strategy
+Rollback or roll-forward procedure
+7. Rebuilding artifacts per environment
+
+The test artifact may differ from the production artifact.
+
+Use:
+
+Plain Text
+Build once → test once → sign → promote same digest
+8. Weak Terraform state management
+
+Examples:
+
+Local state used by a team
+State committed to Git
+No locking or versioning
+Broad write access
+Multiple uncontrolled apply pipelines
+9. Overprivileged access
+
+Examples:
+
+Cluster-admin for CI
+Wildcard cloud IAM permissions
+Docker privileged mode
+Mounting the host Docker socket
+Long-lived static credentials
+
+Apply least privilege at the cloud, cluster, namespace, pipeline and workload levels.
+
+10. Missing observability context
+
+Collecting large volumes of logs without correlation fields does not provide good observability.
+
+Standardize:
+
+Service and version
+Environment
+Cluster and namespace
+Pod and node
+Trace ID
+Request ID, GUID or SIP Call-ID
+Release or image digest
+11. Alerting on symptoms without prioritization
+
+Too many low-quality alerts create fatigue. Page on conditions requiring immediate human intervention, such as sustained customer-impacting error rate or inability to meet an SLO.
+
+12. No capacity planning
+
+Systems fail because of exhausted:
+
+CPU or memory
+IP addresses
+Disk or inode usage
+File descriptors
+Database connections
+NAT ports
+API rate limits
+Kubernetes Pod or volume limits
+13. Ignoring dependency and certificate expiry
+
+Track:
+
+TLS certificate expiry
+Registry-token expiry
+Cloud credentials
+License expiry
+API deprecation
+Kubernetes version support
+Base-image vulnerabilities
+14. Running databases or stateful systems without tested recovery
+
+A backup is not sufficient. Restore procedures, recovery time and recovery-point expectations must be tested.
+
+15. Treating retries as a universal fix
+
+Unbounded retries amplify outages. Use:
+
+Bounded retries
+Exponential backoff
+Jitter
+Request deadlines
+Circuit breaking
+Idempotency
+Retry budgets
+16. No separation of environments
+
+Development, test and production should have appropriate isolation of credentials, state, data and deployment permissions.
+
+17. Deploying without load and failure testing
+
+Test normal demand, peak demand, dependency timeouts, Pod termination, node disruption and partial network failure.
+
+18. No audit trail or artifact provenance
+
+You should be able to answer:
+
+Plain Text
+Who approved this?
+Which commit produced it?
+Which pipeline built it?
+Which tests passed?
+Which image digest is running?
+Which configuration was applied?
+19. Poor container image design
+
+Common examples:
+
+Running as root
+Huge image size
+Including build tools in runtime images
+No pinned dependencies
+Writing persistent data into the container layer
+Not handling SIGTERM
+Shell-form entrypoints that interfere with signal delivery
+20. Automating unsafe processes
+
+Automation makes both good and bad processes faster. Add validation, review, policy enforcement, progressive rollout and automatic verification before increasing deployment frequency.
